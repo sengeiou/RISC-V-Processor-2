@@ -13,7 +13,8 @@
 -- Dependencies: 
 -- 
 -- Revision:
--- Revision 0.01 - File Created
+-- 0.01 - File Created
+-- 0.1.0 - Added and connected instruction decoder and register file for basic functionality
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
@@ -22,55 +23,55 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-
 entity stage_decode is
+    generic(
+        CPU_DATA_WIDTH_BITS : integer
+    );
+    
     port(
-        -- ========== INSTRUCTION INPUT ==========
+        -- ========== OUTPUT DATA SIGNALS ==========
+        reg_1_data : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        reg_2_data : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    
+        -- ========== INPUT CONTROL SIGNALS ==========
         instruction_bus : in std_logic_vector(31 downto 0);
         
-        -- ========== GENERATED CONTROL SIGNALS ==========
-        -- ALU
-        alu_op_sel : out std_logic_vector(3 downto 0);
         
-        -- Register control
-        reg_rd_1_addr : out std_logic_vector(4 downto 0);
-        reg_rd_2_addr : out std_logic_vector(4 downto 0);
-        reg_wr_addr : out std_logic_vector(4 downto 0);
+        clk : in std_logic;
+        reset : in std_logic
         
-        reg_rd_1_used : out std_logic;
-        reg_rd_2_used : out std_logic;
-        reg_wr_en : out std_logic
+        -- ========== OUTPUT CONTROL SIGNALS ==========
     );
 end stage_decode;
 
 architecture structural of stage_decode is
-
+    signal reg_1_addr_i : std_logic_vector(4 downto 0);
+    signal reg_2_addr_i : std_logic_vector(4 downto 0);
+    signal reg_wr_addr_i : std_logic_vector(4 downto 0);
+    signal reg_wr_en_i : std_logic;
 begin
-
-    decoder : process(all)
-    begin
+    instruction_decoder : entity work.instruction_decoder(rtl)
+                          port map(instruction_bus => instruction_bus,
+                                   reg_rd_1_addr => reg_1_addr_i,
+                                   reg_rd_2_addr => reg_2_addr_i,
+                                   reg_wr_addr => reg_wr_addr_i);
     
-    -- Default values for signals in case the instruction does not set them
-    alu_op_sel <= "0000";
+    register_file : entity work.register_file(rtl)
+                    generic map(REG_SIZE_BITS => CPU_DATA_WIDTH_BITS)
+                    port map(-- ADDRESSES
+                             rd_1_addr => reg_1_addr_i,
+                             rd_2_addr => reg_2_addr_i,
+                             wr_addr => reg_wr_addr_i,
+                             -- DATA
+                             wr_data => (others => '0'),
+                             
+                             rd_1_data => reg_1_data,
+                             rd_2_data => reg_2_data,
+                             -- CONTROL
+                             wr_en => reg_wr_en_i,
+                             reset => reset,
+                             clk => clk);
     
-    reg_rd_1_used <= '0';
-    reg_rd_2_used <= '0';
-    reg_wr_en <= '0';
-    
-    -- Always decode register addresses
-    reg_rd_1_addr <= instruction_bus(19 downto 15);
-    reg_rd_2_addr <= instruction_bus(24 downto 20);
-    reg_wr_addr <= instruction_bus(11 downto 7);
-    
-    if (instruction_bus(6 downto 0) = "0110011") then
-        alu_op_sel <= instruction_bus(30) & instruction_bus(14 downto 12);
-        
-        reg_rd_1_used <= '1';
-        reg_rd_2_used <= '1';
-        reg_wr_en <= '1';
-    end if;
-    end process;
-
 end structural;
 
 

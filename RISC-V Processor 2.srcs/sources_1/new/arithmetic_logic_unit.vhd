@@ -19,6 +19,10 @@
 -- 
 ----------------------------------------------------------------------------------
 
+--------------------------------
+-- NOTES:
+-- 1) Comparator logic is POORLY implemented with VHDL operators so it will require re-implementation
+--------------------------------
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
