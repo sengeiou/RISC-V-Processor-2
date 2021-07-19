@@ -22,22 +22,19 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity stage_execute_cntrl is
---  Port ( );
+    port(
+        -- INPUT CONTROL SIGNALS
+        alu_op_in : in std_logic_vector(3 downto 0);
+        
+        -- OUTPUT CONTROL SIGNALS FOR EXECUTE STAGE
+        alu_op_out : out std_logic_vector(3 downto 0)
+    );
 end stage_execute_cntrl;
 
 architecture rtl of stage_execute_cntrl is
 
 begin
-
+    alu_op_out <= alu_op_in
 
 end rtl;

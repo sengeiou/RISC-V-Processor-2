@@ -22,22 +22,46 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity stage_execute is
---  Port ( );
+    generic(
+        CPU_DATA_WIDTH_BITS : integer
+    );
+    
+    port(
+        -- ========== DATA SIGNALS ==========
+        reg_1_data : std_logic_vector(31 downto 0);
+        reg_2_data : std_logic_vector(31 downto 0);
+        
+        -- ========== CONTROL SIGNALS ==========
+        alu_op_sel : std_logic_vector(3 downto 0)
+    );
 end stage_execute;
 
-architecture rtl of stage_execute is
-
+architecture structural of stage_execute is
+    signal alu_op_sel_i : std_logic_vector(3 downto 0);
 begin
-
+    stage_exec_cntrl : entity work.stage_execute_cntrl(rtl)
+                       port map(alu_op_in => alu_op_sel,
+                                alu_op_out => alu_op_sel_i);
+                       
+    stage_exec_dp : entity work.stage_execute_dp(rtl)
+                    generic map(CPU_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS)
+                    port map(-- DATA SIGNALS
+                             reg_1_data => reg_1_data,
+                             reg_2_data => reg_2_data,
+                             
+                             -- CONTROL SIGNALS
+                             alu_op_sel => alu_op_sel_i);
 
 end rtl;
+
+
+
+
+
+
+
+
+
+
+

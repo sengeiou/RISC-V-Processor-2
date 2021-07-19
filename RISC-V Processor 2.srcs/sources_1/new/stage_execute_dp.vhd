@@ -13,7 +13,8 @@
 -- Dependencies: 
 -- 
 -- Revision:
--- Revision 0.01 - File Created
+-- 0.01 - File Created
+-- 0.1.0 - Added basic ALU functionality
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
@@ -32,14 +33,41 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity stage_execute_dp is
+    generic(
+        CPU_DATA_WIDTH_BITS : integer
+    );
     port(
+        -- DATA SIGNALS
+        reg_1_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        reg_2_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        alu_result : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         
+        -- CONTROL SIGNALS
+        alu_op_sel : in std_logic_vector(3 downto 0)
     );
 end stage_execute_dp;
 
-architecture rtl of stage_execute_dp is
+architecture structural of stage_execute_dp is
 
 begin
+    alu : entity work.arithmetic_logic_unit(rtl)
+          generic map(OPERAND_WIDTH_BITS => CPU_DATA_WIDTH_BITS)
+          port map(operand_1 => reg_1_data,
+                   operand_2 => reg_2_data,
+                   result => alu_result,
+                   alu_op_sel => alu_op_sel);
+
+end structural;
 
 
-end rtl;
+
+
+
+
+
+
+
+
+
+
+
