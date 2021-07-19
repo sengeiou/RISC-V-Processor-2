@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 07/19/2021 12:29:42 PM
+-- Create Date: 07/19/2021 02:20:42 PM
 -- Design Name: 
--- Module Name: stage_decode - rtl
+-- Module Name: instruction_decoder - rtl
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -14,6 +14,7 @@
 -- 
 -- Revision:
 -- Revision 0.01 - File Created
+-- Revision 0.1.0 - Added support for Reg-Reg ALU instructions
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
@@ -22,8 +23,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-
-entity stage_decode is
+entity instruction_decoder is
     port(
         -- ========== INSTRUCTION INPUT ==========
         instruction_bus : in std_logic_vector(31 downto 0);
@@ -41,9 +41,9 @@ entity stage_decode is
         reg_rd_2_used : out std_logic;
         reg_wr_en : out std_logic
     );
-end stage_decode;
+end instruction_decoder;
 
-architecture structural of stage_decode is
+architecture rtl of instruction_decoder is
 
 begin
 
@@ -62,7 +62,7 @@ begin
     reg_rd_2_addr <= instruction_bus(24 downto 20);
     reg_wr_addr <= instruction_bus(11 downto 7);
     
-    if (instruction_bus(6 downto 0) = "0110011") then
+    if (instruction_bus(6 downto 0) = "0110011") then                       -- Reg-Reg ALU Operations
         alu_op_sel <= instruction_bus(30) & instruction_bus(14 downto 12);
         
         reg_rd_1_used <= '1';
@@ -70,17 +70,5 @@ begin
         reg_wr_en <= '1';
     end if;
     end process;
-
-end structural;
-
-
-
-
-
-
-
-
-
-
-
-
+    
+end rtl;
