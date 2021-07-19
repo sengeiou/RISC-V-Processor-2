@@ -40,11 +40,11 @@ end stage_execute;
 architecture structural of stage_execute is
     signal alu_op_sel_i : std_logic_vector(3 downto 0);
 begin
-    stage_exec_cntrl : entity work.stage_execute_cntrl(rtl)
+    stage_execute_cntrl : entity work.stage_execute_cntrl(rtl)
                        port map(alu_op_in => alu_op_sel,
                                 alu_op_out => alu_op_sel_i);
                        
-    stage_exec_dp : entity work.stage_execute_dp(rtl)
+    stage_execute_dp : entity work.stage_execute_dp(structural)
                     generic map(CPU_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS)
                     port map(-- DATA SIGNALS
                              reg_1_data => reg_1_data,
@@ -53,7 +53,7 @@ begin
                              -- CONTROL SIGNALS
                              alu_op_sel => alu_op_sel_i);
 
-end rtl;
+end structural;
 
 
 

@@ -32,4 +32,4 @@ architecture structural of stage_decode is
 begin
 
 
-end rtl;
+end structural;

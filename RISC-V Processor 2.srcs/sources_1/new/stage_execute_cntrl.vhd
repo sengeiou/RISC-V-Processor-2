@@ -35,6 +35,6 @@ end stage_execute_cntrl;
 architecture rtl of stage_execute_cntrl is
 
 begin
-    alu_op_out <= alu_op_in
+    alu_op_out <= alu_op_in;
 
 end rtl;
