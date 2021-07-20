@@ -29,12 +29,18 @@ entity stage_decode is
     );
     
     port(
+        -- ========== INPUT DATA SIGNALS ==========
+        reg_wr_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    
         -- ========== OUTPUT DATA SIGNALS ==========
         reg_1_data : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         reg_2_data : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     
         -- ========== INPUT CONTROL SIGNALS ==========
         instruction_bus : in std_logic_vector(31 downto 0);
+        
+        reg_wr_addr_in : in std_logic_vector(4 downto 0);
+        reg_wr_en_in : in std_logic;
         
         clk : in std_logic;
         reset : in std_logic;
@@ -73,15 +79,15 @@ begin
                     port map(-- ADDRESSES
                              rd_1_addr => reg_1_addr_i,
                              rd_2_addr => reg_2_addr_i,
-                             wr_addr => (others => '0'),
+                             wr_addr => reg_wr_addr_in,
                              
                              -- DATA
-                             wr_data => (others => '0'),
+                             wr_data => reg_wr_data,
                              rd_1_data => reg_1_data,
                              rd_2_data => reg_2_data,
                              
                              -- CONTROL
-                             wr_en => '0',
+                             wr_en => reg_wr_en_in,
                              reset => reset,
                              clk => clk);
     

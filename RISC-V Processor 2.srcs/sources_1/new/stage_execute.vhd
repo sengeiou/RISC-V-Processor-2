@@ -29,30 +29,24 @@ entity stage_execute is
     
     port(
         -- ========== DATA SIGNALS ==========
-        reg_1_data : std_logic_vector(31 downto 0);
-        reg_2_data : std_logic_vector(31 downto 0);
+        reg_1_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        reg_2_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         
+        alu_result : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         -- ========== CONTROL SIGNALS ==========
-        alu_op_sel : std_logic_vector(3 downto 0)
+        alu_op_sel : in std_logic_vector(3 downto 0)
     );
 end stage_execute;
 
 architecture structural of stage_execute is
     signal alu_op_sel_i : std_logic_vector(3 downto 0);
 begin
-    stage_execute_cntrl : entity work.stage_execute_cntrl(rtl)
-                       port map(alu_op_in => alu_op_sel,
-                                alu_op_out => alu_op_sel_i);
-                       
-    stage_execute_dp : entity work.stage_execute_dp(structural)
-                    generic map(CPU_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS)
-                    port map(-- DATA SIGNALS
-                             reg_1_data => reg_1_data,
-                             reg_2_data => reg_2_data,
-                             
-                             -- CONTROL SIGNALS
-                             alu_op_sel => alu_op_sel_i);
-
+    alu : entity work.arithmetic_logic_unit(rtl)
+          generic map(OPERAND_WIDTH_BITS => 32)
+          port map(operand_1 => reg_1_data,
+                   operand_2 => reg_2_data,
+                   result => alu_result,
+                   alu_op_sel => alu_op_sel);
 end structural;
 
 

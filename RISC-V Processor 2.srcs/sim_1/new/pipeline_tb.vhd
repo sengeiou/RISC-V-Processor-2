@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 07/19/2021 12:29:42 PM
+-- Create Date: 07/20/2021 02:56:05 PM
 -- Design Name: 
--- Module Name: stage_memory - rtl
+-- Module Name: pipeline_tb - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,28 +31,12 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity stage_memory is
-    port(
-        data_in : in std_logic_vector(31 downto 0);
-        
-        data_out : out std_logic_vector(31 downto 0)
-    );
-end stage_memory;
+entity pipeline_tb is
+end pipeline_tb;
 
-architecture structural of stage_memory is
+architecture Behavioral of pipeline_tb is
 
 begin
-    data_out <= data_in;
+    
 
-end structural;
-
-
-
-
-
-
-
-
-
-
-
+end Behavioral;
