@@ -50,10 +50,10 @@ begin
         elsif (alu_op_sel = "1000") then            -- SUB
             result <= std_logic_vector(signed(operand_1) - signed(operand_2));
         elsif (alu_op_sel = "0010") then            -- SET ON OP_1 < OP_2 SIGNED            
-            result <= (OPERAND_WIDTH_BITS downto 1 => '0') & '1' when signed(operand_1) < signed(operand_2) else
+            result <= (OPERAND_WIDTH_BITS - 1 downto 1 => '0') & '1' when signed(operand_1) < signed(operand_2) else
                       (others => '0');
         elsif (alu_op_sel = "0011") then            -- SET ON OP_1 < OP_2 UNSIGNED            
-            result <= (OPERAND_WIDTH_BITS downto 1 => '0') & '1' when unsigned(operand_1) < unsigned(operand_2) else
+            result <= (OPERAND_WIDTH_BITS - 1 downto 1 => '0') & '1' when unsigned(operand_1) < unsigned(operand_2) else
                       (others => '0');
         elsif (alu_op_sel = "0100") then            -- XOR         
             result <= operand_1 xor operand_2;

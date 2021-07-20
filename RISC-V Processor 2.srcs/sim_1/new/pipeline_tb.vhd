@@ -1,42 +1,47 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 07/20/2021 02:56:05 PM
--- Design Name: 
--- Module Name: pipeline_tb - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity pipeline_tb is
 end pipeline_tb;
 
 architecture Behavioral of pipeline_tb is
-
-begin
+    signal instruction_bus : std_logic_vector(31 downto 0);
+    signal reset, clk : std_logic;
     
+    
+    type test_instructions_array is array (natural range <>) of std_logic_vector(31 downto 0);
+    constant test_instructions : test_instructions_array := (
+        ("00000000000100001000000010110011"),         -- ADD x1, x1, x1
+        ("00000000000100001000000010110011")         -- ADD x1, x1, x1
+        
+    );
+    
+    constant T : time := 20ns;
+begin
+    pipeline : entity work.pipeline(structural)
+               port map(instruction_debug => instruction_bus,
+                        reset => reset,
+                        clk => clk);
+
+    reset <= '1', '0' after T * 2;
+
+    clock : process
+    begin
+        clk <= '0';
+        wait for T / 2;
+        clk <= '1';
+        wait for T / 2;
+    end process;
+
+    tb : process
+    begin
+        wait for T * 2;
+        for i in test_instructions'range loop
+            instruction_bus <= test_instructions(i);
+        
+            wait for T;
+        
+        end loop;
+    end process;
 
 end Behavioral;

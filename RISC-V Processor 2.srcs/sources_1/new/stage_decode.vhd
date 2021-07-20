@@ -71,6 +71,7 @@ begin
                                    reg_wr_addr => reg_wr_addr,
                                    reg_rd_1_used => reg_1_used,
                                    reg_rd_2_used => reg_2_used,
+                                   reg_wr_en => reg_wr_en,
                                    -- ===== ALU =====
                                    alu_op_sel => alu_op_sel);
     

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="pipeline_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="pipeline_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="166666fs"></ZoomStartTime>
+      <ZoomEndTime time="1166667fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="254"></NameColumnWidth>
+      <ValueColumnWidth column_width="103"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="38" />
+   <wvobject fp_name="/pipeline_tb/instruction_bus" type="array">
+      <obj_property name="ElementShortName">instruction_bus[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instruction_bus[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/test_instructions" type="array">
+      <obj_property name="ElementShortName">test_instructions[0:1][31:0]</obj_property>
+      <obj_property name="ObjectShortName">test_instructions[0:1][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/T" type="other">
+      <obj_property name="ElementShortName">T</obj_property>
+      <obj_property name="ObjectShortName">T</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_1_data" type="array">
+      <obj_property name="ElementShortName">dec_reg_1_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_1_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_2_data" type="array">
+      <obj_property name="ElementShortName">dec_reg_2_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_2_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_1_addr" type="array">
+      <obj_property name="ElementShortName">dec_reg_1_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_1_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_2_addr" type="array">
+      <obj_property name="ElementShortName">dec_reg_2_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_2_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_1_used" type="logic">
+      <obj_property name="ElementShortName">dec_reg_1_used</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_1_used</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_2_used" type="logic">
+      <obj_property name="ElementShortName">dec_reg_2_used</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_2_used</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_wr_addr" type="array">
+      <obj_property name="ElementShortName">dec_reg_wr_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_wr_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_reg_wr_en" type="logic">
+      <obj_property name="ElementShortName">dec_reg_wr_en</obj_property>
+      <obj_property name="ObjectShortName">dec_reg_wr_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/dec_alu_op_sel" type="array">
+      <obj_property name="ElementShortName">dec_alu_op_sel[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dec_alu_op_sel[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_1_data" type="array">
+      <obj_property name="ElementShortName">exe_reg_1_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_1_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_2_data" type="array">
+      <obj_property name="ElementShortName">exe_reg_2_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_2_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_alu_result" type="array">
+      <obj_property name="ElementShortName">exe_alu_result[31:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_alu_result[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_alu_op_sel" type="array">
+      <obj_property name="ElementShortName">exe_alu_op_sel[3:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_alu_op_sel[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_1_addr" type="array">
+      <obj_property name="ElementShortName">exe_reg_1_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_1_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_2_addr" type="array">
+      <obj_property name="ElementShortName">exe_reg_2_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_2_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_1_used" type="logic">
+      <obj_property name="ElementShortName">exe_reg_1_used</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_1_used</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_2_used" type="logic">
+      <obj_property name="ElementShortName">exe_reg_2_used</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_2_used</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_wr_addr" type="array">
+      <obj_property name="ElementShortName">exe_reg_wr_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_wr_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/exe_reg_wr_en" type="logic">
+      <obj_property name="ElementShortName">exe_reg_wr_en</obj_property>
+      <obj_property name="ObjectShortName">exe_reg_wr_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/mem_data_in" type="array">
+      <obj_property name="ElementShortName">mem_data_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_data_in[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/mem_data_out" type="array">
+      <obj_property name="ElementShortName">mem_data_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_data_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/mem_reg_wr_addr" type="array">
+      <obj_property name="ElementShortName">mem_reg_wr_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_reg_wr_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/mem_reg_wr_en" type="logic">
+      <obj_property name="ElementShortName">mem_reg_wr_en</obj_property>
+      <obj_property name="ObjectShortName">mem_reg_wr_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/wb_reg_wr_data" type="array">
+      <obj_property name="ElementShortName">wb_reg_wr_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_reg_wr_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/wb_reg_wr_addr" type="array">
+      <obj_property name="ElementShortName">wb_reg_wr_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_reg_wr_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/wb_reg_wr_en" type="logic">
+      <obj_property name="ElementShortName">wb_reg_wr_en</obj_property>
+      <obj_property name="ObjectShortName">wb_reg_wr_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/reg_de_ex/d" type="array">
+      <obj_property name="ElementShortName">d[85:0]</obj_property>
+      <obj_property name="ObjectShortName">d[85:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/reg_de_ex/q" type="array">
+      <obj_property name="ElementShortName">q[85:0]</obj_property>
+      <obj_property name="ObjectShortName">q[85:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/reg_ex_mem/d" type="array">
+      <obj_property name="ElementShortName">d[37:0]</obj_property>
+      <obj_property name="ObjectShortName">d[37:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/reg_ex_mem/q" type="array">
+      <obj_property name="ElementShortName">q[37:0]</obj_property>
+      <obj_property name="ObjectShortName">q[37:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/reg_mem_wb/d" type="array">
+      <obj_property name="ElementShortName">d[37:0]</obj_property>
+      <obj_property name="ObjectShortName">d[37:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/reg_mem_wb/q" type="array">
+      <obj_property name="ElementShortName">q[37:0]</obj_property>
+      <obj_property name="ObjectShortName">q[37:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/pipeline_tb/pipeline/stage_decode/register_file/reg_file" type="array">
+      <obj_property name="ElementShortName">reg_file[31:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[31:0][31:0]</obj_property>
+   </wvobject>
+</wave_config>

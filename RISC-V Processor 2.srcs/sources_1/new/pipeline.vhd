@@ -18,8 +18,6 @@
 -- 
 ----------------------------------------------------------------------------------
 
-use work.config.all;
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -77,7 +75,7 @@ signal wb_reg_wr_en : std_logic;
 begin
     -- ========== STAGES ==========
     stage_decode : entity work.stage_decode(structural)
-                   generic map(CPU_DATA_WIDTH_BITS => -1)
+                   generic map(CPU_DATA_WIDTH_BITS => 32)
                    port map(-- DATA SIGNALS
                             instruction_bus => instruction_debug,
                             reg_1_data => dec_reg_1_data,
@@ -103,7 +101,7 @@ begin
                             );
                             
     stage_execute : entity work.stage_execute(structural)
-                    generic map(CPU_DATA_WIDTH_BITS => -1)
+                    generic map(CPU_DATA_WIDTH_BITS => 32)
                     port map(-- DATA SIGNALS
                              reg_1_data => exe_reg_1_data,
                              reg_2_data => exe_reg_2_data,
@@ -119,23 +117,23 @@ begin
 
     -- ========== PIPELINE REGISTERS ==========
     reg_de_ex : entity work.register_var(rtl)
-                generic map(WIDTH_BITS => 84)
+                generic map(WIDTH_BITS => 86)
                 port map(-- ===== DATA =====
                          d(31 downto 0) => dec_reg_1_data,
                          d(63 downto 32) => dec_reg_2_data,
                          
                          -- ===== CONTROL (REGISTERS) =====
-                         d(67 downto 64) => dec_reg_1_addr,
-                         d(71 downto 68) => dec_reg_2_addr,
-                         d(72) => dec_reg_1_used,
-                         d(73) => dec_reg_2_used,
+                         d(68 downto 64) => dec_reg_1_addr,
+                         d(73 downto 69) => dec_reg_2_addr,
+                         d(74) => dec_reg_1_used,
+                         d(75) => dec_reg_2_used,
                          
                          -- ===== CONTROL (EXECUTE) =====
-                         d(77 downto 74) => dec_alu_op_sel,
+                         d(79 downto 76) => dec_alu_op_sel,
                          
                          -- ===== CONTROL (WRITEBACK) =====
-                         d(82 downto 78) => dec_reg_wr_addr,
-                         d(83) => dec_reg_wr_en, 
+                         d(84 downto 80) => dec_reg_wr_addr,
+                         d(85) => dec_reg_wr_en, 
                          
                          -- =================================================================
                          
@@ -144,21 +142,21 @@ begin
                          q(63 downto 32) => exe_reg_2_data,
                          
                          -- ===== CONTROL (REGISTERS) =====
-                         q(67 downto 64) => exe_reg_1_addr,
-                         q(71 downto 68) => exe_reg_2_addr,
-                         q(72) => exe_reg_1_used,
-                         q(73) => exe_reg_2_used, 
+                         q(68 downto 64) => exe_reg_1_addr,
+                         q(73 downto 69) => exe_reg_2_addr,
+                         q(74) => exe_reg_1_used,
+                         q(75) => exe_reg_2_used, 
                          
                          -- ===== CONTROL (EXECUTE) =====
-                         q(77 downto 74) => exe_alu_op_sel,
+                         q(79 downto 76) => exe_alu_op_sel,
                          
                          -- ===== CONTROL (WRITEBACK) =====
-                         q(82 downto 78) => exe_reg_wr_addr,
-                         q(83) => exe_reg_wr_en,
+                         q(84 downto 80) => exe_reg_wr_addr,
+                         q(85) => exe_reg_wr_en,
                          
                          -- ===== PIPELINE REGISTER CONTROL =====
                          clk => clk,
-                         reset => '0',
+                         reset => reset,
                          en => '1'
                          );
                          
@@ -182,7 +180,7 @@ begin
                           
                           -- ===== PIPELINE REGISTER CONTROL =====
                           clk => clk,
-                          reset => '0',
+                          reset => reset,
                           en => '1'
                  );
 
@@ -206,7 +204,7 @@ begin
                           
                           -- ===== PIPELINE REGISTER CONTROL =====
                           clk => clk,
-                          reset => '0',
+                          reset => reset,
                           en => '1'
                  );
 
