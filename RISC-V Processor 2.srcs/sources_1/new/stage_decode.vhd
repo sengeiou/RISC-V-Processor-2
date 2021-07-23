@@ -35,6 +35,7 @@ entity stage_decode is
         -- ========== OUTPUT DATA SIGNALS ==========
         reg_1_data : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         reg_2_data : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        immediate_data : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     
         -- ========== INPUT CONTROL SIGNALS ==========
         instruction_bus : in std_logic_vector(31 downto 0);
@@ -52,6 +53,7 @@ entity stage_decode is
         reg_1_used : out std_logic;
         reg_2_used : out std_logic;
         reg_wr_en : out std_logic;
+        immediate_used : out std_logic;
         
         alu_op_sel : out std_logic_vector(3 downto 0)
     );
@@ -65,15 +67,21 @@ architecture structural of stage_decode is
     signal reg_2_used_i : std_logic;
 begin
     instruction_decoder : entity work.instruction_decoder(rtl)
-                          port map(instruction_bus => instruction_bus,
+                          port map(
+                                   -- ===== CONTROL SIGNALS =====
+                                   instruction_bus => instruction_bus,
                                    reg_rd_1_addr => reg_1_addr_i,
                                    reg_rd_2_addr => reg_2_addr_i,
                                    reg_wr_addr => reg_wr_addr,
                                    reg_rd_1_used => reg_1_used,
                                    reg_rd_2_used => reg_2_used,
                                    reg_wr_en => reg_wr_en,
-                                   -- ===== ALU =====
-                                   alu_op_sel => alu_op_sel);
+                                   immediate_used => immediate_used,
+                                   
+                                   alu_op_sel => alu_op_sel,
+                                   
+                                   -- ===== DATA SIGNALS =====
+                                   immediate_data => immediate_data);
     
     register_file : entity work.register_file(rtl)
                     generic map(REG_SIZE_BITS => CPU_DATA_WIDTH_BITS)

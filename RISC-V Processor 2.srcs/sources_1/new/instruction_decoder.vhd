@@ -32,6 +32,11 @@ entity instruction_decoder is
         -- ALU
         alu_op_sel : out std_logic_vector(3 downto 0);
         
+        -- Immediates
+        immediate_data : out std_logic_vector(31 downto 0);
+        
+        immediate_used : out std_logic;
+        
         -- Register control
         reg_rd_1_addr : out std_logic_vector(4 downto 0);
         reg_rd_2_addr : out std_logic_vector(4 downto 0);
@@ -49,13 +54,13 @@ begin
 
     decoder : process(all)
     begin
-    
     -- Default values for signals in case the instruction does not set them
     alu_op_sel <= "0000";
     
     reg_rd_1_used <= '0';
     reg_rd_2_used <= '0';
     reg_wr_en <= '0';
+    immediate_used <= '0';
     
     -- Always decode register addresses
     reg_rd_1_addr <= instruction_bus(19 downto 15);
@@ -68,7 +73,33 @@ begin
         reg_rd_1_used <= '1';
         reg_rd_2_used <= '1';
         reg_wr_en <= '1';
+    elsif (instruction_bus(6 downto 0) = "0010011") then
+        alu_op_sel <= '0' & instruction_bus(14 downto 12);
+        
+        reg_rd_1_used <= '1';
+        reg_wr_en <= '1';
+        immediate_used <= '1';
+        
+        -- Immediate decoding
+        immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
+        immediate_data(31 downto 12) <= (31 downto 12 => instruction_bus(31));
     end if;
     end process;
     
 end rtl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

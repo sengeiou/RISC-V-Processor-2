@@ -34,6 +34,9 @@ architecture structural of pipeline is
 -- ========== DECODE STAGE SIGNALS ==========
 signal dec_reg_1_data : std_logic_vector(31 downto 0);
 signal dec_reg_2_data : std_logic_vector(31 downto 0);
+signal dec_immediate_data : std_logic_vector(31 downto 0);
+
+signal dec_immediate_used : std_logic;
 
 signal dec_reg_1_addr : std_logic_vector(4 downto 0); 
 signal dec_reg_2_addr : std_logic_vector(4 downto 0);
@@ -47,7 +50,10 @@ signal dec_alu_op_sel : std_logic_vector(3 downto 0);
 -- ========== EXECUTE STAGE SIGNALS ==========
 signal exe_reg_1_data : std_logic_vector(31 downto 0);
 signal exe_reg_2_data : std_logic_vector(31 downto 0);
+signal exe_immediate_data : std_logic_vector(31 downto 0);
 signal exe_alu_result : std_logic_vector(31 downto 0);
+
+signal exe_immediate_used : std_logic;
 
 signal exe_alu_op_sel : std_logic_vector(3 downto 0);
 
@@ -80,6 +86,7 @@ begin
                             instruction_bus => instruction_debug,
                             reg_1_data => dec_reg_1_data,
                             reg_2_data => dec_reg_2_data,
+                            immediate_data => dec_immediate_data,
                             
                             reg_wr_data => wb_reg_wr_data,
                             
@@ -89,6 +96,7 @@ begin
                             reg_1_used => dec_reg_1_used,
                             reg_2_used => dec_reg_2_used,
                             alu_op_sel => dec_alu_op_sel,
+                            immediate_used => dec_immediate_used,
                             
                             reg_wr_addr => dec_reg_wr_addr,
                             reg_wr_en => dec_reg_wr_en,
@@ -105,11 +113,12 @@ begin
                     port map(-- DATA SIGNALS
                              reg_1_data => exe_reg_1_data,
                              reg_2_data => exe_reg_2_data,
+                             immediate_data => exe_immediate_data,
                              alu_result => exe_alu_result,
                                 
                              -- CONTROL SIGNALS
-                             alu_op_sel => exe_alu_op_sel
-                             );
+                             alu_op_sel => exe_alu_op_sel,
+                             immediate_used => exe_immediate_used);
                              
     stage_memory : entity work.stage_memory(structural)
                    port map(data_in => mem_data_in,
@@ -117,42 +126,46 @@ begin
 
     -- ========== PIPELINE REGISTERS ==========
     reg_de_ex : entity work.register_var(rtl)
-                generic map(WIDTH_BITS => 86)
+                generic map(WIDTH_BITS => 119)
                 port map(-- ===== DATA =====
                          d(31 downto 0) => dec_reg_1_data,
                          d(63 downto 32) => dec_reg_2_data,
+                         d(95 downto 64) => dec_immediate_data,
                          
                          -- ===== CONTROL (REGISTERS) =====
-                         d(68 downto 64) => dec_reg_1_addr,
-                         d(73 downto 69) => dec_reg_2_addr,
-                         d(74) => dec_reg_1_used,
-                         d(75) => dec_reg_2_used,
+                         d(100 downto 96) => dec_reg_1_addr,
+                         d(105 downto 101) => dec_reg_2_addr,
+                         d(106) => dec_reg_1_used,
+                         d(107) => dec_reg_2_used,
                          
                          -- ===== CONTROL (EXECUTE) =====
-                         d(79 downto 76) => dec_alu_op_sel,
+                         d(111 downto 108) => dec_alu_op_sel,
+                         d(112) => dec_immediate_used,
                          
                          -- ===== CONTROL (WRITEBACK) =====
-                         d(84 downto 80) => dec_reg_wr_addr,
-                         d(85) => dec_reg_wr_en, 
+                         d(117 downto 113) => dec_reg_wr_addr,
+                         d(118) => dec_reg_wr_en, 
                          
                          -- =================================================================
                          
                          -- ===== DATA =====
                          q(31 downto 0) => exe_reg_1_data,
                          q(63 downto 32) => exe_reg_2_data,
+                         q(95 downto 64) => exe_immediate_data,
                          
                          -- ===== CONTROL (REGISTERS) =====
-                         q(68 downto 64) => exe_reg_1_addr,
-                         q(73 downto 69) => exe_reg_2_addr,
-                         q(74) => exe_reg_1_used,
-                         q(75) => exe_reg_2_used, 
+                         q(100 downto 96) => exe_reg_1_addr,
+                         q(105 downto 101) => exe_reg_2_addr,
+                         q(106) => exe_reg_1_used,
+                         q(107) => exe_reg_2_used, 
                          
                          -- ===== CONTROL (EXECUTE) =====
-                         q(79 downto 76) => exe_alu_op_sel,
+                         q(111 downto 108) => exe_alu_op_sel,
+                         q(112) => exe_immediate_used,
                          
                          -- ===== CONTROL (WRITEBACK) =====
-                         q(84 downto 80) => exe_reg_wr_addr,
-                         q(85) => exe_reg_wr_en,
+                         q(117 downto 113) => exe_reg_wr_addr,
+                         q(118) => exe_reg_wr_en,
                          
                          -- ===== PIPELINE REGISTER CONTROL =====
                          clk => clk,

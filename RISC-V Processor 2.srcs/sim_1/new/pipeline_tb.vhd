@@ -11,9 +11,8 @@ architecture Behavioral of pipeline_tb is
     
     type test_instructions_array is array (natural range <>) of std_logic_vector(31 downto 0);
     constant test_instructions : test_instructions_array := (
-        ("00000000000100001000000010110011"),         -- ADD x1, x1, x1
-        ("00000000000100001000000010110011")         -- ADD x1, x1, x1
-        
+        ("00000000000100001000000010010011"),         -- ADDI x1, x1, 1
+        ("00000000000100001000000010110011")          -- ADD x1, x1, x1
     );
     
     constant T : time := 20ns;
