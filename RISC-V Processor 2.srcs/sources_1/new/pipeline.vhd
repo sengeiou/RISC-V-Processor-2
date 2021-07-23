@@ -118,6 +118,8 @@ begin
                                 
                              -- CONTROL SIGNALS
                              alu_op_sel => exe_alu_op_sel,
+                             reg_1_used => exe_reg_1_used,
+                             reg_2_used => exe_reg_2_used,
                              immediate_used => exe_immediate_used);
                              
     stage_memory : entity work.stage_memory(structural)

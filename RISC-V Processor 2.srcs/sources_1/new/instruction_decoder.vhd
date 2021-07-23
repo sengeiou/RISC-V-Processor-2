@@ -73,7 +73,7 @@ begin
         reg_rd_1_used <= '1';
         reg_rd_2_used <= '1';
         reg_wr_en <= '1';
-    elsif (instruction_bus(6 downto 0) = "0010011") then
+    elsif (instruction_bus(6 downto 0) = "0010011") then                    -- Reg-Imm ALU Operations
         alu_op_sel <= '0' & instruction_bus(14 downto 12);
         
         reg_rd_1_used <= '1';
@@ -83,6 +83,16 @@ begin
         -- Immediate decoding
         immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
         immediate_data(31 downto 12) <= (others => instruction_bus(31));
+    elsif (instruction_bus(6 downto 0) = "0110111") then                    -- LUI
+        alu_op_sel <= "0000";
+        
+        reg_wr_en <= '1';
+        immediate_used <= '1';
+        
+        reg_rd_1_addr <= "00000";
+        -- Immediate decoding
+        immediate_data(31 downto 12) <= instruction_bus(31 downto 12);
+        immediate_data(11 downto 0) <= (others => '0');
     end if;
     end process;
     
