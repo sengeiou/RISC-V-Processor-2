@@ -41,8 +41,18 @@ entity arithmetic_logic_unit is
 end arithmetic_logic_unit;
 
 architecture rtl of arithmetic_logic_unit is
-
+    signal i_barrel_shifter_result : std_logic_vector(31 downto 0);
+    
+    signal i_barrel_shifter_airth : std_logic;
+    signal i_barrel_shifter_direction : std_logic;
 begin
+    barrel_shifter : entity work.barrel_shifter(rtl)
+                     port map(data_in => operand_1,
+                              data_out => i_barrel_shifter_result,
+                              shift_amount => operand_2(4 downto 0),
+                              shift_arith => i_barrel_shifter_airth,
+                              shift_direction => i_barrel_shifter_direction);
+                              
     alu_process : process(all)
     begin
         if (alu_op_sel = "0000") then               -- ADD
@@ -61,6 +71,21 @@ begin
             result <= operand_1 or operand_2;
         elsif (alu_op_sel = "0111") then            -- AND
             result <= operand_1 and operand_2;
+        elsif (alu_op_sel = "0001") then            -- SLL
+            i_barrel_shifter_direction <= '1';
+            i_barrel_shifter_airth <= '0';
+        
+            result <= i_barrel_shifter_result;
+        elsif (alu_op_sel = "0101") then            -- SRL
+            i_barrel_shifter_direction <= '0';
+            i_barrel_shifter_airth <= '0';
+        
+            result <= i_barrel_shifter_result;
+        elsif (alu_op_sel = "1101") then            -- SRA
+            i_barrel_shifter_direction <= '0';
+            i_barrel_shifter_airth <= '1';
+        
+            result <= i_barrel_shifter_result;
         end if;
     end process;
 

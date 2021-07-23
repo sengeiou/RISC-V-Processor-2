@@ -82,7 +82,7 @@ begin
         
         -- Immediate decoding
         immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
-        immediate_data(31 downto 12) <= (31 downto 12 => instruction_bus(31));
+        immediate_data(31 downto 12) <= (others => instruction_bus(31));
     end if;
     end process;
     
