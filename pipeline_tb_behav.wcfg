@@ -3,211 +3,75 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="axi_bus_tb_behav.wdb" id="1">
+      <db_ref path="pipeline_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="axi_bus_tb" />
-            <top_module name="axi_interface_signal_groups" />
+            <top_module name="pipeline_tb" />
+            <top_module name="pkg_cpu" />
+            <top_module name="pkg_pipeline" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1000001fs"></ZoomEndTime>
-      <Cursor1Time time="770000fs"></Cursor1Time>
+      <ZoomEndTime time="740001fs"></ZoomEndTime>
+      <Cursor1Time time="350000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="254"></NameColumnWidth>
-      <ValueColumnWidth column_width="79"></ValueColumnWidth>
+      <ValueColumnWidth column_width="67"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="5" />
-   <wvobject fp_name="/axi_bus_tb/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
+   <WVObjectSize size="4" />
+   <wvobject fp_name="/pipeline_tb/pipeline/stage_decode/register_file/reg_file" type="array">
+      <obj_property name="ElementShortName">reg_file[31:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[31:0][31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/axi_bus_tb/reset" type="logic">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
+   <wvobject fp_name="group412" type="group">
+      <obj_property name="label">DE_EX REGISTER</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/pipeline_tb/pipeline/de_ex_register_next" type="array">
+         <obj_property name="ElementShortName">de_ex_register_next</obj_property>
+         <obj_property name="ObjectShortName">de_ex_register_next</obj_property>
+      </wvobject>
+      <wvobject fp_name="/pipeline_tb/pipeline/de_ex_register" type="array">
+         <obj_property name="ElementShortName">de_ex_register</obj_property>
+         <obj_property name="ObjectShortName">de_ex_register</obj_property>
+      </wvobject>
+      <wvobject fp_name="/pipeline_tb/pipeline/de_ex_register_en" type="logic">
+         <obj_property name="ElementShortName">de_ex_register_en</obj_property>
+         <obj_property name="ObjectShortName">de_ex_register_en</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="group328" type="group">
-      <obj_property name="label">Master</obj_property>
+   <wvobject fp_name="group413" type="group">
+      <obj_property name="label">EX_MEM REGISTER</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/pipeline_tb/pipeline/ex_mem_register_next" type="array">
+         <obj_property name="ElementShortName">ex_mem_register_next</obj_property>
+         <obj_property name="ObjectShortName">ex_mem_register_next</obj_property>
+      </wvobject>
+      <wvobject fp_name="/pipeline_tb/pipeline/ex_mem_register" type="array">
+         <obj_property name="ElementShortName">ex_mem_register</obj_property>
+         <obj_property name="ObjectShortName">ex_mem_register</obj_property>
+      </wvobject>
+      <wvobject fp_name="/pipeline_tb/pipeline/ex_mem_register_en" type="logic">
+         <obj_property name="ElementShortName">ex_mem_register_en</obj_property>
+         <obj_property name="ObjectShortName">ex_mem_register_en</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group414" type="group">
+      <obj_property name="label">MEM_WB REGISTER</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/write_channels" type="array">
-         <obj_property name="ElementShortName">write_channels</obj_property>
-         <obj_property name="ObjectShortName">write_channels</obj_property>
+      <wvobject fp_name="/pipeline_tb/pipeline/mem_wb_register_next" type="array">
+         <obj_property name="ElementShortName">mem_wb_register_next</obj_property>
+         <obj_property name="ObjectShortName">mem_wb_register_next</obj_property>
       </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/read_channels" type="array">
-         <obj_property name="ElementShortName">read_channels</obj_property>
-         <obj_property name="ObjectShortName">read_channels</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/axi_bus_tb/axi_master_1/read_channels.read_data_ch" type="array">
-            <obj_property name="ElementShortName">.read_data_ch</obj_property>
-            <obj_property name="ObjectShortName">.read_data_ch</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-         </wvobject>
-         <wvobject fp_name="/axi_bus_tb/axi_master_1/read_channels.write_resp_ch" type="array">
-            <obj_property name="ElementShortName">.write_resp_ch</obj_property>
-            <obj_property name="ObjectShortName">.write_resp_ch</obj_property>
-         </wvobject>
+      <wvobject fp_name="/pipeline_tb/pipeline/mem_wb_register" type="array">
+         <obj_property name="ElementShortName">mem_wb_register</obj_property>
+         <obj_property name="ObjectShortName">mem_wb_register</obj_property>
       </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/master_handshake" type="array">
-         <obj_property name="ElementShortName">master_handshake</obj_property>
-         <obj_property name="ObjectShortName">master_handshake</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/slave_handshake" type="array">
-         <obj_property name="ElementShortName">slave_handshake</obj_property>
-         <obj_property name="ObjectShortName">slave_handshake</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/addr_write" type="array">
-         <obj_property name="ElementShortName">addr_write[31:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_write[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/data_write" type="array">
-         <obj_property name="ElementShortName">data_write[31:0]</obj_property>
-         <obj_property name="ObjectShortName">data_write[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/addr_read" type="array">
-         <obj_property name="ElementShortName">addr_read[31:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_read[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/data_read" type="array">
-         <obj_property name="ElementShortName">data_read[31:0]</obj_property>
-         <obj_property name="ObjectShortName">data_read[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/execute_write" type="logic">
-         <obj_property name="ElementShortName">execute_write</obj_property>
-         <obj_property name="ObjectShortName">execute_write</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/execute_read" type="logic">
-         <obj_property name="ElementShortName">execute_read</obj_property>
-         <obj_property name="ObjectShortName">execute_read</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/write_addr_reg" type="array">
-         <obj_property name="ElementShortName">write_addr_reg[31:0]</obj_property>
-         <obj_property name="ObjectShortName">write_addr_reg[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/write_data_reg" type="array">
-         <obj_property name="ElementShortName">write_data_reg[31:0]</obj_property>
-         <obj_property name="ObjectShortName">write_data_reg[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/write_state_reg" type="other">
-         <obj_property name="ElementShortName">write_state_reg</obj_property>
-         <obj_property name="ObjectShortName">write_state_reg</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/write_state_next" type="other">
-         <obj_property name="ElementShortName">write_state_next</obj_property>
-         <obj_property name="ObjectShortName">write_state_next</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/read_data_reg" type="array">
-         <obj_property name="ElementShortName">read_data_reg[31:0]</obj_property>
-         <obj_property name="ObjectShortName">read_data_reg[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/read_data_reg_en" type="logic">
-         <obj_property name="ElementShortName">read_data_reg_en</obj_property>
-         <obj_property name="ObjectShortName">read_data_reg_en</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/read_state_reg" type="other">
-         <obj_property name="ElementShortName">read_state_reg</obj_property>
-         <obj_property name="ObjectShortName">read_state_reg</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_master_1/read_state_next" type="other">
-         <obj_property name="ElementShortName">read_state_next</obj_property>
-         <obj_property name="ObjectShortName">read_state_next</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group327" type="group">
-      <obj_property name="label">Slave</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/write_channels" type="array">
-         <obj_property name="ElementShortName">write_channels</obj_property>
-         <obj_property name="ObjectShortName">write_channels</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/read_channels" type="array">
-         <obj_property name="ElementShortName">read_channels</obj_property>
-         <obj_property name="ObjectShortName">read_channels</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/master_handshake" type="array">
-         <obj_property name="ElementShortName">master_handshake</obj_property>
-         <obj_property name="ObjectShortName">master_handshake</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/slave_handshake" type="array">
-         <obj_property name="ElementShortName">slave_handshake</obj_property>
-         <obj_property name="ObjectShortName">slave_handshake</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/data_in" type="array">
-         <obj_property name="ElementShortName">data_in[31:0]</obj_property>
-         <obj_property name="ObjectShortName">data_in[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/addr_write_out" type="array">
-         <obj_property name="ElementShortName">addr_write_out[31:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_write_out[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/data_write_out" type="array">
-         <obj_property name="ElementShortName">data_write_out[31:0]</obj_property>
-         <obj_property name="ObjectShortName">data_write_out[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/addr_read_out" type="array">
-         <obj_property name="ElementShortName">addr_read_out[31:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_read_out[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/write_addr_reg" type="array">
-         <obj_property name="ElementShortName">write_addr_reg[31:0]</obj_property>
-         <obj_property name="ObjectShortName">write_addr_reg[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/write_data_reg" type="array">
-         <obj_property name="ElementShortName">write_data_reg[31:0]</obj_property>
-         <obj_property name="ObjectShortName">write_data_reg[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/write_state_reg" type="other">
-         <obj_property name="ElementShortName">write_state_reg</obj_property>
-         <obj_property name="ObjectShortName">write_state_reg</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/write_state_next" type="other">
-         <obj_property name="ElementShortName">write_state_next</obj_property>
-         <obj_property name="ObjectShortName">write_state_next</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/read_state_reg" type="other">
-         <obj_property name="ElementShortName">read_state_reg</obj_property>
-         <obj_property name="ObjectShortName">read_state_reg</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/read_state_next" type="other">
-         <obj_property name="ElementShortName">read_state_next</obj_property>
-         <obj_property name="ObjectShortName">read_state_next</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group330" type="group">
-      <obj_property name="label">Bus</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/axi_bus_tb/write_channels" type="array">
-         <obj_property name="ElementShortName">write_channels</obj_property>
-         <obj_property name="ObjectShortName">write_channels</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/read_channels" type="array">
-         <obj_property name="ElementShortName">read_channels</obj_property>
-         <obj_property name="ObjectShortName">read_channels</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/axi_bus_tb/read_channels.read_data_ch" type="array">
-            <obj_property name="ElementShortName">.read_data_ch</obj_property>
-            <obj_property name="ObjectShortName">.read_data_ch</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-         </wvobject>
-         <wvobject fp_name="/axi_bus_tb/read_channels.write_resp_ch" type="array">
-            <obj_property name="ElementShortName">.write_resp_ch</obj_property>
-            <obj_property name="ObjectShortName">.write_resp_ch</obj_property>
-         </wvobject>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/handshake_master_src" type="array">
-         <obj_property name="ElementShortName">handshake_master_src</obj_property>
-         <obj_property name="ObjectShortName">handshake_master_src</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/handshake_slave_src" type="array">
-         <obj_property name="ElementShortName">handshake_slave_src</obj_property>
-         <obj_property name="ObjectShortName">handshake_slave_src</obj_property>
-         <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/pipeline_tb/pipeline/mem_wb_register_en" type="logic">
+         <obj_property name="ElementShortName">mem_wb_register_en</obj_property>
+         <obj_property name="ObjectShortName">mem_wb_register_en</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

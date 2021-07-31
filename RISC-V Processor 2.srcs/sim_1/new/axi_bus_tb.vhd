@@ -6,8 +6,8 @@ entity axi_bus_tb is
 end axi_bus_tb;
 
 architecture Behavioral of axi_bus_tb is
-    signal read_channels : work.axi_interface_signal_groups.ReadChannels;
-    signal write_channels : work.axi_interface_signal_groups.WriteChannels;
+    signal read_channels : work.axi_interface_signal_groups.ToMaster;
+    signal write_channels : work.axi_interface_signal_groups.FromMaster;
     signal handshake_master_src : work.axi_interface_signal_groups.HandshakeMasterSrc;
     signal handshake_slave_src : work.axi_interface_signal_groups.HandshakeSlaveSrc;
     
@@ -30,8 +30,8 @@ begin
     reset <= '0', '1' after 20ns;
 
     axi_master_1 : entity work.axi_master_interface(rtl)
-                   port map(read_channels => read_channels,
-                            write_channels => write_channels,
+                   port map(to_master => read_channels,
+                            from_master => write_channels,
                             master_handshake => handshake_master_src,
                             slave_handshake => handshake_slave_src,
                             
@@ -46,8 +46,8 @@ begin
                             reset => reset);
                             
     axi_slave_1 : entity work.axi_slave_interface(rtl)
-                  port map(read_channels => read_channels,
-                           write_channels => write_channels,
+                  port map(to_master => read_channels,
+                           from_master => write_channels,
                            master_handshake => handshake_master_src,
                            slave_handshake => handshake_slave_src,
                            
@@ -78,6 +78,18 @@ begin
         addr_read <= X"CCCC_CCCC";
         data_in_slave <= X"ABCD_ABCD";
         execute_r <= '1';
+        
+        wait for 20ns;
+        execute_r <= '0';
+        wait for T * 10;
+        
+        wait for 20ns;
+        execute_w <= '0';
+        wait for T * 20;
+        addr_read <= X"1111_1111";
+        data_in_slave <= X"FEDC_364A";
+        execute_r <= '1';
+        
         wait for 20ns;
         execute_r <= '0';
         wait for T * 10;

@@ -61,16 +61,16 @@ package axi_interface_signal_groups is
         wready : std_logic;
     end record HandshakeSlaveSrc;
     
-    type WriteChannels is record
+    type FromMaster is record
         write_addr_ch : WriteAddressChannel;
         write_data_ch : WriteDataChannel;
         read_addr_ch : ReadAddressChannel;
-    end record WriteChannels;
+    end record FromMaster;
     
-    type ReadChannels is record
+    type ToMaster is record
         read_data_ch : ReadDataChannel;
         write_resp_ch : WriteResponseChannel;
-    end record ReadChannels;
+    end record ToMaster;
 end axi_interface_signal_groups;
 
 package body axi_interface_signal_groups is

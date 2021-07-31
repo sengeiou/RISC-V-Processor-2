@@ -25,8 +25,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity axi_slave_interface is
     port(
         -- CHANNEL SIGNALS
-        write_channels : in work.axi_interface_signal_groups.WriteChannels;
-        read_channels : out work.axi_interface_signal_groups.ReadChannels;
+        from_master : in work.axi_interface_signal_groups.FromMaster;
+        to_master : out work.axi_interface_signal_groups.ToMaster;
         
         -- HANDSHAKE SIGNALS
         master_handshake : in work.axi_interface_signal_groups.HandshakeMasterSrc;
@@ -77,7 +77,7 @@ begin
                     write_state_next <= IDLE;
                 end if;
             when DATA_STATE => 
-                if (write_channels.write_data_ch.last = '1') then
+                if (from_master.write_data_ch.last = '1') then
                     write_state_next <= RESPONSE_STATE_1;
                 else
                     write_state_next <= DATA_STATE;
@@ -142,25 +142,25 @@ begin
     begin
         case read_state_reg is
             when IDLE =>
-                read_channels.read_data_ch.data <= (others => '0');
-                read_channels.read_data_ch.resp <= (others => '0');
-                read_channels.read_data_ch.last <= '0';
+                to_master.read_data_ch.data <= (others => '0');
+                to_master.read_data_ch.resp <= (others => '0');
+                to_master.read_data_ch.last <= '0';
                 
                 slave_handshake.rvalid <= '0';
                 
                 slave_handshake.arready <= '1';
             when ADDR_STATE => 
-                read_channels.read_data_ch.data <= (others => '0');
-                read_channels.read_data_ch.resp <= (others => '0');
-                read_channels.read_data_ch.last <= '0';
+                to_master.read_data_ch.data <= (others => '0');
+                to_master.read_data_ch.resp <= (others => '0');
+                to_master.read_data_ch.last <= '0';
                 
                 slave_handshake.rvalid <= '0';
                 
                 slave_handshake.arready <= '0';
             when DATA_STATE => 
-                read_channels.read_data_ch.data <= data_in;
-                read_channels.read_data_ch.resp <= (others => '0');
-                read_channels.read_data_ch.last <= '1';
+                to_master.read_data_ch.data <= data_in;
+                to_master.read_data_ch.resp <= (others => '0');
+                to_master.read_data_ch.last <= '1';
                 
                 slave_handshake.rvalid <= '1';
                 
@@ -182,15 +182,15 @@ begin
                 read_state_reg <= IDLE;
             else
                 if (master_handshake.wvalid = '1') then
-                    write_data_reg <= write_channels.write_data_ch.data;
+                    write_data_reg <= from_master.write_data_ch.data;
                 end if;
             
                 if (master_handshake.awvalid = '1') then
-                    write_addr_reg <= write_channels.write_addr_ch.addr;
+                    write_addr_reg <= from_master.write_addr_ch.addr;
                 end if;
             
                 if (master_handshake.arvalid = '1') then
-                    read_addr_reg <= write_channels.read_addr_ch.addr;
+                    read_addr_reg <= from_master.read_addr_ch.addr;
                 end if;
             
                 write_state_reg <= write_state_next;
