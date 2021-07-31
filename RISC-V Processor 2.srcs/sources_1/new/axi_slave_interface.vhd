@@ -33,8 +33,10 @@ entity axi_slave_interface is
         slave_handshake : out work.axi_interface_signal_groups.HandshakeSlaveSrc;
         
         -- OTHER DATA SIGNALS
-        addr_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
-        data_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+        addr_write_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+        data_write_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+        
+        addr_read_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
         
         data_in : in std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
         -- OTHER CONTROL SIGNALS
@@ -55,6 +57,9 @@ architecture rtl of axi_slave_interface is
 
     signal write_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+    
+    signal read_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
 
     signal write_state_reg : write_state_type;
     signal write_state_next : write_state_type;
@@ -143,7 +148,7 @@ begin
                 
                 slave_handshake.rvalid <= '0';
                 
-                slave_handshake.arready <= '0';
+                slave_handshake.arready <= '1';
             when ADDR_STATE => 
                 read_channels.read_data_ch.data <= (others => '0');
                 read_channels.read_data_ch.resp <= (others => '0');
@@ -151,7 +156,7 @@ begin
                 
                 slave_handshake.rvalid <= '0';
                 
-                slave_handshake.arready <= '1';
+                slave_handshake.arready <= '0';
             when DATA_STATE => 
                 read_channels.read_data_ch.data <= data_in;
                 read_channels.read_data_ch.resp <= (others => '0');
@@ -163,12 +168,15 @@ begin
         end case;
     end process;
 
-    process(clk, reset)
+    register_control : process(clk, reset)
     begin
         if (rising_edge(clk)) then
             if (reset = '0') then
                 write_addr_reg <= (others => '0');
                 write_data_reg <= (others => '0');
+                
+                read_addr_reg <= (others => '0');
+                read_data_reg <= (others => '0');
                 
                 write_state_reg <= IDLE;
                 read_state_reg <= IDLE;
@@ -181,6 +189,10 @@ begin
                     write_addr_reg <= write_channels.write_addr_ch.addr;
                 end if;
             
+                if (master_handshake.arvalid = '1') then
+                    read_addr_reg <= write_channels.read_addr_ch.addr;
+                end if;
+            
                 write_state_reg <= write_state_next;
                 read_state_reg <= read_state_next;
             end if;
@@ -188,8 +200,10 @@ begin
     end process;
 
 
-    data_out <= write_data_reg;
-    addr_out <= write_addr_reg;
+    data_write_out <= write_data_reg;
+    addr_write_out <= write_addr_reg;
+    
+    addr_read_out <= read_addr_reg;
 
 end rtl;
 

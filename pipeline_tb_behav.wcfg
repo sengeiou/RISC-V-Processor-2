@@ -13,11 +13,11 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="1000001fs"></ZoomEndTime>
-      <Cursor1Time time="609316fs"></Cursor1Time>
+      <Cursor1Time time="770000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="254"></NameColumnWidth>
-      <ValueColumnWidth column_width="83"></ValueColumnWidth>
+      <ValueColumnWidth column_width="79"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="5" />
    <wvobject fp_name="/axi_bus_tb/clk" type="logic">
@@ -39,6 +39,16 @@
       <wvobject fp_name="/axi_bus_tb/axi_master_1/read_channels" type="array">
          <obj_property name="ElementShortName">read_channels</obj_property>
          <obj_property name="ObjectShortName">read_channels</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/axi_bus_tb/axi_master_1/read_channels.read_data_ch" type="array">
+            <obj_property name="ElementShortName">.read_data_ch</obj_property>
+            <obj_property name="ObjectShortName">.read_data_ch</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject fp_name="/axi_bus_tb/axi_master_1/read_channels.write_resp_ch" type="array">
+            <obj_property name="ElementShortName">.write_resp_ch</obj_property>
+            <obj_property name="ObjectShortName">.write_resp_ch</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject fp_name="/axi_bus_tb/axi_master_1/master_handshake" type="array">
          <obj_property name="ElementShortName">master_handshake</obj_property>
@@ -125,17 +135,21 @@
          <obj_property name="ElementShortName">slave_handshake</obj_property>
          <obj_property name="ObjectShortName">slave_handshake</obj_property>
       </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/addr_out" type="array">
-         <obj_property name="ElementShortName">addr_out[31:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_out[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_slave_1/data_out" type="array">
-         <obj_property name="ElementShortName">data_out[31:0]</obj_property>
-         <obj_property name="ObjectShortName">data_out[31:0]</obj_property>
-      </wvobject>
       <wvobject fp_name="/axi_bus_tb/axi_slave_1/data_in" type="array">
          <obj_property name="ElementShortName">data_in[31:0]</obj_property>
          <obj_property name="ObjectShortName">data_in[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/axi_bus_tb/axi_slave_1/addr_write_out" type="array">
+         <obj_property name="ElementShortName">addr_write_out[31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_write_out[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/axi_bus_tb/axi_slave_1/data_write_out" type="array">
+         <obj_property name="ElementShortName">data_write_out[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_write_out[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/axi_bus_tb/axi_slave_1/addr_read_out" type="array">
+         <obj_property name="ElementShortName">addr_read_out[31:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_read_out[31:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/axi_bus_tb/axi_slave_1/write_addr_reg" type="array">
          <obj_property name="ElementShortName">write_addr_reg[31:0]</obj_property>
@@ -175,6 +189,15 @@
          <obj_property name="ElementShortName">read_channels</obj_property>
          <obj_property name="ObjectShortName">read_channels</obj_property>
          <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/axi_bus_tb/read_channels.read_data_ch" type="array">
+            <obj_property name="ElementShortName">.read_data_ch</obj_property>
+            <obj_property name="ObjectShortName">.read_data_ch</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject fp_name="/axi_bus_tb/read_channels.write_resp_ch" type="array">
+            <obj_property name="ElementShortName">.write_resp_ch</obj_property>
+            <obj_property name="ObjectShortName">.write_resp_ch</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject fp_name="/axi_bus_tb/handshake_master_src" type="array">
          <obj_property name="ElementShortName">handshake_master_src</obj_property>

@@ -175,7 +175,7 @@ begin
     end process;
     
     -- READ STATE MACHINE
-    read_state_transition : process(all)
+    read_state_transition : process(read_state_reg, execute_read, slave_handshake.arready, read_channels.read_data_ch.last)
     begin
         case read_state_reg is 
             when IDLE => 
