@@ -24,6 +24,10 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity instruction_decoder is
+    generic(
+        DATA_WIDTH_BITS : integer;
+        REGFILE_ADDRESS_WIDTH_BITS : integer
+    );
     port(
         -- ========== INSTRUCTION INPUT ==========
         instruction_bus : in std_logic_vector(31 downto 0);
@@ -33,14 +37,14 @@ entity instruction_decoder is
         alu_op_sel : out std_logic_vector(3 downto 0);
         
         -- Immediates
-        immediate_data : out std_logic_vector(31 downto 0);
+        immediate_data : out std_logic_vector(DATA_WIDTH_BITS - 1 downto 0);
         
         immediate_used : out std_logic;
         
         -- Register control
-        reg_rd_1_addr : out std_logic_vector(4 downto 0);
-        reg_rd_2_addr : out std_logic_vector(4 downto 0);
-        reg_wr_addr : out std_logic_vector(4 downto 0);
+        reg_rd_1_addr : out std_logic_vector(REGFILE_ADDRESS_WIDTH_BITS - 1 downto 0);
+        reg_rd_2_addr : out std_logic_vector(REGFILE_ADDRESS_WIDTH_BITS - 1 downto 0);
+        reg_wr_addr : out std_logic_vector(REGFILE_ADDRESS_WIDTH_BITS - 1 downto 0);
         
         reg_rd_1_used : out std_logic;
         reg_rd_2_used : out std_logic;
@@ -56,6 +60,7 @@ begin
     begin
     -- Default values for signals in case the instruction does not set them
     alu_op_sel <= "0000";
+    immediate_data <= (others => '0');
     
     reg_rd_1_used <= '0';
     reg_rd_2_used <= '0';
@@ -63,9 +68,9 @@ begin
     immediate_used <= '0';
     
     -- Always decode register addresses
-    reg_rd_1_addr <= instruction_bus(19 downto 15);
-    reg_rd_2_addr <= instruction_bus(24 downto 20);
-    reg_wr_addr <= instruction_bus(11 downto 7);
+    reg_rd_1_addr <= instruction_bus(15 + REGFILE_ADDRESS_WIDTH_BITS - 1 downto 15);
+    reg_rd_2_addr <= instruction_bus(20 + REGFILE_ADDRESS_WIDTH_BITS - 1 downto 20);
+    reg_wr_addr <= instruction_bus(7 + REGFILE_ADDRESS_WIDTH_BITS - 1 downto 7);
     
     if (instruction_bus(6 downto 0) = "0110011") then                       -- Reg-Reg ALU Operations
         alu_op_sel <= instruction_bus(30) & instruction_bus(14 downto 12);
@@ -82,16 +87,18 @@ begin
         
         -- Immediate decoding
         immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
-        immediate_data(31 downto 12) <= (others => instruction_bus(31));
+        immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
     elsif (instruction_bus(6 downto 0) = "0110111") then                    -- LUI
         alu_op_sel <= "0000";
         
         reg_wr_en <= '1';
         immediate_used <= '1';
         
-        reg_rd_1_addr <= "00000";   -- Select zero as first operand
+        reg_rd_1_addr <= (others => '0');   -- Select zero as first operand
         -- Immediate decoding
-        immediate_data(31 downto 12) <= instruction_bus(31 downto 12);
+        
+        immediate_data(DATA_WIDTH_BITS - 1 downto 31) <= (others => instruction_bus(31));
+        immediate_data(30 downto 12) <= instruction_bus(30 downto 12);
         immediate_data(11 downto 0) <= (others => '0');
     end if;
     end process;

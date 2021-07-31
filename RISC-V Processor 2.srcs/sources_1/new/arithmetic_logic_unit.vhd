@@ -41,17 +41,26 @@ entity arithmetic_logic_unit is
 end arithmetic_logic_unit;
 
 architecture rtl of arithmetic_logic_unit is
-    signal i_barrel_shifter_result : std_logic_vector(31 downto 0);
+    signal i_barrel_shifter_result : std_logic_vector(OPERAND_WIDTH_BITS - 1 downto 0);
     
     signal i_barrel_shifter_airth : std_logic;
     signal i_barrel_shifter_direction : std_logic;
 begin
-    barrel_shifter : entity work.barrel_shifter(rtl)
-                     port map(data_in => operand_1,
-                              data_out => i_barrel_shifter_result,
-                              shift_amount => operand_2(4 downto 0),
-                              shift_arith => i_barrel_shifter_airth,
-                              shift_direction => i_barrel_shifter_direction);
+    barrel_shifter_generate : if (OPERAND_WIDTH_BITS = 32) generate
+            barrel_shifter : entity work.barrel_shifter(rtl)
+                             port map(data_in => operand_1,
+                                      data_out => i_barrel_shifter_result,
+                                      shift_amount => operand_2(4 downto 0),
+                                      shift_arith => i_barrel_shifter_airth,
+                                      shift_direction => i_barrel_shifter_direction);
+        elsif (OPERAND_WIDTH_BITS = 64) generate
+            barrel_shifter : entity work.barrel_shifter_64(rtl)
+                         port map(data_in => operand_1,
+                                  data_out => i_barrel_shifter_result,
+                                  shift_amount => operand_2(5 downto 0),
+                                  shift_arith => i_barrel_shifter_airth,
+                                  shift_direction => i_barrel_shifter_direction);
+    end generate barrel_shifter_generate;
                               
     alu_process : process(all)
     begin

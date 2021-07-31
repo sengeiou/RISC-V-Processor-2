@@ -22,11 +22,9 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
+use work.pkg_cpu.all;
+
 entity stage_execute is
-    generic(
-        CPU_DATA_WIDTH_BITS : integer
-    );
-    
     port(
         -- ========== DATA SIGNALS ==========
         reg_1_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
@@ -54,14 +52,14 @@ architecture structural of stage_execute is
     signal mux_alu_oper_2_sel : std_logic_vector(1 downto 0);
 begin
     alu : entity work.arithmetic_logic_unit(rtl)
-          generic map(OPERAND_WIDTH_BITS => 32)
+          generic map(OPERAND_WIDTH_BITS => CPU_DATA_WIDTH_BITS)
           port map(operand_1 => alu_oper_1,
                    operand_2 => alu_oper_2,
                    result => alu_result,
                    alu_op_sel => alu_op_sel);
                    
     mux_alu_op_1 : entity work.mux_4_1(rtl)
-                   generic map(WIDTH_BITS => 32)
+                   generic map(WIDTH_BITS => CPU_DATA_WIDTH_BITS)
                    port map(in_0 => reg_1_data,
                             in_1 => (others => '0'),            -- This will later select PC as operand
                             in_2 => (others => '0'),
@@ -70,7 +68,7 @@ begin
                             sel => mux_alu_oper_1_sel);
                    
     mux_alu_op_2 : entity work.mux_4_1(rtl)
-                   generic map(WIDTH_BITS => 32)
+                   generic map(WIDTH_BITS => CPU_DATA_WIDTH_BITS)
                    port map(in_0 => reg_2_data,
                             in_1 => immediate_data,
                             in_2 => (others => '0'),

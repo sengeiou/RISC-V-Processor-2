@@ -1,33 +1,9 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 07/19/2021 12:29:42 PM
--- Design Name: 
--- Module Name: stage_decode - rtl
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- 0.01 - File Created
--- 0.1.0 - Added and connected instruction decoder and register file for basic functionality
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
+use work.pkg_cpu.all;
+
 entity stage_decode is
-    generic(
-        CPU_DATA_WIDTH_BITS : integer
-    );
-    
     port(
         -- ========== INPUT DATA SIGNALS ==========
         reg_wr_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
@@ -40,16 +16,16 @@ entity stage_decode is
         -- ========== INPUT CONTROL SIGNALS ==========
         instruction_bus : in std_logic_vector(31 downto 0);
         
-        reg_wr_addr_in : in std_logic_vector(4 downto 0);
+        reg_wr_addr_in : in std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
         reg_wr_en_in : in std_logic;
         
         clk : in std_logic;
         reset : in std_logic;
         
         -- ========== OUTPUT CONTROL SIGNALS ==========
-        reg_1_addr : out std_logic_vector(4 downto 0);
-        reg_2_addr : out std_logic_vector(4 downto 0);
-        reg_wr_addr : out std_logic_vector(4 downto 0);
+        reg_1_addr : out std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+        reg_2_addr : out std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+        reg_wr_addr : out std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
         reg_1_used : out std_logic;
         reg_2_used : out std_logic;
         reg_wr_en : out std_logic;
@@ -60,13 +36,15 @@ entity stage_decode is
 end stage_decode;
 
 architecture structural of stage_decode is
-    signal reg_1_addr_i : std_logic_vector(4 downto 0);
-    signal reg_2_addr_i : std_logic_vector(4 downto 0);
+    signal reg_1_addr_i : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+    signal reg_2_addr_i : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
     
     signal reg_1_used_i : std_logic;
     signal reg_2_used_i : std_logic;
 begin
     instruction_decoder : entity work.instruction_decoder(rtl)
+                          generic map (DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
+                                       REGFILE_ADDRESS_WIDTH_BITS => 4 + ENABLE_BIG_REGFILE)
                           port map(
                                    -- ===== CONTROL SIGNALS =====
                                    instruction_bus => instruction_bus,
@@ -84,7 +62,8 @@ begin
                                    immediate_data => immediate_data);
     
     register_file : entity work.register_file(rtl)
-                    generic map(REG_SIZE_BITS => CPU_DATA_WIDTH_BITS)
+                    generic map(REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
+                                REGFILE_SIZE => 4 + ENABLE_BIG_REGFILE)
                     port map(-- ADDRESSES
                              rd_1_addr => reg_1_addr_i,
                              rd_2_addr => reg_2_addr_i,

@@ -1,23 +1,3 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 07/19/2021 02:07:47 PM
--- Design Name: 
--- Module Name: register_file - rtl
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
 --------------------------------
 -- NOTES:
 -- 1) Does this infer LUT-RAM?
@@ -28,20 +8,23 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+use work.pkg_cpu.all;
+
 entity register_file is
     generic(
-        REG_SIZE_BITS : integer                                                         -- Number of bits in the registers (XLEN)
+        REG_DATA_WIDTH_BITS : integer;                                                        -- Number of bits in the registers (XLEN)
+        REGFILE_SIZE : integer                                                                -- Number of registers in the register file (2 ** REGFILE_SIZE)
     );
     port(
         -- Address busses
-        rd_1_addr : in std_logic_vector(4 downto 0);
-        rd_2_addr : in std_logic_vector(4 downto 0);                         -- Register selection address (read)
-        wr_addr : in std_logic_vector(4 downto 0);                                      -- Register selection address (write)
+        rd_1_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);
+        rd_2_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);                           -- Register selection address (read)
+        wr_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);                             -- Register selection address (write)
         
         -- Data busses
-        wr_data : in std_logic_vector(REG_SIZE_BITS - 1 downto 0);                      -- Data input port
-        rd_1_data : out std_logic_vector(REG_SIZE_BITS - 1 downto 0);
-        rd_2_data : out std_logic_vector(REG_SIZE_BITS - 1 downto 0);        -- Data output ports
+        wr_data : in std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);                      -- Data input port
+        rd_1_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
+        rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);        -- Data output ports
         
         -- Control busses
         reset : in std_logic;                                                           -- Sets all registers to 0 when high (synchronous)
@@ -51,7 +34,7 @@ entity register_file is
 end register_file;
 
 architecture rtl of register_file is
-    type reg_file_type is array (31 downto 0) of std_logic_vector(REG_SIZE_BITS - 1 downto 0);
+    type reg_file_type is array (2 ** REGFILE_SIZE - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
     
     signal reg_file : reg_file_type;
 begin
@@ -65,7 +48,7 @@ begin
         if (falling_edge(clk)) then
             if (reset = '1') then
                 reg_file <= (others => (others => '0'));
-            elsif (reset = '0' and wr_en = '1' and wr_addr /= "00000") then
+            elsif (reset = '0' and wr_en = '1' and unsigned(wr_addr) /= 0) then
                 reg_file(to_integer(unsigned(wr_addr))) <= wr_data;
             end if;
         end if;
