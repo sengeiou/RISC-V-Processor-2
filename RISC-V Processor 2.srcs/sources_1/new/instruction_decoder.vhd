@@ -89,7 +89,7 @@ begin
         reg_wr_en <= '1';
         immediate_used <= '1';
         
-        reg_rd_1_addr <= "00000";
+        reg_rd_1_addr <= "00000";   -- Select zero as first operand
         -- Immediate decoding
         immediate_data(31 downto 12) <= instruction_bus(31 downto 12);
         immediate_data(11 downto 0) <= (others => '0');
