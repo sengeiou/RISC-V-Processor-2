@@ -25,34 +25,171 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity axi_slave_interface is
     port(
         -- CHANNEL SIGNALS
-        write_address_channel : in work.axi_signals.WriteAddressChannel;
-        write_data_channel : in work.axi_signals.WriteDataChannel;
-        write_response_channel : in work.axi_signals.WriteResponseChannel;
-        read_address_channel : out work.axi_signals.ReadAddressChannel;
-        read_data_channel : out work.axi_signals.ReadDataChannel;
+        write_channels : in work.axi_interface_signal_groups.WriteChannels;
+        read_channels : out work.axi_interface_signal_groups.ReadChannels;
         
         -- HANDSHAKE SIGNALS
-        awvalid : in std_logic;
-        awready : out std_logic;
+        master_handshake : in work.axi_interface_signal_groups.HandshakeMasterSrc;
+        slave_handshake : out work.axi_interface_signal_groups.HandshakeSlaveSrc;
         
-        wvalid : in std_logic;
-        wready : out std_logic;
+        -- OTHER DATA SIGNALS
+        addr_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+        data_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
         
-        bvalid : out std_logic;
-        bready : in std_logic;
-        
-        arvalid : in std_logic;
-        arready : out std_logic;
-        
-        rvalid : out std_logic;
-        rready : in std_logic
+        data_in : in std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+        -- OTHER CONTROL SIGNALS
+        clk : in std_logic;
+        reset : in std_logic
     );
 end axi_slave_interface;
 
 architecture rtl of axi_slave_interface is
+    type write_state_type is (IDLE,
+                              DATA_STATE,
+                              RESPONSE_STATE_1,
+                              RESPONSE_STATE_2);
+                              
+    type read_state_type is (IDLE,
+                             ADDR_STATE,
+                             DATA_STATE);
 
+    signal write_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+
+    signal write_state_reg : write_state_type;
+    signal write_state_next : write_state_type;
+    
+    signal read_state_reg : read_state_type;
+    signal read_state_next : read_state_type;
 begin
+    write_state_transition : process(all)
+    begin
+        case write_state_reg is
+            when IDLE =>
+                if (master_handshake.awvalid = '1') then
+                    write_state_next <= DATA_STATE;
+                else
+                    write_state_next <= IDLE;
+                end if;
+            when DATA_STATE => 
+                if (write_channels.write_data_ch.last = '1') then
+                    write_state_next <= RESPONSE_STATE_1;
+                else
+                    write_state_next <= DATA_STATE;
+                end if;
+            when RESPONSE_STATE_1 => 
+                if (slave_handshake.bvalid = '1') then
+                    write_state_next <= RESPONSE_STATE_2;
+                else 
+                    write_state_next <= RESPONSE_STATE_1;
+                end if;
+            when RESPONSE_STATE_2 => 
+                write_state_next <= IDLE;
+        end case;
+    end process;
 
+    write_state_outputs : process(write_state_reg)
+    begin
+        case write_state_reg is
+            when IDLE =>
+                slave_handshake.bvalid <= '0';
+
+                slave_handshake.awready <= '1';
+                slave_handshake.wready <= '0';
+            when DATA_STATE => 
+                slave_handshake.bvalid <= '0';
+
+                slave_handshake.awready <= '0';
+                slave_handshake.wready <= '1';
+            when RESPONSE_STATE_1 => 
+                slave_handshake.bvalid <= '1';
+
+                slave_handshake.awready <= '0';
+                slave_handshake.wready <= '0';
+            when RESPONSE_STATE_2 => 
+                slave_handshake.bvalid <= '1';
+                
+                slave_handshake.awready <= '0';
+                slave_handshake.wready <= '0';
+        end case;
+    end process;
+    
+    -- READ STATE MACHINE
+    read_state_transition : process(all)
+    begin
+        case read_state_reg is 
+            when IDLE => 
+                if (master_handshake.arvalid = '1') then
+                    read_state_next <= ADDR_STATE;
+                else
+                    read_state_next <= IDLE;
+                end if;
+            when ADDR_STATE => 
+                    read_state_next <= DATA_STATE;
+            when DATA_STATE => 
+                if (master_handshake.rready = '1') then
+                    read_state_next <= IDLE;
+                end if;
+        end case;
+    end process;
+    
+    read_state_outputs : process(read_state_reg)
+    begin
+        case read_state_reg is
+            when IDLE =>
+                read_channels.read_data_ch.data <= (others => '0');
+                read_channels.read_data_ch.resp <= (others => '0');
+                read_channels.read_data_ch.last <= '0';
+                
+                slave_handshake.rvalid <= '0';
+                
+                slave_handshake.arready <= '0';
+            when ADDR_STATE => 
+                read_channels.read_data_ch.data <= (others => '0');
+                read_channels.read_data_ch.resp <= (others => '0');
+                read_channels.read_data_ch.last <= '0';
+                
+                slave_handshake.rvalid <= '0';
+                
+                slave_handshake.arready <= '1';
+            when DATA_STATE => 
+                read_channels.read_data_ch.data <= data_in;
+                read_channels.read_data_ch.resp <= (others => '0');
+                read_channels.read_data_ch.last <= '1';
+                
+                slave_handshake.rvalid <= '1';
+                
+                slave_handshake.arready <= '0';
+        end case;
+    end process;
+
+    process(clk, reset)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '0') then
+                write_addr_reg <= (others => '0');
+                write_data_reg <= (others => '0');
+                
+                write_state_reg <= IDLE;
+                read_state_reg <= IDLE;
+            else
+                if (master_handshake.wvalid = '1') then
+                    write_data_reg <= write_channels.write_data_ch.data;
+                end if;
+            
+                if (master_handshake.awvalid = '1') then
+                    write_addr_reg <= write_channels.write_addr_ch.addr;
+                end if;
+            
+                write_state_reg <= write_state_next;
+                read_state_reg <= read_state_next;
+            end if;
+        end if;
+    end process;
+
+
+    data_out <= write_data_reg;
+    addr_out <= write_addr_reg;
 
 end rtl;
 

@@ -1,0 +1,1 @@
+-wto "f23f845014334918854cad5049a6fac4" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "axi_bus_tb_behav" "xil_defaultlib.axi_bus_tb" -log "elaborate.log" 
