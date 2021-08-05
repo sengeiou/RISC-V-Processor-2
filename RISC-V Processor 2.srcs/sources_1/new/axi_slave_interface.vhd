@@ -33,12 +33,9 @@ entity axi_slave_interface is
         slave_handshake : out work.axi_interface_signal_groups.HandshakeSlaveSrc;
         
         -- OTHER DATA SIGNALS
-        addr_write_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
-        data_write_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+        from_slave : in work.axi_interface_signal_groups.FromSlave;
+        to_slave : out work.axi_interface_signal_groups.ToSlave;
         
-        addr_read_out : out std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
-        
-        data_in : in std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
         -- OTHER CONTROL SIGNALS
         clk : in std_logic;
         reset : in std_logic
@@ -158,7 +155,7 @@ begin
                 
                 slave_handshake.arready <= '0';
             when DATA_STATE => 
-                to_master.read_data_ch.data <= data_in;
+                to_master.read_data_ch.data <= from_slave.data_read;
                 to_master.read_data_ch.resp <= (others => '0');
                 to_master.read_data_ch.last <= '1';
                 
@@ -200,10 +197,10 @@ begin
     end process;
 
 
-    data_write_out <= write_data_reg;
-    addr_write_out <= write_addr_reg;
+    to_slave.data_write <= write_data_reg;
+    to_slave.addr_write <= write_addr_reg;
     
-    addr_read_out <= read_addr_reg;
+    from_slave.addr_read <= read_addr_reg;
 
 end rtl;
 

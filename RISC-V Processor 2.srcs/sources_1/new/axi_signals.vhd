@@ -71,8 +71,53 @@ package axi_interface_signal_groups is
         read_data_ch : ReadDataChannel;
         write_resp_ch : WriteResponseChannel;
     end record ToMaster;
+    
+    type ToMasterFromInterface is record
+        -- Data signals
+        data_write : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
+        
+        -- Address signals
+        addr_write : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+        
+        -- Control signals
+        execute_read : std_logic;
+        execute_write : std_logic;
+    end record ToMasterFromInterface;
+    
+    type FromMasterToInterface is record
+        -- Data signals
+        data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
+        
+        -- Address signals
+        addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    end record FromMasterToInterface;
+    
+    type FromSlave is record
+        -- Data signals
+        data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
+        
+        -- Address signals
+    end record FromSlave;
+
+    type ToSlave is record
+        -- Data signals
+        data_write : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
+        
+        -- Address signals
+        addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+        addr_write : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    end record ToSlave;
 end axi_interface_signal_groups;
 
 package body axi_interface_signal_groups is
 
 end axi_interface_signal_groups;
+
+
+
+
+
+
+
+
+
