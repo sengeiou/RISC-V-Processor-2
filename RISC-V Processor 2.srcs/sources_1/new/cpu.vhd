@@ -30,7 +30,7 @@ begin
 
     -- AXI Masters
     core_1 : entity work.core(structural)
-             port map(instruction_debug => master_from_interface_1.data_read,
+             port map(--instruction_debug => master_from_interface_1.data_read,
                       clk_cpu => clk_cpu,
                       reset_cpu => reset_cpu);
 

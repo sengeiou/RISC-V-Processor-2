@@ -3,9 +3,10 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="pipeline_tb_behav.wdb" id="1">
+      <db_ref path="cpu_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="pipeline_tb" />
+            <top_module name="axi_interface_signal_groups" />
+            <top_module name="cpu_tb" />
             <top_module name="pkg_cpu" />
             <top_module name="pkg_pipeline" />
          </top_modules>
@@ -13,84 +14,112 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="740001fs"></ZoomEndTime>
-      <Cursor1Time time="124294fs"></Cursor1Time>
+      <ZoomEndTime time="1000001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="254"></NameColumnWidth>
-      <ValueColumnWidth column_width="63"></ValueColumnWidth>
+      <NameColumnWidth column_width="247"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
-   <wvobject fp_name="/pipeline_tb/pipeline/stage_decode/register_file/reg_file" type="array">
+   <WVObjectSize size="13" />
+   <wvobject fp_name="/cpu_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/T" type="other">
+      <obj_property name="ElementShortName">T</obj_property>
+      <obj_property name="ObjectShortName">T</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider329">
+      <obj_property name="label">REGFILE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_decode/register_file/reg_file" type="array">
       <obj_property name="ElementShortName">reg_file[31:0][31:0]</obj_property>
       <obj_property name="ObjectShortName">reg_file[31:0][31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="group226" type="group">
+   <wvobject type="divider" fp_name="divider330">
+      <obj_property name="label">PIPELINE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="group343" type="group">
       <obj_property name="label">FET_DE REGISTER</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/pipeline_tb/pipeline/fet_de_register_next" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/fet_de_register_next" type="array">
          <obj_property name="ElementShortName">fet_de_register_next</obj_property>
          <obj_property name="ObjectShortName">fet_de_register_next</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/fet_de_register" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/fet_de_register" type="array">
          <obj_property name="ElementShortName">fet_de_register</obj_property>
          <obj_property name="ObjectShortName">fet_de_register</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/fet_de_register_en" type="logic">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/fet_de_register_en" type="logic">
          <obj_property name="ElementShortName">fet_de_register_en</obj_property>
          <obj_property name="ObjectShortName">fet_de_register_en</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group412" type="group">
+   <wvobject fp_name="group344" type="group">
       <obj_property name="label">DE_EX REGISTER</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/pipeline_tb/pipeline/de_ex_register_next" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/de_ex_register_next" type="array">
          <obj_property name="ElementShortName">de_ex_register_next</obj_property>
          <obj_property name="ObjectShortName">de_ex_register_next</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/de_ex_register" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/de_ex_register" type="array">
          <obj_property name="ElementShortName">de_ex_register</obj_property>
          <obj_property name="ObjectShortName">de_ex_register</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/de_ex_register_en" type="logic">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/de_ex_register_en" type="logic">
          <obj_property name="ElementShortName">de_ex_register_en</obj_property>
          <obj_property name="ObjectShortName">de_ex_register_en</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group413" type="group">
+   <wvobject fp_name="group345" type="group">
       <obj_property name="label">EX_MEM REGISTER</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/pipeline_tb/pipeline/ex_mem_register_next" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/ex_mem_register_next" type="array">
          <obj_property name="ElementShortName">ex_mem_register_next</obj_property>
          <obj_property name="ObjectShortName">ex_mem_register_next</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/ex_mem_register" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/ex_mem_register" type="array">
          <obj_property name="ElementShortName">ex_mem_register</obj_property>
          <obj_property name="ObjectShortName">ex_mem_register</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/ex_mem_register_en" type="logic">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/ex_mem_register_en" type="logic">
          <obj_property name="ElementShortName">ex_mem_register_en</obj_property>
          <obj_property name="ObjectShortName">ex_mem_register_en</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group414" type="group">
+   <wvobject fp_name="group346" type="group">
       <obj_property name="label">MEM_WB REGISTER</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/pipeline_tb/pipeline/mem_wb_register_next" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/mem_wb_register_next" type="array">
          <obj_property name="ElementShortName">mem_wb_register_next</obj_property>
          <obj_property name="ObjectShortName">mem_wb_register_next</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/mem_wb_register" type="array">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/mem_wb_register" type="array">
          <obj_property name="ElementShortName">mem_wb_register</obj_property>
          <obj_property name="ObjectShortName">mem_wb_register</obj_property>
       </wvobject>
-      <wvobject fp_name="/pipeline_tb/pipeline/mem_wb_register_en" type="logic">
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/mem_wb_register_en" type="logic">
          <obj_property name="ElementShortName">mem_wb_register_en</obj_property>
          <obj_property name="ObjectShortName">mem_wb_register_en</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="/pipeline_tb/pipeline/instruction_addr_debug" type="array">
+   <wvobject type="divider" fp_name="divider350">
+      <obj_property name="label">CORE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/instruction_debug" type="array">
+      <obj_property name="ElementShortName">instruction_debug[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instruction_debug[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/instruction_addr_debug" type="array">
       <obj_property name="ElementShortName">instruction_addr_debug[31:0]</obj_property>
       <obj_property name="ObjectShortName">instruction_addr_debug[31:0]</obj_property>
    </wvobject>

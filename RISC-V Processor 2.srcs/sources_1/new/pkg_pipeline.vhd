@@ -4,6 +4,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 use work.pkg_cpu.all;
 
 package pkg_pipeline is
+    type fet_de_register_type is record
+        -- ===== CONTROL (DECODE) =====
+        instruction : std_logic_vector(31 downto 0);
+    end record;
+
     type de_ex_register_type is record
         -- ===== DATA =====
         reg_1_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
@@ -43,6 +48,8 @@ package pkg_pipeline is
         reg_wr_addr : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
         reg_wr_en : std_logic;
     end record;
+    
+    constant FET_DE_REGISTER_CLEAR : fet_de_register_type := (instruction => (others => '0'));
     
     constant DE_EX_REGISTER_CLEAR : de_ex_register_type := (reg_1_data => (others => '0'),
                                                             reg_2_data => (others => '0'),

@@ -1,5 +1,11 @@
 # compile vhdl design source files
+vhdl2008 xil_defaultlib  \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_signals.vhd" \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd" \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd" \
+
 vhdl xil_defaultlib  \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_interconnect.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/pkg_cpu.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/pkg_pipeline.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/stage_fetch.vhd" \
@@ -17,9 +23,11 @@ vhdl xil_defaultlib  \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/stage_execute.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/stage_memory.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/pipeline.vhd" \
-
-vhdl2008 xil_defaultlib  \
-"../../../../RISC-V Processor 2.srcs/sim_1/new/pipeline_tb.vhd" \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd" \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/core.vhd" \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd" \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/cpu.vhd" \
+"../../../../RISC-V Processor 2.srcs/sim_1/new/cpu_tb.vhd" \
 
 # Do not sort compile order
 nosort

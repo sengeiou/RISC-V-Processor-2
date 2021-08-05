@@ -1,43 +1,35 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 07/19/2021 12:29:42 PM
--- Design Name: 
--- Module Name: stage_fetch - rtl
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.pkg_cpu.all;
 
 entity stage_fetch is
---  Port ( );
+    port(
+        instruction_addr : out std_logic_vector(31 downto 0);
+        
+        clk : in std_logic;
+        reset : in std_logic
+    );
 end stage_fetch;
 
 architecture rtl of stage_fetch is
-
+    signal program_counter_reg : unsigned(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+    signal program_counter_next : unsigned(CPU_ADDR_WIDTH_BITS - 1 downto 0);
 begin
-
+    pc_update_process : process(clk, reset)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                program_counter_reg <= (others => '0');
+            else
+                program_counter_reg <= program_counter_next;
+            end if;
+        end if;
+    end process;
+    
+    program_counter_next <= program_counter_reg + 4;
+    
+    instruction_addr <= std_logic_vector(program_counter_reg);
 
 end rtl;
