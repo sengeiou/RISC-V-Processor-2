@@ -61,18 +61,18 @@ package axi_interface_signal_groups is
         wready : std_logic;
     end record HandshakeSlaveSrc;
     
-    type FromMaster is record
+    type FromMasterInterface is record
         write_addr_ch : WriteAddressChannel;
         write_data_ch : WriteDataChannel;
         read_addr_ch : ReadAddressChannel;
-    end record FromMaster;
+    end record FromMasterInterface;
     
-    type ToMaster is record
+    type ToMasterInterface is record
         read_data_ch : ReadDataChannel;
         write_resp_ch : WriteResponseChannel;
-    end record ToMaster;
+    end record ToMasterInterface;
     
-    type ToMasterFromInterface is record
+    type FromMaster is record
         -- Data signals
         data_write : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
         
@@ -83,12 +83,12 @@ package axi_interface_signal_groups is
         -- Control signals
         execute_read : std_logic;
         execute_write : std_logic;
-    end record ToMasterFromInterface;
+    end record FromMaster;
     
-    type FromMasterToInterface is record
+    type ToMaster is record
         -- Data signals
         data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
-    end record FromMasterToInterface;
+    end record ToMaster;
     
     type FromSlave is record
         -- Data signals

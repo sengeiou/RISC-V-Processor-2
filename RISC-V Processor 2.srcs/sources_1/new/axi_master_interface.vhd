@@ -4,16 +4,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity axi_master_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master : out work.axi_interface_signal_groups.FromMaster;
-        to_master : in work.axi_interface_signal_groups.ToMaster;
+        from_master : out work.axi_interface_signal_groups.FromMasterInterface;
+        to_master : in work.axi_interface_signal_groups.ToMasterInterface;
         
         -- HANDSHAKE SIGNALS
         master_handshake : out work.axi_interface_signal_groups.HandshakeMasterSrc;
         slave_handshake : in work.axi_interface_signal_groups.HandshakeSlaveSrc;
 
         -- OTHER CONTROL SIGNALS
-        interface_from_master : out work.axi_interface_signal_groups.FromMasterToInterface;
-        interface_to_master : in work.axi_interface_signal_groups.ToMasterFromInterface;
+        interface_to_master : out work.axi_interface_signal_groups.ToMaster;
+        master_to_interface : in work.axi_interface_signal_groups.FromMaster;
         
         clk : in std_logic;
         reset : in std_logic
@@ -49,7 +49,7 @@ begin
     begin
         case write_state_reg is
             when IDLE =>
-                if (interface_to_master.execute_write = '1') then
+                if (master_to_interface.execute_write = '1') then
                     write_state_next <= ADDR_STATE_1;
                 else
                     write_state_next <= IDLE;
@@ -169,11 +169,11 @@ begin
     end process;
     
     -- READ STATE MACHINE
-    read_state_transition : process(read_state_reg, interface_to_master.execute_read, slave_handshake.arready, to_master.read_data_ch.last)
+    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_handshake.arready, to_master.read_data_ch.last)
     begin
         case read_state_reg is 
             when IDLE => 
-                if (interface_to_master.execute_read = '1') then
+                if (master_to_interface.execute_read = '1') then
                     read_state_next <= ADDR_STATE;
                 else
                     read_state_next <= IDLE;
@@ -209,7 +209,7 @@ begin
                 
                 read_data_reg_en <= '0';
             when ADDR_STATE => 
-                from_master.read_addr_ch.addr <= interface_to_master.addr_read;
+                from_master.read_addr_ch.addr <= master_to_interface.addr_read;
                 from_master.read_addr_ch.len <= (others => '0');
                 from_master.read_addr_ch.size <= (others => '0');
                 from_master.read_addr_ch.burst <= (others => '0');
@@ -246,9 +246,9 @@ begin
                 write_state_reg <= IDLE;
                 read_state_reg <= IDLE;
             else
-                if (interface_to_master.execute_write = '1') then
-                    write_addr_reg <= interface_to_master.addr_write;
-                    write_data_reg <= interface_to_master.data_write;
+                if (master_to_interface.execute_write = '1') then
+                    write_addr_reg <= master_to_interface.addr_write;
+                    write_data_reg <= master_to_interface.data_write;
                 end if;
                 
                 if (read_data_reg_en = '1') then
@@ -261,6 +261,6 @@ begin
         end if;
     end process;
 
-    interface_from_master.data_read <= read_data_reg;
+    interface_to_master.data_read <= read_data_reg;
 
 end rtl;

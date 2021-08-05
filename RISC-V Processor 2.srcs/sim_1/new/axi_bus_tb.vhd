@@ -14,7 +14,7 @@ architecture Behavioral of axi_bus_tb is
     signal addr_write, addr_read, data_write : std_logic_vector(31 downto 0);
     signal data_in_slave : std_logic_vector(31 downto 0);
     
-    signal master_interface_out : work.axi_interface_signal_groups.FromMasterToInterface;
+    signal master_interface_out : work.axi_interface_signal_groups.ToMaster;
     signal slave_interface_out : work.axi_interface_signal_groups.ToSlave;
     
     signal clk, reset, execute_w, execute_r : std_logic;
