@@ -1,24 +1,3 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 07/31/2021 11:02:55 AM
--- Design Name: 
--- Module Name: axi_slave_interface - rtl
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -200,7 +179,7 @@ begin
     to_slave.data_write <= write_data_reg;
     to_slave.addr_write <= write_addr_reg;
     
-    from_slave.addr_read <= read_addr_reg;
+    to_slave.addr_read <= read_addr_reg;
 
 end rtl;
 

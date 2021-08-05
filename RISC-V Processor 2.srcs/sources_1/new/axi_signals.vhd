@@ -78,6 +78,7 @@ package axi_interface_signal_groups is
         
         -- Address signals
         addr_write : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+        addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         
         -- Control signals
         execute_read : std_logic;
@@ -87,9 +88,6 @@ package axi_interface_signal_groups is
     type FromMasterToInterface is record
         -- Data signals
         data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
-        
-        -- Address signals
-        addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     end record FromMasterToInterface;
     
     type FromSlave is record

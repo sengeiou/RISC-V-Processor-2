@@ -209,7 +209,7 @@ begin
                 
                 read_data_reg_en <= '0';
             when ADDR_STATE => 
-                from_master.read_addr_ch.addr <= interface_from_master.addr_read;
+                from_master.read_addr_ch.addr <= interface_to_master.addr_read;
                 from_master.read_addr_ch.len <= (others => '0');
                 from_master.read_addr_ch.size <= (others => '0');
                 from_master.read_addr_ch.burst <= (others => '0');
