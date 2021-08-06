@@ -18,25 +18,35 @@ entity pipeline is
 end pipeline;
 
 architecture structural of pipeline is
+-- Pipeline Control Signals
+signal mem_busy : std_logic;
+
+signal pipeline_regs_en : pipeline_regs_en_type;
+signal pipeline_regs_rst : pipeline_regs_rst_type;
+
+-- Pipeline Registers
 signal fet_de_register_next : fet_de_register_type;
 signal fet_de_register : fet_de_register_type;
-signal fet_de_register_en : std_logic;
 
 signal de_ex_register_next : de_ex_register_type;
 signal de_ex_register : de_ex_register_type;
-signal de_ex_register_en : std_logic;
 
 signal ex_mem_register_next : ex_mem_register_type;
 signal ex_mem_register : ex_mem_register_type;
-signal ex_mem_register_en : std_logic;
 
 signal mem_wb_register_next : mem_wb_register_type;
 signal mem_wb_register : mem_wb_register_type;
-signal mem_wb_register_en : std_logic;
-
-signal mem_busy : std_logic;
 
 begin
+    -- ========== PIPELINE CONTROL ==========
+    pipeline_controller : entity work.pipeline_controller(rtl)
+                          port map(mem_busy => mem_busy,
+                                   halt => '0',
+                                   reset => reset,
+                                   
+                                   pipeline_regs_en => pipeline_regs_en,
+                                   pipeline_regs_rst => pipeline_regs_rst);
+
     -- ========== STAGES ==========
     stage_fetch : entity work.stage_fetch(rtl)
                   port map(instruction_addr => instruction_addr_debug,
@@ -104,9 +114,9 @@ begin
     fet_de_register_control : process(clk, reset)
     begin
         if (rising_edge(clk)) then
-            if (reset = '1') then
+            if (pipeline_regs_rst.fet_de_reg_rst = '1') then
                 fet_de_register <= FET_DE_REGISTER_CLEAR;
-            elsif (fet_de_register_en = '1') then
+            elsif (pipeline_regs_en.fet_de_reg_en = '1') then
                 fet_de_register <= fet_de_register_next;
             end if;
         end if;
@@ -116,9 +126,9 @@ begin
     de_ex_register_control : process(clk, reset)
     begin
         if (rising_edge(clk)) then
-            if (reset = '1') then 
+            if (pipeline_regs_rst.de_ex_reg_rst = '1') then 
                 de_ex_register <= DE_EX_REGISTER_CLEAR;
-            elsif (de_ex_register_en = '1') then
+            elsif (pipeline_regs_en.de_ex_reg_en = '1') then
                 de_ex_register <= de_ex_register_next;
             end if;
         end if;
@@ -135,9 +145,9 @@ begin
     ex_mem_register_control : process(clk, reset)
     begin
         if (rising_edge(clk)) then
-            if (reset = '1') then
+            if (pipeline_regs_rst.ex_mem_reg_rst = '1') then
                 ex_mem_register <= EX_MEM_REGISTER_CLEAR;
-            elsif (ex_mem_register_en = '1') then
+            elsif (pipeline_regs_en.ex_mem_reg_en = '1') then
                 ex_mem_register <= ex_mem_register_next;
             end if;
         end if;
@@ -150,21 +160,15 @@ begin
     mem_wb_register_control : process(clk, reset)
     begin
         if (rising_edge(clk)) then
-            if (reset = '1') then
+            if (pipeline_regs_rst.mem_wb_reg_rst = '1') then
                 mem_wb_register <= MEM_WB_REGISTER_CLEAR;
-            elsif (mem_wb_register_en = '1') then
+            elsif (pipeline_regs_en.mem_wb_reg_en = '1') then
                 mem_wb_register <= mem_wb_register_next;
             end if;
         end if;
     end process;             
 
     fet_de_register_next.instruction <= instruction_debug;
-
-    fet_de_register_en <= not mem_busy;
-    de_ex_register_en <= not mem_busy;
-    ex_mem_register_en <= not mem_busy;
-    mem_wb_register_en <= not mem_busy;
-
 end structural;
 
 

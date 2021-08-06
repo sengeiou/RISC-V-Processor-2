@@ -4,6 +4,20 @@ use IEEE.STD_LOGIC_1164.ALL;
 use work.pkg_cpu.all;
 
 package pkg_pipeline is
+    type pipeline_regs_en_type is record
+        fet_de_reg_en : std_logic;
+        de_ex_reg_en : std_logic;
+        ex_mem_reg_en : std_logic;
+        mem_wb_reg_en : std_logic;
+    end record;
+    
+    type pipeline_regs_rst_type is record
+        fet_de_reg_rst : std_logic;
+        de_ex_reg_rst : std_logic;
+        ex_mem_reg_rst : std_logic;
+        mem_wb_reg_rst : std_logic;
+    end record;
+
     type fet_de_register_type is record
         -- ===== CONTROL (DECODE) =====
         instruction : std_logic_vector(31 downto 0);

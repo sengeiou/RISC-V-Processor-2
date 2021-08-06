@@ -76,6 +76,8 @@ begin
             i_barrel_shifter_airth <= '1';
         
             result <= i_barrel_shifter_result;
+        else
+            result <= (others => '0');
         end if;
     end process;
 

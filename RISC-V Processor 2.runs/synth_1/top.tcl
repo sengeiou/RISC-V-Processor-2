@@ -104,6 +104,7 @@ read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pkg_cpu.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pkg_pipeline.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline_controller.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_fetch.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_execute.vhd}
