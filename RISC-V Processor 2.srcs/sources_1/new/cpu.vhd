@@ -5,6 +5,8 @@ use work.axi_interface_signal_groups.all;
 
 entity cpu is
     port(
+        led_out_debug : out std_logic_vector(15 downto 0);
+    
         clk_cpu : in std_logic;
         reset_cpu : in std_logic
     );
@@ -31,6 +33,9 @@ begin
     -- AXI Masters
     core_1 : entity work.core(structural)
              port map(--instruction_debug => master_from_interface_1.data_read,
+                      from_master => master_to_interface_1,
+                      to_master => master_from_interface_1,
+             
                       clk_cpu => clk_cpu,
                       reset_cpu => reset_cpu);
 
@@ -39,7 +44,11 @@ begin
                  port map(data_write => slave_from_interface_1.data_write,
                           addr_write => slave_from_interface_1.addr_write,
                           
+                          led_out => led_out_debug,
+                          
                           clk_bus => clk_cpu,
                           reset => reset_cpu);
+                          
+    slave_to_interface_1.data_read <= (others => '1');
 
 end structural;

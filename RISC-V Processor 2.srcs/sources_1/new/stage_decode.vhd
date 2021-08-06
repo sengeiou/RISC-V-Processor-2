@@ -31,6 +31,9 @@ entity stage_decode is
         reg_wr_en : out std_logic;
         immediate_used : out std_logic;
         
+        execute_read : out std_logic;
+        execute_write : out std_logic;
+        
         alu_op_sel : out std_logic_vector(3 downto 0)
     );
 end stage_decode;
@@ -55,6 +58,9 @@ begin
                                    reg_rd_2_used => reg_2_used,
                                    reg_wr_en => reg_wr_en,
                                    immediate_used => immediate_used,
+                                   
+                                   execute_read => execute_read,
+                                   execute_write => execute_write,
                                    
                                    alu_op_sel => alu_op_sel,
                                    

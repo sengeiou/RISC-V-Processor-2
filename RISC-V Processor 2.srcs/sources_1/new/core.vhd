@@ -3,6 +3,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity core is
     port(
+        -- AXI Controller Signals
+        from_master : out work.axi_interface_signal_groups.FromMaster;
+        to_master : in work.axi_interface_signal_groups.ToMaster;
+    
         clk_cpu : in std_logic;
         reset_cpu : in std_logic
     );
@@ -15,6 +19,8 @@ begin
     core_pipeline : entity work.pipeline(structural)
                     port map(instruction_debug => instruction_debug,
                              instruction_addr_debug => instruction_addr_debug,
+                             from_master => from_master,
+                             to_master => to_master,
                              clk => clk_cpu,
                              reset => reset_cpu);
                              

@@ -48,7 +48,11 @@ entity instruction_decoder is
         
         reg_rd_1_used : out std_logic;
         reg_rd_2_used : out std_logic;
-        reg_wr_en : out std_logic
+        reg_wr_en : out std_logic;
+        
+        -- Memory control
+        execute_read : out std_logic;
+        execute_write : out std_logic
     );
 end instruction_decoder;
 
@@ -66,6 +70,9 @@ begin
     reg_rd_2_used <= '0';
     reg_wr_en <= '0';
     immediate_used <= '0';
+    
+    execute_read <= '0';
+    execute_write <= '0';
     
     -- Always decode register addresses
     reg_rd_1_addr <= instruction_bus(15 + REGFILE_ADDRESS_WIDTH_BITS - 1 downto 15);
@@ -100,6 +107,28 @@ begin
         immediate_data(DATA_WIDTH_BITS - 1 downto 31) <= (others => instruction_bus(31));
         immediate_data(30 downto 12) <= instruction_bus(30 downto 12);
         immediate_data(11 downto 0) <= (others => '0');
+    elsif (instruction_bus(6 downto 0) = "0000011") then                    -- LOAD
+        alu_op_sel <= "0000";
+        
+        reg_rd_1_used <= '1';
+        immediate_used <= '1';
+        reg_wr_en <= '1';
+        
+        execute_read <= '1';
+        
+        immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
+        immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
+    elsif (instruction_bus(6 downto 0) = "0100011") then                    -- STORE
+        alu_op_sel <= "0000";
+        
+        reg_rd_1_used <= '1';
+        immediate_used <= '1';
+        
+        execute_write <= '1';
+        
+        immediate_data(11 downto 5) <= instruction_bus(31 downto 25);
+        immediate_data(4 downto 0) <= instruction_bus(11 downto 7);
+        immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
     end if;
     end process;
     

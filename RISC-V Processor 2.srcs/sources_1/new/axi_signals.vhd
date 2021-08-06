@@ -88,6 +88,10 @@ package axi_interface_signal_groups is
     type ToMaster is record
         -- Data signals
         data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
+        
+        -- Control signals
+        done_read : std_logic;
+        done_write : std_logic;
     end record ToMaster;
     
     type FromSlave is record

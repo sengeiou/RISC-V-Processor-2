@@ -31,7 +31,11 @@ begin
         end if;
     end process;
 
-    data_reg_en <= not addr_write(7) and
+    data_reg_en <= not addr_write(11) and
+                   not addr_write(10) and
+                   not addr_write(9) and
+                   not addr_write(8) and
+                   not addr_write(7) and
                    not addr_write(6) and
                    not addr_write(5) and
                    not addr_write(4) and

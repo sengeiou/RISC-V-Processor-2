@@ -27,6 +27,8 @@ architecture rtl of axi_interconnect is
     signal write_bus_1 : work.axi_interface_signal_groups.FromMasterInterface;
     signal handshake_master_src_1 : work.axi_interface_signal_groups.HandshakeMasterSrc;
     signal handshake_slave_src_1 : work.axi_interface_signal_groups.HandshakeSlaveSrc;
+    
+    signal axi_reset : std_logic;
 begin
     axi_master_1 : entity work.axi_master_interface(rtl)
                    port map(-- Interconnect side signals
@@ -40,7 +42,7 @@ begin
                             master_to_interface => master_to_interface_1,
                             
                             clk => clk,
-                            reset => reset);
+                            reset => axi_reset);
                             
     axi_slave_1 : entity work.axi_slave_interface(rtl)
                   port map(-- Interconnect side signals
@@ -54,6 +56,8 @@ begin
                            to_slave => slave_from_interface_1,
                            
                            clk => clk,
-                           reset => reset);
+                           reset => axi_reset);
+                           
+    axi_reset <= not reset;
 
 end rtl;

@@ -25,6 +25,10 @@ package pkg_pipeline is
         alu_op_sel : std_logic_vector(3 downto 0);
         immediate_used : std_logic;
         
+        -- ===== CONTROL (MEMORY) =====
+        execute_read : std_logic;
+        execute_write : std_logic;
+        
         -- ===== CONTROL (WRITEBACK) =====
         reg_wr_addr : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
         reg_wr_en : std_logic;
@@ -34,6 +38,11 @@ package pkg_pipeline is
     type ex_mem_register_type is record
         -- ===== DATA =====
         alu_result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        reg_2_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        
+        -- ===== CONTROL (MEMORY) =====
+        execute_read : std_logic;
+        execute_write : std_logic;
         
         -- ===== CONTROL (WRITEBACK) =====
         reg_wr_addr : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
@@ -61,11 +70,16 @@ package pkg_pipeline is
                                                             alu_op_sel => (others => '0'),
                                                             immediate_used => '0',
                                                             reg_wr_addr => (others => '0'),
-                                                            reg_wr_en => '0');
+                                                            reg_wr_en => '0',
+                                                            execute_read => '0',
+                                                            execute_write => '0');
                                                             
     constant EX_MEM_REGISTER_CLEAR : ex_mem_register_type := (alu_result => (others => '0'),
+                                                              reg_2_data => (others => '0'),
                                                               reg_wr_addr => (others => '0'),
-                                                              reg_wr_en => '0');
+                                                              reg_wr_en => '0',
+                                                              execute_read => '0',
+                                                              execute_write => '0');
                                                               
     constant MEM_WB_REGISTER_CLEAR : mem_wb_register_type := (mem_data => (others => '0'),
                                                               reg_wr_addr => (others => '0'),

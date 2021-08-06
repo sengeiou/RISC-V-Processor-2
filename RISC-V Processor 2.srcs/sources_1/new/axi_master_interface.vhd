@@ -29,7 +29,8 @@ architecture rtl of axi_master_interface is
                               
     type read_state_type is (IDLE,
                              ADDR_STATE,
-                             DATA_STATE);
+                             DATA_STATE,
+                             FINALIZE_STATE);
                               
     signal write_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
@@ -79,6 +80,7 @@ begin
     
     write_state_outputs : process(write_state_reg)
     begin
+        interface_to_master.done_write <= '0'; 
         case write_state_reg is
             when IDLE =>
                 -- WRITE ADDRESS CHANNEL
@@ -165,6 +167,8 @@ begin
                 master_handshake.wvalid <= '0';
                 
                 master_handshake.bready <= '1';
+                
+                interface_to_master.done_write <= '1';
         end case;
     end process;
     
@@ -186,15 +190,18 @@ begin
                 end if;
             when DATA_STATE => 
                 if (to_master.read_data_ch.last = '1') then
-                    read_state_next <= IDLE;
+                    read_state_next <= FINALIZE_STATE;
                 else
                     read_state_next <= DATA_STATE;
                 end if;
+            when FINALIZE_STATE => 
+                read_state_next <= IDLE;
         end case;
     end process;
     
     read_state_outputs : process(read_state_reg)
     begin
+        interface_to_master.done_read <= '0';
         case read_state_reg is
             when IDLE =>
                 from_master.read_addr_ch.addr <= (others => '0');
@@ -232,6 +239,21 @@ begin
                 master_handshake.rready <= '1';
                 
                 read_data_reg_en <= '1';
+                
+            when FINALIZE_STATE => 
+                interface_to_master.done_read <= '1'; 
+                
+                from_master.read_addr_ch.addr <= (others => '0');
+                from_master.read_addr_ch.len <= (others => '0');
+                from_master.read_addr_ch.size <= (others => '0');
+                from_master.read_addr_ch.burst <= (others => '0');
+                
+                -- HANDSHAKE
+                master_handshake.arvalid <= '0';
+                
+                master_handshake.rready <= '0';
+                
+                read_data_reg_en <= '0';
         end case;
     end process;
     
