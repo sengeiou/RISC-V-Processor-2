@@ -81,91 +81,45 @@ begin
     write_state_outputs : process(write_state_reg)
     begin
         interface_to_master.done_write <= '0'; 
+        
+        from_master.write_addr_ch.addr <= (others => '0');
+        from_master.write_addr_ch.len <= (others => '0');
+        from_master.write_addr_ch.size <= (others => '0');
+        from_master.write_addr_ch.burst <= (others => '0');
+        
+        from_master.write_data_ch.data <= (others => '0');
+        from_master.write_data_ch.strb <= "0000";      
+        from_master.write_data_ch.last <= '0';   
+        
+        master_handshake.awvalid <= '0';
+        master_handshake.wvalid <= '0';
+                
+        master_handshake.bready <= '0';
         case write_state_reg is
             when IDLE =>
-                -- WRITE ADDRESS CHANNEL
-                from_master.write_addr_ch.addr <= (others => '0');
-                from_master.write_addr_ch.len <= (others => '0');
-                from_master.write_addr_ch.size <= (others => '0');
-                from_master.write_addr_ch.burst <= (others => '0');
-                
-                -- WRITE DATA CHANNEL
-                from_master.write_data_ch.data <= (others => '0');
-                from_master.write_data_ch.strb <= "0000";      
-                from_master.write_data_ch.last <= '0';     
-                
-                -- HANDSHAKE
-                master_handshake.awvalid <= '0';
-                master_handshake.wvalid <= '0';
-                
-                master_handshake.bready <= '0';
+            
             when ADDR_STATE_1 => 
                 -- WRITE ADDRESS CHANNEL
                 from_master.write_addr_ch.addr <= write_addr_reg;
-                from_master.write_addr_ch.len <= (others => '0');
-                from_master.write_addr_ch.size <= (others => '0');
-                from_master.write_addr_ch.burst <= (others => '0');
                 
                 -- WRITE DATA CHANNEL
                 from_master.write_data_ch.data <= write_data_reg;
                 from_master.write_data_ch.strb <= "1111";
-                from_master.write_data_ch.last <= '0';
                 
                 -- HANDSHAKE
                 master_handshake.awvalid <= '1';
-                master_handshake.wvalid <= '0';
-                
-                master_handshake.bready <= '0';
             when DATA_STATE => 
-                -- WRITE ADDRESS CHANNEL
-                from_master.write_addr_ch.addr <= (others => '0');
-                from_master.write_addr_ch.len <= (others => '0');
-                from_master.write_addr_ch.size <= (others => '0');
-                from_master.write_addr_ch.burst <= (others => '0');
-                
                 -- WRITE DATA CHANNEL
                 from_master.write_data_ch.data <= write_data_reg;
                 from_master.write_data_ch.strb <= "1111";
                 from_master.write_data_ch.last <= '1';
                 
                 -- HANDSHAKE
-                master_handshake.awvalid <= '0';
                 master_handshake.wvalid <= '1';
-                
-                master_handshake.bready <= '0';
             when RESPONSE_STATE_1 => 
-                -- WRITE ADDRESS CHANNEL
-                from_master.write_addr_ch.addr <= (others => '0');
-                from_master.write_addr_ch.len <= (others => '0');
-                from_master.write_addr_ch.size <= (others => '0');
-                from_master.write_addr_ch.burst <= (others => '0');
-                
-                -- WRITE DATA CHANNEL
-                from_master.write_data_ch.data <= (others => '0');
-                from_master.write_data_ch.strb <= (others => '0');
-                from_master.write_data_ch.last <= '0';
-                
-                -- HANDSHAKE
-                master_handshake.awvalid <= '0';
-                master_handshake.wvalid <= '0';
-                
-                master_handshake.bready <= '0';
+
             when RESPONSE_STATE_2 => 
-                -- WRITE ADDRESS CHANNEL
-                from_master.write_addr_ch.addr <= (others => '0');
-                from_master.write_addr_ch.len <= (others => '0');
-                from_master.write_addr_ch.size <= (others => '0');
-                from_master.write_addr_ch.burst <= (others => '0');
-                
-                -- WRITE DATA CHANNEL
-                from_master.write_data_ch.data <= (others => '0');
-                from_master.write_data_ch.strb <= (others => '0');
-                from_master.write_data_ch.last <= '0';
-                
                 -- HANDSHAKE
-                master_handshake.awvalid <= '0';
-                master_handshake.wvalid <= '0';
-                
                 master_handshake.bready <= '1';
                 
                 interface_to_master.done_write <= '1';
@@ -202,58 +156,33 @@ begin
     read_state_outputs : process(read_state_reg)
     begin
         interface_to_master.done_read <= '0';
+        
+        from_master.read_addr_ch.addr <= (others => '0');
+        from_master.read_addr_ch.len <= (others => '0');
+        from_master.read_addr_ch.size <= (others => '0');
+        from_master.read_addr_ch.burst <= (others => '0');
+                
+        -- HANDSHAKE
+        master_handshake.arvalid <= '0';
+
+        master_handshake.rready <= '0';
+                
+        read_data_reg_en <= '0';
         case read_state_reg is
             when IDLE =>
-                from_master.read_addr_ch.addr <= (others => '0');
-                from_master.read_addr_ch.len <= (others => '0');
-                from_master.read_addr_ch.size <= (others => '0');
-                from_master.read_addr_ch.burst <= (others => '0');
-                
-                -- HANDSHAKE
-                master_handshake.arvalid <= '0';
 
-                master_handshake.rready <= '0';
-                
-                read_data_reg_en <= '0';
             when ADDR_STATE => 
                 from_master.read_addr_ch.addr <= master_to_interface.addr_read;
-                from_master.read_addr_ch.len <= (others => '0');
-                from_master.read_addr_ch.size <= (others => '0');
-                from_master.read_addr_ch.burst <= (others => '0');
                 
                 -- HANDSHAKE
                 master_handshake.arvalid <= '1';
-
-                master_handshake.rready <= '0';
-                
-                read_data_reg_en <= '0';
             when DATA_STATE => 
-                from_master.read_addr_ch.addr <= (others => '0');
-                from_master.read_addr_ch.len <= (others => '0');
-                from_master.read_addr_ch.size <= (others => '0');
-                from_master.read_addr_ch.burst <= (others => '0');
-                
                 -- HANDSHAKE
-                master_handshake.arvalid <= '0';
-                
                 master_handshake.rready <= '1';
                 
                 read_data_reg_en <= '1';
-                
             when FINALIZE_STATE => 
                 interface_to_master.done_read <= '1'; 
-                
-                from_master.read_addr_ch.addr <= (others => '0');
-                from_master.read_addr_ch.len <= (others => '0');
-                from_master.read_addr_ch.size <= (others => '0');
-                from_master.read_addr_ch.burst <= (others => '0');
-                
-                -- HANDSHAKE
-                master_handshake.arvalid <= '0';
-                
-                master_handshake.rready <= '0';
-                
-                read_data_reg_en <= '0';
         end case;
     end process;
     

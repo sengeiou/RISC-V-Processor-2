@@ -71,27 +71,24 @@ begin
 
     write_state_outputs : process(write_state_reg)
     begin
+        slave_handshake.bvalid <= '0';
+
+        slave_handshake.awready <= '1';
+        slave_handshake.wready <= '0';
         case write_state_reg is
             when IDLE =>
-                slave_handshake.bvalid <= '0';
 
-                slave_handshake.awready <= '1';
-                slave_handshake.wready <= '0';
             when DATA_STATE => 
-                slave_handshake.bvalid <= '0';
-
                 slave_handshake.awready <= '0';
                 slave_handshake.wready <= '1';
             when RESPONSE_STATE_1 => 
                 slave_handshake.bvalid <= '1';
 
                 slave_handshake.awready <= '0';
-                slave_handshake.wready <= '0';
             when RESPONSE_STATE_2 => 
                 slave_handshake.bvalid <= '1';
                 
                 slave_handshake.awready <= '0';
-                slave_handshake.wready <= '0';
         end case;
     end process;
     
@@ -118,26 +115,20 @@ begin
     
     read_state_outputs : process(read_state_reg)
     begin
+        to_master_interface.read_data_ch.data <= (others => '0');
+        to_master_interface.read_data_ch.resp <= (others => '0');
+        to_master_interface.read_data_ch.last <= '0';
+                
+        slave_handshake.rvalid <= '0';
+                
+        slave_handshake.arready <= '1';
         case read_state_reg is
             when IDLE =>
-                to_master_interface.read_data_ch.data <= (others => '0');
-                to_master_interface.read_data_ch.resp <= (others => '0');
-                to_master_interface.read_data_ch.last <= '0';
-                
-                slave_handshake.rvalid <= '0';
-                
-                slave_handshake.arready <= '1';
+
             when ADDR_STATE => 
-                to_master_interface.read_data_ch.data <= (others => '0');
-                to_master_interface.read_data_ch.resp <= (others => '0');
-                to_master_interface.read_data_ch.last <= '0';
-                
-                slave_handshake.rvalid <= '0';
-                
                 slave_handshake.arready <= '0';
             when DATA_STATE => 
                 to_master_interface.read_data_ch.data <= from_slave.data_read;
-                to_master_interface.read_data_ch.resp <= (others => '0');
                 to_master_interface.read_data_ch.last <= '1';
                 
                 slave_handshake.rvalid <= '1';
