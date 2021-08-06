@@ -45,14 +45,17 @@ begin
                               
     alu_process : process(all)
     begin
-        if (alu_op_sel = ALU_OP_ADD) then               -- ADD
+        i_barrel_shifter_direction <= '0';
+        i_barrel_shifter_airth <= '0';
+    
+        if (alu_op_sel = ALU_OP_ADD) then               -- ADD        
             result <= std_logic_vector(signed(operand_1) + signed(operand_2));
-        elsif (alu_op_sel = ALU_OP_SUB) then            -- SUB
+        elsif (alu_op_sel = ALU_OP_SUB) then            -- SUB        
             result <= std_logic_vector(signed(operand_1) - signed(operand_2));
-        elsif (alu_op_sel = ALU_OP_LESS) then            -- SET ON OP_1 < OP_2 SIGNED            
+        elsif (alu_op_sel = ALU_OP_LESS) then            -- SET ON OP_1 < OP_2 SIGNED  
             result <= (OPERAND_WIDTH_BITS - 1 downto 1 => '0') & '1' when signed(operand_1) < signed(operand_2) else
                       (others => '0');
-        elsif (alu_op_sel = ALU_OP_LESSU) then            -- SET ON OP_1 < OP_2 UNSIGNED            
+        elsif (alu_op_sel = ALU_OP_LESSU) then            -- SET ON OP_1 < OP_2 UNSIGNED         
             result <= (OPERAND_WIDTH_BITS - 1 downto 1 => '0') & '1' when unsigned(operand_1) < unsigned(operand_2) else
                       (others => '0');
         elsif (alu_op_sel = ALU_OP_XOR) then            -- XOR         
@@ -63,16 +66,11 @@ begin
             result <= operand_1 and operand_2;
         elsif (alu_op_sel = ALU_OP_SLL) then            -- SLL
             i_barrel_shifter_direction <= '1';
-            i_barrel_shifter_airth <= '0';
         
             result <= i_barrel_shifter_result;
         elsif (alu_op_sel = ALU_OP_SRL) then            -- SRL
-            i_barrel_shifter_direction <= '0';
-            i_barrel_shifter_airth <= '0';
-        
             result <= i_barrel_shifter_result;
         elsif (alu_op_sel = ALU_OP_SRA) then            -- SRA
-            i_barrel_shifter_direction <= '0';
             i_barrel_shifter_airth <= '1';
         
             result <= i_barrel_shifter_result;

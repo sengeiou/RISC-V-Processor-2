@@ -110,6 +110,8 @@ begin
             when DATA_STATE => 
                 if (master_handshake.rready = '1') then
                     read_state_next <= IDLE;
+                else
+                    read_state_next <= DATA_STATE;
                 end if;
         end case;
     end process;
