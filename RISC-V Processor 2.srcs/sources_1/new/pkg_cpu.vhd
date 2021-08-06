@@ -18,4 +18,11 @@ package pkg_cpu is
     constant ALU_OP_SLL : std_logic_vector(3 downto 0) := "0001";
     constant ALU_OP_SRL : std_logic_vector(3 downto 0) := "0101";
     constant ALU_OP_SRA : std_logic_vector(3 downto 0) := "1101";
+    
+    -- Opcode Definitions
+    constant REG_ALU_OP : std_logic_vector(6 downto 0) := "0110011";
+    constant IMM_ALU_OP : std_logic_vector(6 downto 0) := "0010011";
+    constant LUI : std_logic_vector(6 downto 0) := "0110111";
+    constant LOAD : std_logic_vector(6 downto 0) := "0000011";
+    constant STORE : std_logic_vector(6 downto 0) := "0100011";
 end pkg_cpu;

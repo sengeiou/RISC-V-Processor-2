@@ -1,27 +1,7 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 07/19/2021 02:20:42 PM
--- Design Name: 
--- Module Name: instruction_decoder - rtl
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Revision 0.1.0 - Added support for Reg-Reg ALU instructions
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+
+use work.pkg_cpu.all;
 
 entity instruction_decoder is
     generic(
@@ -79,13 +59,13 @@ begin
     reg_rd_2_addr <= instruction_bus(20 + REGFILE_ADDRESS_WIDTH_BITS - 1 downto 20);
     reg_wr_addr <= instruction_bus(7 + REGFILE_ADDRESS_WIDTH_BITS - 1 downto 7);
     
-    if (instruction_bus(6 downto 0) = "0110011") then                       -- Reg-Reg ALU Operations
+    if (instruction_bus(6 downto 0) = REG_ALU_OP) then                       -- Reg-Reg ALU Operations
         alu_op_sel <= instruction_bus(30) & instruction_bus(14 downto 12);
         
         reg_rd_1_used <= '1';
         reg_rd_2_used <= '1';
         reg_wr_en <= '1';
-    elsif (instruction_bus(6 downto 0) = "0010011") then                    -- Reg-Imm ALU Operations
+    elsif (instruction_bus(6 downto 0) = IMM_ALU_OP) then                    -- Reg-Imm ALU Operations
         alu_op_sel <= '0' & instruction_bus(14 downto 12);
         
         reg_rd_1_used <= '1';
@@ -95,7 +75,7 @@ begin
         -- Immediate decoding
         immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
         immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
-    elsif (instruction_bus(6 downto 0) = "0110111") then                    -- LUI
+    elsif (instruction_bus(6 downto 0) = LUI) then                    -- LUI
         alu_op_sel <= "0000";
         
         reg_wr_en <= '1';
@@ -107,7 +87,7 @@ begin
         immediate_data(DATA_WIDTH_BITS - 1 downto 31) <= (others => instruction_bus(31));
         immediate_data(30 downto 12) <= instruction_bus(30 downto 12);
         immediate_data(11 downto 0) <= (others => '0');
-    elsif (instruction_bus(6 downto 0) = "0000011") then                    -- LOAD
+    elsif (instruction_bus(6 downto 0) = LOAD) then                    -- LOAD
         alu_op_sel <= "0000";
         
         reg_rd_1_used <= '1';
@@ -118,7 +98,7 @@ begin
         
         immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
         immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
-    elsif (instruction_bus(6 downto 0) = "0100011") then                    -- STORE
+    elsif (instruction_bus(6 downto 0) = STORE) then                    -- STORE
         alu_op_sel <= "0000";
         
         reg_rd_1_used <= '1';
