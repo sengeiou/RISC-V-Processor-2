@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 use work.pkg_pipeline.all;
+use work.pkg_cpu.all;
 
 entity pipeline is
     port(
@@ -20,6 +21,7 @@ end pipeline;
 architecture structural of pipeline is
 -- Pipeline Control Signals
 signal mem_busy : std_logic;
+signal pc : std_logic_vector(31 downto 0);
 
 signal pipeline_regs_en : pipeline_regs_en_type;
 signal pipeline_regs_rst : pipeline_regs_rst_type;
@@ -37,6 +39,10 @@ signal ex_mem_register : ex_mem_register_type;
 signal mem_wb_register_next : mem_wb_register_type;
 signal mem_wb_register : mem_wb_register_type;
 
+-- Other Control Signals
+signal branch_taken : std_logic;
+signal branch_target_addr : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+
 begin
     -- ========== PIPELINE CONTROL ==========
     pipeline_controller : entity work.pipeline_controller(rtl)
@@ -49,7 +55,9 @@ begin
 
     -- ========== STAGES ==========
     stage_fetch : entity work.stage_fetch(rtl)
-                  port map(instruction_addr => instruction_addr_debug,
+                  port map(program_counter => pc,
+                           branch_taken => branch_taken,
+                           branch_target_addr => branch_target_addr,
                            clk => clk,
                            reset => reset);
     
@@ -69,6 +77,8 @@ begin
                             reg_2_used => de_ex_register_next.reg_2_used,
                             alu_op_sel => de_ex_register_next.alu_op_sel,
                             immediate_used => de_ex_register_next.immediate_used,
+                            
+                            prog_flow_cntrl => de_ex_register_next.prog_flow_cntrl,
                             
                             reg_wr_addr => de_ex_register_next.reg_wr_addr,
                             reg_wr_en => de_ex_register_next.reg_wr_en,
@@ -91,6 +101,12 @@ begin
                              alu_result => ex_mem_register_next.alu_result,
                                 
                              -- CONTROL SIGNALS
+                             pc => de_ex_register.pc,
+                             
+                             prog_flow_cntrl => de_ex_register.prog_flow_cntrl,
+                             branch_taken => branch_taken,
+                             branch_target_addr => branch_target_addr,
+                             
                              alu_op_sel => de_ex_register.alu_op_sel,
                              reg_1_used => de_ex_register.reg_1_used,
                              reg_2_used => de_ex_register.reg_2_used,
@@ -123,6 +139,8 @@ begin
     end process;
 
     -- ===================== DECODE / EXECUTE REGISTER ===================== 
+    de_ex_register_next.pc <= fet_de_register.pc;
+    
     de_ex_register_control : process(clk, reset)
     begin
         if (rising_edge(clk)) then
@@ -169,6 +187,9 @@ begin
     end process;             
 
     fet_de_register_next.instruction <= instruction_debug;
+    
+    fet_de_register_next.pc <= pc;
+    instruction_addr_debug <= pc;
 end structural;
 
 

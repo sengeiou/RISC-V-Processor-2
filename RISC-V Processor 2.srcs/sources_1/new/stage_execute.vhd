@@ -11,11 +11,18 @@ entity stage_execute is
         immediate_data : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         
         alu_result : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        
         -- ========== CONTROL SIGNALS ==========
+        pc : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        
         alu_op_sel : in std_logic_vector(3 downto 0);
         reg_1_used : in std_logic;
         reg_2_used : in std_logic;
-        immediate_used : in std_logic
+        immediate_used : in std_logic;
+        
+        prog_flow_cntrl : in std_logic_vector(2 downto 0);
+        branch_target_addr : out std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        branch_taken : out std_logic
     );
 end stage_execute;
 
@@ -30,6 +37,13 @@ architecture structural of stage_execute is
     signal mux_alu_oper_1_sel : std_logic_vector(1 downto 0);
     signal mux_alu_oper_2_sel : std_logic_vector(1 downto 0);
 begin
+    branching_unit : entity work.branching_unit(rtl)
+                     port map(pc => pc,
+                              immediate => immediate_data,
+                              prog_flow_cntrl => prog_flow_cntrl,
+                              branch_target_addr => branch_target_addr,
+                              branch_taken => branch_taken);
+
     alu : entity work.arithmetic_logic_unit(rtl)
           generic map(OPERAND_WIDTH_BITS => CPU_DATA_WIDTH_BITS)
           port map(operand_1 => alu_oper_1,

@@ -31,6 +31,8 @@ entity stage_decode is
         reg_wr_en : out std_logic;
         immediate_used : out std_logic;
         
+        prog_flow_cntrl : out std_logic_vector(2 downto 0);
+        
         execute_read : out std_logic;
         execute_write : out std_logic;
         
@@ -58,6 +60,8 @@ begin
                                    reg_rd_2_used => reg_2_used,
                                    reg_wr_en => reg_wr_en,
                                    immediate_used => immediate_used,
+                                   
+                                   prog_flow_cntrl => prog_flow_cntrl,
                                    
                                    execute_read => execute_read,
                                    execute_write => execute_write,

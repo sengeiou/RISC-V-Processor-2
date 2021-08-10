@@ -26,7 +26,7 @@ begin
 
     tb : process
     begin
-        wait for T * 100;
+        wait for T * 500;
         
         report "Simulation Finished." severity FAILURE;
     end process;

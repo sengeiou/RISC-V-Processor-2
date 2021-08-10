@@ -21,6 +21,7 @@ package pkg_pipeline is
     type fet_de_register_type is record
         -- ===== CONTROL (DECODE) =====
         instruction : std_logic_vector(31 downto 0);
+        pc : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
     end record;
 
     type de_ex_register_type is record
@@ -38,6 +39,9 @@ package pkg_pipeline is
         -- ===== CONTROL (EXECUTE) =====
         alu_op_sel : std_logic_vector(3 downto 0);
         immediate_used : std_logic;
+        pc : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        
+        prog_flow_cntrl : std_logic_vector(2 downto 0);
         
         -- ===== CONTROL (MEMORY) =====
         execute_read : std_logic;
@@ -72,7 +76,8 @@ package pkg_pipeline is
         reg_wr_en : std_logic;
     end record;
     
-    constant FET_DE_REGISTER_CLEAR : fet_de_register_type := (instruction => (others => '0'));
+    constant FET_DE_REGISTER_CLEAR : fet_de_register_type := (instruction => (others => '0'),
+                                                              pc => (others => '0'));
     
     constant DE_EX_REGISTER_CLEAR : de_ex_register_type := (reg_1_data => (others => '0'),
                                                             reg_2_data => (others => '0'),
@@ -85,8 +90,10 @@ package pkg_pipeline is
                                                             immediate_used => '0',
                                                             reg_wr_addr => (others => '0'),
                                                             reg_wr_en => '0',
+                                                            prog_flow_cntrl => (others => '0'),
                                                             execute_read => '0',
-                                                            execute_write => '0');
+                                                            execute_write => '0',
+                                                            pc => (others => '0'));
                                                             
     constant EX_MEM_REGISTER_CLEAR : ex_mem_register_type := (alu_result => (others => '0'),
                                                               reg_2_data => (others => '0'),

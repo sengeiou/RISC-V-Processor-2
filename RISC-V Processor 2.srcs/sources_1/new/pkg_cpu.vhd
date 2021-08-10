@@ -25,4 +25,10 @@ package pkg_cpu is
     constant LUI : std_logic_vector(6 downto 0) := "0110111";
     constant LOAD : std_logic_vector(6 downto 0) := "0000011";
     constant STORE : std_logic_vector(6 downto 0) := "0100011";
+    constant JAL : std_logic_vector(6 downto 0) := "1101111";
+    
+    -- Program Flow Definitions
+    constant PROG_FLOW_NORM : std_logic_vector(2 downto 0) := "000";
+    constant PROG_FLOW_JAL : std_logic_vector(2 downto 0) := "001";
+    constant PROG_FLOW_JALR : std_logic_vector(2 downto 0) := "010";
 end pkg_cpu;

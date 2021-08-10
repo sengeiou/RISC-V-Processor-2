@@ -26,7 +26,7 @@ begin
                              
     rom : entity work.rom_memory(rtl)
           port map(data => instruction_debug,
-                   addr => instruction_addr_debug(9 downto 2),
+                   addr => instruction_addr_debug(7 downto 0),
                    clk => clk_cpu);
 
 end structural;
