@@ -125,6 +125,15 @@ begin
         immediate_data(11) <= instruction_bus(20);
         immediate_data(19 downto 12) <= instruction_bus(19 downto 12);
         immediate_data(DATA_WIDTH_BITS - 1 downto 20) <= (others => instruction_bus(31));
+    elsif (instruction_bus(6 downto 0) = JALR) then
+        alu_op_sel <= "0000";
+        
+        reg_wr_en <= '1';
+        
+        prog_flow_cntrl <= PROG_FLOW_JALR;
+        
+        immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
+        immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
     end if;
     end process;
     

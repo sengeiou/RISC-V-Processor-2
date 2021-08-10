@@ -40,6 +40,7 @@ begin
     branching_unit : entity work.branching_unit(rtl)
                      port map(pc => pc,
                               immediate => immediate_data,
+                              reg_1_data => reg_1_data,
                               prog_flow_cntrl => prog_flow_cntrl,
                               branch_target_addr => branch_target_addr,
                               branch_taken => branch_taken);

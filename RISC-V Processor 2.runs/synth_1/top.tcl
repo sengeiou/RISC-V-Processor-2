@@ -72,6 +72,7 @@ proc create_report { reportName command } {
 OPTRACE "synth_1" START { ROLLUP_AUTO }
 set_param chipscope.maxJobs 1
 set_param xicom.use_bs_reader 1
+set_msg_config -id {Common 17-41} -limit 10000000
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a100tcsg324-1
 
@@ -103,10 +104,11 @@ read_vhdl -vhdl2008 -library xil_defaultlib {
 read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pkg_cpu.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/branching_unit.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pkg_pipeline.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline_controller.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_fetch.vhd}
-  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_execute.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_2_1.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_memory.vhd}
@@ -117,7 +119,7 @@ read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd}
 }
-read_ip -quiet {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
+read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_late.xdc}}]
