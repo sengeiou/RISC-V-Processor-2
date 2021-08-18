@@ -1,0 +1,6 @@
+sv xpm --include "../../../../RISC-V Processor 2.gen/sources_1/ip/ila_0/hdl/verilog" \
+"E:/Programs/Xilinx_Vivado/Vivado/2020.2/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
+
+verilog xil_defaultlib "glbl.v"
+
+nosort

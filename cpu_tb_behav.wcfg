@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="920201fs"></ZoomStartTime>
-      <ZoomEndTime time="1219267fs"></ZoomEndTime>
-      <Cursor1Time time="2000000fs"></Cursor1Time>
+      <ZoomStartTime time="131200fs"></ZoomStartTime>
+      <ZoomEndTime time="198584fs"></ZoomEndTime>
+      <Cursor1Time time="158781fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="219"></NameColumnWidth>
+      <NameColumnWidth column_width="215"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="32" />
+   <WVObjectSize size="33" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -42,10 +42,15 @@
    <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_decode/register_file/reg_file" type="array">
       <obj_property name="ElementShortName">reg_file[31:0][31:0]</obj_property>
       <obj_property name="ObjectShortName">reg_file[31:0][31:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider105">
       <obj_property name="label">STAGES</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/instruction_debug" type="array">
+      <obj_property name="ElementShortName">instruction_debug[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instruction_debug[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="group104" type="group">
       <obj_property name="label">STAGE FETCH</obj_property>
@@ -152,8 +157,8 @@
          <obj_property name="ObjectShortName">alu_op_sel[3:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_decode/prog_flow_cntrl" type="array">
-         <obj_property name="ElementShortName">prog_flow_cntrl[2:0]</obj_property>
-         <obj_property name="ObjectShortName">prog_flow_cntrl[2:0]</obj_property>
+         <obj_property name="ElementShortName">prog_flow_cntrl[1:0]</obj_property>
+         <obj_property name="ObjectShortName">prog_flow_cntrl[1:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group107" type="group">
@@ -220,13 +225,17 @@
          <obj_property name="label">BRANCHING UNIT</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/branching_unit/pc" type="array">
+            <obj_property name="ElementShortName">pc[31:0]</obj_property>
+            <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+         </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/branching_unit/immediate" type="array">
             <obj_property name="ElementShortName">immediate[31:0]</obj_property>
             <obj_property name="ObjectShortName">immediate[31:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/branching_unit/prog_flow_cntrl" type="array">
-            <obj_property name="ElementShortName">prog_flow_cntrl[2:0]</obj_property>
-            <obj_property name="ObjectShortName">prog_flow_cntrl[2:0]</obj_property>
+            <obj_property name="ElementShortName">prog_flow_cntrl[1:0]</obj_property>
+            <obj_property name="ObjectShortName">prog_flow_cntrl[1:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/branching_unit/branch_target_addr" type="array">
             <obj_property name="ElementShortName">branch_target_addr[31:0]</obj_property>
@@ -236,9 +245,9 @@
             <obj_property name="ElementShortName">branch_taken</obj_property>
             <obj_property name="ObjectShortName">branch_taken</obj_property>
          </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/branching_unit/base_addr_sel_i" type="array">
-            <obj_property name="ElementShortName">base_addr_sel_i[1:0]</obj_property>
-            <obj_property name="ObjectShortName">base_addr_sel_i[1:0]</obj_property>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/branching_unit/base_addr_sel_i" type="logic">
+            <obj_property name="ElementShortName">base_addr_sel_i</obj_property>
+            <obj_property name="ObjectShortName">base_addr_sel_i</obj_property>
          </wvobject>
       </wvobject>
    </wvobject>

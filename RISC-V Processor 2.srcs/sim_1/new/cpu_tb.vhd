@@ -28,7 +28,7 @@ begin
     begin
         wait for T * 500;
         
-        report "Simulation Finished." severity FAILURE;
+        --report "Simulation Finished." severity FAILURE;
     end process;
 
 end Behavioral;

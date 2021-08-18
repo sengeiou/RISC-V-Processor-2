@@ -31,7 +31,7 @@ begin
     
     data_out_mux : entity work.mux_2_1(rtl)
                    generic map(WIDTH_BITS => 32)
-                   port map(in_0 => data_in,
+                   port map(in_0 => addr_in,
                             in_1 => to_master.data_read,
                             output => data_out,
                             sel => execute_read);

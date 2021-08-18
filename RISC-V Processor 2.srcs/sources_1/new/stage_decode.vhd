@@ -31,7 +31,7 @@ entity stage_decode is
         reg_wr_en : out std_logic;
         immediate_used : out std_logic;
         
-        prog_flow_cntrl : out std_logic_vector(2 downto 0);
+        prog_flow_cntrl : out std_logic_vector(1 downto 0);
         
         execute_read : out std_logic;
         execute_write : out std_logic;

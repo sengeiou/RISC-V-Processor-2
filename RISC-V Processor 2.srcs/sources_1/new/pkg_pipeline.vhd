@@ -41,7 +41,7 @@ package pkg_pipeline is
         immediate_used : std_logic;
         pc : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         
-        prog_flow_cntrl : std_logic_vector(2 downto 0);
+        prog_flow_cntrl : std_logic_vector(1 downto 0);
         
         -- ===== CONTROL (MEMORY) =====
         execute_read : std_logic;

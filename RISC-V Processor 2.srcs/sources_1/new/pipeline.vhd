@@ -48,6 +48,7 @@ begin
     pipeline_controller : entity work.pipeline_controller(rtl)
                           port map(mem_busy => mem_busy,
                                    halt => '0',
+                                   branch_taken => branch_taken,
                                    reset => reset,
                                    
                                    pipeline_regs_en => pipeline_regs_en,
@@ -63,7 +64,7 @@ begin
     
     stage_decode : entity work.stage_decode(structural)
                    port map(-- DATA SIGNALS
-                            instruction_bus => instruction_debug,
+                            instruction_bus => fet_de_register.instruction,
                             reg_1_data => de_ex_register_next.reg_1_data,
                             reg_2_data => de_ex_register_next.reg_2_data,
                             immediate_data => de_ex_register_next.immediate_data,
@@ -113,7 +114,7 @@ begin
                              immediate_used => de_ex_register.immediate_used);
                              
     stage_memory : entity work.stage_memory(structural)
-                   port map(data_in => ex_mem_register.alu_result,
+                   port map(data_in => ex_mem_register.reg_2_data,
                             data_out => mem_wb_register_next.mem_data,
                             addr_in => ex_mem_register.alu_result,
                             

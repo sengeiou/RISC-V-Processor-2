@@ -58,6 +58,9 @@ begin
         elsif (alu_op_sel = ALU_OP_LESSU) then            -- SET ON OP_1 < OP_2 UNSIGNED         
             result <= (OPERAND_WIDTH_BITS - 1 downto 1 => '0') & '1' when unsigned(operand_1) < unsigned(operand_2) else
                       (others => '0');
+        elsif (alu_op_sel = ALU_OP_EQ) then             -- OP_1 = OP_2
+            result <= (OPERAND_WIDTH_BITS - 1 downto 1 => '0') & '1' when operand_1 = operand_2 else
+                      (others => '0');
         elsif (alu_op_sel = ALU_OP_XOR) then            -- XOR         
             result <= operand_1 xor operand_2;
         elsif (alu_op_sel = ALU_OP_OR) then            -- OR

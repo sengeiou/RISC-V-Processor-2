@@ -22,7 +22,7 @@ entity instruction_decoder is
         immediate_used : out std_logic;
         
         -- Branch control
-        prog_flow_cntrl : out std_logic_vector(2 downto 0);
+        prog_flow_cntrl : out std_logic_vector(1 downto 0);
         
         -- Register control
         reg_rd_1_addr : out std_logic_vector(REGFILE_ADDRESS_WIDTH_BITS - 1 downto 0);
@@ -133,6 +133,22 @@ begin
         prog_flow_cntrl <= PROG_FLOW_JALR;
         
         immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
+        immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
+    elsif (instruction_bus(6 downto 0) = BR_COND) then
+        if (instruction_bus(14 downto 13) = "00") then
+            alu_op_sel <= "110" & instruction_bus(12);
+        elsif (instruction_bus(14 downto 13) = "10") then
+            alu_op_sel <= "001" & instruction_bus(12);
+        elsif (instruction_bus(14 downto 13) = "11") then
+            alu_op_sel <= "111" & instruction_bus(12);
+        end if;
+        
+        prog_flow_cntrl <= PROG_FLOW_COND;
+        
+        immediate_data(0) <= '0';
+        immediate_data(4 downto 1) <= instruction_bus(11 downto 8);
+        immediate_data(10 downto 5) <= instruction_bus(30 downto 25);
+        immediate_data(11) <= instruction_bus(7);
         immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
     end if;
     end process;
