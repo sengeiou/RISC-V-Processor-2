@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
-| Date         : Wed Aug 18 15:56:13 2021
+| Date         : Wed Aug 18 17:58:42 2021
 | Host         : DESKTOP-JMFHVJF running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file top_control_sets_placed.rpt
 | Design       : top
@@ -27,7 +27,7 @@ Table of Contents
 |    Minimum number of control sets                        |    24 |
 |    Addition due to synthesis replication                 |     0 |
 |    Addition due to physical synthesis replication        |     0 |
-| Unused register locations in slices containing registers |    19 |
+| Unused register locations in slices containing registers |    21 |
 +----------------------------------------------------------+-------+
 * Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
 ** Run report_qor_suggestions for automated merging and remapping suggestions
@@ -58,45 +58,45 @@ Table of Contents
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
-| No           | No                    | No                     |              22 |            3 |
+| No           | No                    | No                     |              22 |            5 |
 | No           | No                    | Yes                    |               8 |            1 |
-| No           | Yes                   | No                     |              46 |           10 |
+| No           | Yes                   | No                     |              46 |           11 |
 | Yes          | No                    | No                     |               0 |            0 |
 | Yes          | No                    | Yes                    |               0 |            0 |
-| Yes          | Yes                   | No                     |             833 |          312 |
+| Yes          | Yes                   | No                     |             839 |          349 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 
 
 4. Detailed Control Set Information
 -----------------------------------
 
-+---------------------------------------------------+------------------------------------------------------------------------------+-----------------------------------------------------------------------------+------------------+----------------+--------------+
-|                    Clock Signal                   |                                 Enable Signal                                |                               Set/Reset Signal                              | Slice Load Count | Bel Load Count | Bels / Slice |
-+---------------------------------------------------+------------------------------------------------------------------------------+-----------------------------------------------------------------------------+------------------+----------------+--------------+
-|  your_instance_name/inst/clk_cpu_clk_wiz_0_en_clk |                                                                              | BTNC_IBUF                                                                   |                1 |              8 |         8.00 |
-|  your_instance_name/inst/clk_cpu                  | cpu/axi_interconnect/axi_master_1/FSM_onehot_write_state_reg_reg[4]_0[0]     | BTNC_IBUF                                                                   |                4 |             12 |         3.00 |
-|  your_instance_name/inst/clk_cpu                  | cpu/axi_interconnect/axi_master_1/FSM_onehot_write_state_reg_reg[4]_0[1]     | BTNC_IBUF                                                                   |                3 |             16 |         5.33 |
-|  your_instance_name/inst/clk_cpu                  | cpu/led_device/data_reg_en                                                   | BTNC_IBUF                                                                   |                5 |             16 |         3.20 |
-| ~your_instance_name/inst/clk_cpu                  |                                                                              |                                                                             |                3 |             22 |         7.33 |
-|  your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/master_to_interface_1[execute_write]                | BTNC_IBUF                                                                   |                4 |             28 |         7.00 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[16]_18          | BTNC_IBUF                                                                   |                9 |             32 |         3.56 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[17]_17          | BTNC_IBUF                                                                   |                9 |             32 |         3.56 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[18]_16          | BTNC_IBUF                                                                   |               13 |             32 |         2.46 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[5]_20           | BTNC_IBUF                                                                   |               15 |             32 |         2.13 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[7][31]_i_1_n_0  | BTNC_IBUF                                                                   |               29 |             32 |         1.10 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[3]_22           | BTNC_IBUF                                                                   |                9 |             32 |         3.56 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[6]_19           | BTNC_IBUF                                                                   |               12 |             32 |         2.67 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[19][31]_i_1_n_0 | BTNC_IBUF                                                                   |               12 |             32 |         2.67 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[20]_15          | BTNC_IBUF                                                                   |               11 |             32 |         2.91 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[21][31]_i_1_n_0 | BTNC_IBUF                                                                   |               10 |             32 |         3.20 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[4]_21           | BTNC_IBUF                                                                   |               14 |             32 |         2.29 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[23][31]_i_1_n_0 | BTNC_IBUF                                                                   |               14 |             32 |         2.29 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[1]_24           | BTNC_IBUF                                                                   |               10 |             32 |         3.20 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[2]_23           | BTNC_IBUF                                                                   |               11 |             32 |         2.91 |
-| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[22][31]_i_1_n_0 | BTNC_IBUF                                                                   |               12 |             32 |         2.67 |
-|  your_instance_name/inst/clk_cpu                  |                                                                              | BTNC_IBUF                                                                   |               10 |             46 |         4.60 |
-|  your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/fet_de_register[instruction][30]_i_2_n_0            | BTNC_IBUF                                                                   |               41 |             92 |         2.24 |
-|  your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/fet_de_register[instruction][30]_i_2_n_0            | cpu/core_1/core_pipeline/stage_execute/alu/pipeline_regs_rst[de_ex_reg_rst] |               65 |            189 |         2.91 |
-+---------------------------------------------------+------------------------------------------------------------------------------+-----------------------------------------------------------------------------+------------------+----------------+--------------+
++---------------------------------------------------+---------------------------------------------------------------------+--------------------------------------------------+------------------+----------------+--------------+
+|                    Clock Signal                   |                            Enable Signal                            |                 Set/Reset Signal                 | Slice Load Count | Bel Load Count | Bels / Slice |
++---------------------------------------------------+---------------------------------------------------------------------+--------------------------------------------------+------------------+----------------+--------------+
+|  your_instance_name/inst/clk_cpu_clk_wiz_0_en_clk |                                                                     | BTNC_IBUF                                        |                1 |              8 |         8.00 |
+|  your_instance_name/inst/clk_cpu                  | cpu/axi_interconnect/axi_master_1/Q[0]                              | BTNC_IBUF                                        |                2 |             12 |         6.00 |
+|  your_instance_name/inst/clk_cpu                  | cpu/led_device/data_reg_en                                          | BTNC_IBUF                                        |                3 |             16 |         5.33 |
+|  your_instance_name/inst/clk_cpu                  | cpu/axi_interconnect/axi_master_1/Q[1]                              | BTNC_IBUF                                        |                2 |             16 |         8.00 |
+| ~your_instance_name/inst/clk_cpu                  |                                                                     |                                                  |                5 |             22 |         4.40 |
+|  your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/master_to_interface_1[execute_write]       | BTNC_IBUF                                        |                4 |             28 |         7.00 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[6]_24  | BTNC_IBUF                                        |               14 |             32 |         2.29 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[1]_15  | BTNC_IBUF                                        |               16 |             32 |         2.00 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[24]_20 | BTNC_IBUF                                        |               13 |             32 |         2.46 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[25]_21 | BTNC_IBUF                                        |               13 |             32 |         2.46 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[2]_17  | BTNC_IBUF                                        |               14 |             32 |         2.29 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[26]_26 | BTNC_IBUF                                        |               13 |             32 |         2.46 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[27]_27 | BTNC_IBUF                                        |               14 |             32 |         2.29 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[28]_22 | BTNC_IBUF                                        |               13 |             32 |         2.46 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[29]_23 | BTNC_IBUF                                        |               11 |             32 |         2.91 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[30]_28 | BTNC_IBUF                                        |                9 |             32 |         3.56 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[31]_29 | BTNC_IBUF                                        |               12 |             32 |         2.67 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[3]_16  | BTNC_IBUF                                        |               13 |             32 |         2.46 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[4]_18  | BTNC_IBUF                                        |               15 |             32 |         2.13 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[5]_19  | BTNC_IBUF                                        |               11 |             32 |         2.91 |
+| ~your_instance_name/inst/clk_cpu                  | cpu/core_1/core_pipeline/stage_decode/register_file/reg_file[7]_25  | BTNC_IBUF                                        |               20 |             32 |         1.60 |
+|  your_instance_name/inst/clk_cpu                  |                                                                     | BTNC_IBUF                                        |               11 |             46 |         4.18 |
+|  your_instance_name/inst/clk_cpu                  | cpu/axi_interconnect/axi_master_1/E[0]                              | BTNC_IBUF                                        |               45 |             92 |         2.04 |
+|  your_instance_name/inst/clk_cpu                  | cpu/axi_interconnect/axi_master_1/E[0]                              | cpu/core_1/core_pipeline/stage_execute/alu/SR[0] |               92 |            195 |         2.12 |
++---------------------------------------------------+---------------------------------------------------------------------+--------------------------------------------------+------------------+----------------+--------------+
 
 

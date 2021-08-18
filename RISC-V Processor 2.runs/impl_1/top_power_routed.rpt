@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
-| Date             : Wed Aug 18 15:56:44 2021
+| Date             : Wed Aug 18 17:59:13 2021
 | Host             : DESKTOP-JMFHVJF running 64-bit major release  (build 9200)
 | Command          : report_power -file top_power_routed.rpt -pb top_power_summary_routed.pb -rpx top_power_routed.rpx
 | Design           : top
@@ -53,13 +53,13 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |    <0.001 |        8 |       --- |             --- |
-| Slice Logic    |    <0.001 |     2026 |       --- |             --- |
-|   LUT as Logic |    <0.001 |      923 |     63400 |            1.46 |
+| Slice Logic    |    <0.001 |     2223 |       --- |             --- |
+|   LUT as Logic |    <0.001 |     1041 |     63400 |            1.64 |
 |   CARRY4       |    <0.001 |       43 |     15850 |            0.27 |
-|   Register     |    <0.001 |      909 |    126800 |            0.72 |
-|   F7/F8 Muxes  |    <0.001 |       34 |     63400 |            0.05 |
+|   Register     |    <0.001 |      915 |    126800 |            0.72 |
+|   F7/F8 Muxes  |    <0.001 |      128 |     63400 |            0.20 |
 |   Others       |     0.000 |       14 |       --- |             --- |
-| Signals        |    <0.001 |     1698 |       --- |             --- |
+| Signals        |    <0.001 |     1692 |       --- |             --- |
 | MMCM           |     0.106 |        1 |         6 |           16.67 |
 | I/O            |    <0.001 |       18 |       210 |            8.57 |
 | Static Power   |     0.097 |          |           |                 |

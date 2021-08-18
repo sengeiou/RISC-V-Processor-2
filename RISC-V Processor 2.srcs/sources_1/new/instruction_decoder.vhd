@@ -107,6 +107,7 @@ begin
         alu_op_sel <= "0000";
         
         reg_rd_1_used <= '1';
+        reg_rd_2_used <= '1';       -- For forwarding purposes
         immediate_used <= '1';
         
         execute_write <= '1';
@@ -144,6 +145,9 @@ begin
         end if;
         
         prog_flow_cntrl <= PROG_FLOW_COND;
+        
+        reg_rd_1_used <= '1';
+        reg_rd_2_used <= '1';
         
         immediate_data(0) <= '0';
         immediate_data(4 downto 1) <= instruction_bus(11 downto 8);

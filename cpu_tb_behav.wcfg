@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="131200fs"></ZoomStartTime>
-      <ZoomEndTime time="198584fs"></ZoomEndTime>
-      <Cursor1Time time="158781fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1000001fs"></ZoomEndTime>
+      <Cursor1Time time="112223fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="215"></NameColumnWidth>
+      <NameColumnWidth column_width="211"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="33" />
+   <WVObjectSize size="49" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -259,6 +259,19 @@
       <obj_property name="label">PIPELINE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/pipeline_fwd_cntrl" type="array">
+      <obj_property name="ElementShortName">pipeline_fwd_cntrl</obj_property>
+      <obj_property name="ObjectShortName">pipeline_fwd_cntrl</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/mem_wb_forward_data" type="array">
+      <obj_property name="ElementShortName">mem_wb_forward_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wb_forward_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/ex_mem_forward_data" type="array">
+      <obj_property name="ElementShortName">ex_mem_forward_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_mem_forward_data[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/pipeline_regs_en" type="array">
       <obj_property name="ElementShortName">pipeline_regs_en</obj_property>
       <obj_property name="ObjectShortName">pipeline_regs_en</obj_property>
@@ -316,6 +329,58 @@
    <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/mem_busy" type="logic">
       <obj_property name="ElementShortName">mem_busy</obj_property>
       <obj_property name="ObjectShortName">mem_busy</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider2862">
+      <obj_property name="label">FORWARDING UNIT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_1_addr" type="array">
+      <obj_property name="ElementShortName">reg_1_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_1_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_2_addr" type="array">
+      <obj_property name="ElementShortName">reg_2_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_2_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_wr_addr_em" type="array">
+      <obj_property name="ElementShortName">reg_wr_addr_em[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_wr_addr_em[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_wr_addr_mw" type="array">
+      <obj_property name="ElementShortName">reg_wr_addr_mw[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_wr_addr_mw[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_1_used" type="logic">
+      <obj_property name="ElementShortName">reg_1_used</obj_property>
+      <obj_property name="ObjectShortName">reg_1_used</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_2_used" type="logic">
+      <obj_property name="ElementShortName">reg_2_used</obj_property>
+      <obj_property name="ObjectShortName">reg_2_used</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_wr_used_em" type="logic">
+      <obj_property name="ElementShortName">reg_wr_used_em</obj_property>
+      <obj_property name="ObjectShortName">reg_wr_used_em</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_wr_used_mw" type="logic">
+      <obj_property name="ElementShortName">reg_wr_used_mw</obj_property>
+      <obj_property name="ObjectShortName">reg_wr_used_mw</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_1_fwd_em" type="logic">
+      <obj_property name="ElementShortName">reg_1_fwd_em</obj_property>
+      <obj_property name="ObjectShortName">reg_1_fwd_em</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_1_fwd_mw" type="logic">
+      <obj_property name="ElementShortName">reg_1_fwd_mw</obj_property>
+      <obj_property name="ObjectShortName">reg_1_fwd_mw</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_2_fwd_em" type="logic">
+      <obj_property name="ElementShortName">reg_2_fwd_em</obj_property>
+      <obj_property name="ObjectShortName">reg_2_fwd_em</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/forwarding_unit/reg_2_fwd_mw" type="logic">
+      <obj_property name="ElementShortName">reg_2_fwd_mw</obj_property>
+      <obj_property name="ObjectShortName">reg_2_fwd_mw</obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider350">
       <obj_property name="label">CORE</obj_property>

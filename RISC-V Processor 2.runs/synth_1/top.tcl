@@ -94,6 +94,7 @@ read_vhdl -vhdl2008 -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_signals.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/forwarding_unit.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/instruction_decoder.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_decode.vhd}

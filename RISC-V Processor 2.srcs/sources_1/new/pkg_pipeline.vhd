@@ -17,6 +17,13 @@ package pkg_pipeline is
         ex_mem_reg_rst : std_logic;
         mem_wb_reg_rst : std_logic;
     end record;
+    
+    type pipeline_fwd_cntrl_type is record
+        reg_1_fwd_em : std_logic;
+        reg_1_fwd_mw : std_logic;
+        reg_2_fwd_em : std_logic;
+        reg_2_fwd_mw : std_logic;
+    end record;
 
     type fet_de_register_type is record
         -- ===== CONTROL (DECODE) =====
