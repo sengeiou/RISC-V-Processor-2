@@ -101,7 +101,9 @@ begin
         burst_len <= "00010000";
         burst_size <= "010";
         burst_type <= "01";
+        
         addr_read <= X"0001_0000";
+        data_in_slave <= X"BEBA_BEBA";
         execute_r <= '1';
         wait for 20ns;
         execute_r <= '0';
