@@ -1,11 +1,12 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 entity axi_slave_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master_interface : in work.axi_interface_signal_groups.FromMasterInterface;
-        to_master_interface : out work.axi_interface_signal_groups.ToMasterInterface;
+        from_master_interface : in work.axi_interface_signal_groups.FromMasterInterfaceToBus;
+        to_master_interface : out work.axi_interface_signal_groups.ToMasterInterfaceFromBus;
         
         -- HANDSHAKE SIGNALS
         master_handshake : in work.axi_interface_signal_groups.HandshakeMasterSrc;
@@ -31,6 +32,10 @@ architecture rtl of axi_slave_interface is
                              ADDR_STATE,
                              DATA_STATE);
 
+    signal write_burst_len_reg : std_logic_vector(7 downto 0);
+    signal write_burst_size_reg : std_logic_vector(2 downto 0);
+    signal write_burst_type_reg : std_logic_vector(1 downto 0);
+
     signal write_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
     
@@ -40,8 +45,21 @@ architecture rtl of axi_slave_interface is
     signal write_state_reg : write_state_type;
     signal write_state_next : write_state_type;
     
+   
+    signal read_burst_len_reg : std_logic_vector(7 downto 0);
+    signal read_burst_len_decr : std_logic_vector(7 downto 0);
+    signal read_burst_len_reg_en : std_logic;
+    signal read_burst_len_next : std_logic_vector(7 downto 0);
+    
+    signal read_burst_size_reg : std_logic_vector(2 downto 0);
+    signal read_burst_type_reg : std_logic_vector(1 downto 0);
+    
     signal read_state_reg : read_state_type;
     signal read_state_next : read_state_type;
+    
+    -- CONTROL SIGNALS
+    signal read_burst_len_mux_sel : std_logic;
+    
 begin
     write_state_transition : process(all)
     begin
@@ -105,7 +123,7 @@ begin
             when ADDR_STATE => 
                     read_state_next <= DATA_STATE;
             when DATA_STATE => 
-                if (master_handshake.rready = '1') then
+                if (master_handshake.rready = '1' and read_burst_len_reg = "00000000") then
                     read_state_next <= IDLE;
                 else
                     read_state_next <= DATA_STATE;
@@ -120,24 +138,63 @@ begin
         to_master_interface.read_data_ch.last <= '0';
                 
         slave_handshake.rvalid <= '0';
+        read_burst_len_mux_sel <= '0';
+        read_burst_len_reg_en <= '0';
                 
         slave_handshake.arready <= '1';
         case read_state_reg is
             when IDLE =>
-
+                read_burst_len_reg_en <= '1';
             when ADDR_STATE => 
                 slave_handshake.arready <= '0';
+                
+                -- ====================================
+                read_burst_len_reg_en <= '0';
             when DATA_STATE => 
                 to_master_interface.read_data_ch.data <= from_slave.data_read;
-                to_master_interface.read_data_ch.last <= '1';
+                to_master_interface.read_data_ch.last <= not read_burst_len_reg(7) and
+                                                         not read_burst_len_reg(6) and
+                                                         not read_burst_len_reg(5) and
+                                                         not read_burst_len_reg(4) and
+                                                         not read_burst_len_reg(3) and
+                                                         not read_burst_len_reg(2) and
+                                                         not read_burst_len_reg(1) and
+                                                         not read_burst_len_reg(0);
                 
                 slave_handshake.rvalid <= '1';
                 
                 slave_handshake.arready <= '0';
+                
+                -- ====================================
+                read_burst_len_mux_sel <= '1';
+                read_burst_len_reg_en <= '1';
         end case;
     end process;
-
-    register_control : process(clk, reset)
+    
+    -- ========== BURST CONTROL ==========
+    read_burst_len_reg_cntrl : process(all)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '0') then
+                read_burst_len_reg <= (others => '0');
+            else
+                if (read_burst_len_reg_en = '1') then
+                    read_burst_len_reg <= read_burst_len_next;
+                end if;
+            end if;
+        end if;
+    end process;
+    
+    read_burst_len_next_mux : entity work.mux_2_1(rtl)
+                              generic map(WIDTH_BITS => 8)
+                              port map(in_0 => from_master_interface.read_addr_ch.len,
+                                       in_1 => read_burst_len_decr,
+                                       output => read_burst_len_next,
+                                       sel => read_burst_len_mux_sel);
+    
+    read_burst_len_decr <= std_logic_vector(unsigned(read_burst_len_reg) - 1);
+    -- ========== REGISTER CONTROL ==========
+    register_control : process(all)
     begin
         if (rising_edge(clk)) then
             if (reset = '0') then
@@ -146,6 +203,13 @@ begin
                 
                 read_addr_reg <= (others => '0');
                 read_data_reg <= (others => '0');
+                
+                read_burst_type_reg <= (others => '0');
+                read_burst_size_reg <= (others => '0');
+                
+                write_burst_len_reg <= (others => '0');
+                write_burst_type_reg <= (others => '0');
+                write_burst_size_reg <= (others => '0');
                 
                 write_state_reg <= IDLE;
                 read_state_reg <= IDLE;
@@ -160,6 +224,9 @@ begin
             
                 if (master_handshake.arvalid = '1') then
                     read_addr_reg <= from_master_interface.read_addr_ch.addr;
+                    
+                    read_burst_size_reg <= from_master_interface.read_addr_ch.size;
+                    read_burst_type_reg <= from_master_interface.read_addr_ch.burst_type;
                 end if;
             
                 write_state_reg <= write_state_next;

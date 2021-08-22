@@ -23,8 +23,8 @@ entity axi_interconnect is
 end axi_interconnect;
 
 architecture rtl of axi_interconnect is
-    signal read_bus_1 : work.axi_interface_signal_groups.ToMasterInterface;
-    signal write_bus_1 : work.axi_interface_signal_groups.FromMasterInterface;
+    signal read_bus_1 : work.axi_interface_signal_groups.ToMasterInterfaceFromBus;
+    signal write_bus_1 : work.axi_interface_signal_groups.FromMasterInterfaceToBus;
     signal handshake_master_src_1 : work.axi_interface_signal_groups.HandshakeMasterSrc;
     signal handshake_slave_src_1 : work.axi_interface_signal_groups.HandshakeSlaveSrc;
     

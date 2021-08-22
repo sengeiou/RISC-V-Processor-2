@@ -4,8 +4,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity axi_master_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master : out work.axi_interface_signal_groups.FromMasterInterface;
-        to_master : in work.axi_interface_signal_groups.ToMasterInterface;
+        from_master : out work.axi_interface_signal_groups.FromMasterInterfaceToBus;
+        to_master : in work.axi_interface_signal_groups.ToMasterInterfaceFromBus;
         
         -- HANDSHAKE SIGNALS
         master_handshake : out work.axi_interface_signal_groups.HandshakeMasterSrc;
@@ -78,14 +78,14 @@ begin
         end case;
     end process;
     
-    write_state_outputs : process(write_state_reg)
+    write_state_outputs : process(all)
     begin
         interface_to_master.done_write <= '0'; 
         
         from_master.write_addr_ch.addr <= (others => '0');
         from_master.write_addr_ch.len <= (others => '0');
         from_master.write_addr_ch.size <= (others => '0');
-        from_master.write_addr_ch.burst <= (others => '0');
+        from_master.write_addr_ch.burst_type <= (others => '0');
         
         from_master.write_data_ch.data <= (others => '0');
         from_master.write_data_ch.strb <= "0000";      
@@ -101,6 +101,9 @@ begin
             when ADDR_STATE_1 => 
                 -- WRITE ADDRESS CHANNEL
                 from_master.write_addr_ch.addr <= write_addr_reg;
+                from_master.write_addr_ch.len <= master_to_interface.burst_len;
+                from_master.write_addr_ch.size <= master_to_interface.burst_size;
+                from_master.write_addr_ch.burst_type <= master_to_interface.burst_type;
                 
                 -- WRITE DATA CHANNEL
                 from_master.write_data_ch.data <= write_data_reg;
@@ -153,14 +156,14 @@ begin
         end case;
     end process;
     
-    read_state_outputs : process(read_state_reg)
+    read_state_outputs : process(all)
     begin
         interface_to_master.done_read <= '0';
         
         from_master.read_addr_ch.addr <= (others => '0');
         from_master.read_addr_ch.len <= (others => '0');
         from_master.read_addr_ch.size <= (others => '0');
-        from_master.read_addr_ch.burst <= (others => '0');
+        from_master.read_addr_ch.burst_type <= (others => '0');
                 
         -- HANDSHAKE
         master_handshake.arvalid <= '0';
@@ -173,6 +176,9 @@ begin
 
             when ADDR_STATE => 
                 from_master.read_addr_ch.addr <= master_to_interface.addr_read;
+                from_master.read_addr_ch.len <= master_to_interface.burst_len;
+                from_master.read_addr_ch.size <= master_to_interface.burst_size;
+                from_master.read_addr_ch.burst_type <= master_to_interface.burst_type;
                 
                 -- HANDSHAKE
                 master_handshake.arvalid <= '1';
@@ -186,7 +192,7 @@ begin
         end case;
     end process;
     
-    process(clk)
+    process(all)
     begin
         if (rising_edge(clk)) then
             if (reset = '0') then

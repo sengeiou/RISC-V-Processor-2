@@ -15,7 +15,7 @@ package axi_interface_signal_groups is
         addr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         len : std_logic_vector(7 downto 0);     -- Burst length
         size : std_logic_vector(2 downto 0);    -- Num of bytes to transfer    
-        burst : std_logic_vector(1 downto 0);   -- Burst type    
+        burst_type : std_logic_vector(1 downto 0);   -- Burst type    
     end record WriteAddressChannel;
     
     type WriteDataChannel is record
@@ -34,7 +34,7 @@ package axi_interface_signal_groups is
         addr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         len : std_logic_vector(7 downto 0);     -- Burst length
         size : std_logic_vector(2 downto 0);    -- Num of bytes to transfer
-        burst : std_logic_vector(1 downto 0);   -- Burst type
+        burst_type : std_logic_vector(1 downto 0);   -- Burst type
     end record ReadAddressChannel;
     
     type ReadDataChannel is record
@@ -61,16 +61,16 @@ package axi_interface_signal_groups is
         wready : std_logic;
     end record HandshakeSlaveSrc;
     
-    type FromMasterInterface is record
+    type FromMasterInterfaceToBus is record
         write_addr_ch : WriteAddressChannel;
         write_data_ch : WriteDataChannel;
         read_addr_ch : ReadAddressChannel;
-    end record FromMasterInterface;
+    end record FromMasterInterfaceToBus;
     
-    type ToMasterInterface is record
+    type ToMasterInterfaceFromBus is record
         read_data_ch : ReadDataChannel;
         write_resp_ch : WriteResponseChannel;
-    end record ToMasterInterface;
+    end record ToMasterInterfaceFromBus;
     
     type FromMaster is record
         -- Data signals
@@ -81,6 +81,10 @@ package axi_interface_signal_groups is
         addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         
         -- Control signals
+        burst_len : std_logic_vector(7 downto 0);
+        burst_size : std_logic_vector(2 downto 0);
+        burst_type : std_logic_vector(1 downto 0);
+        
         execute_read : std_logic;
         execute_write : std_logic;
     end record FromMaster;
@@ -109,6 +113,11 @@ package axi_interface_signal_groups is
         addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         addr_write : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     end record ToSlave;
+    
+    -- ========== CONSTANTS ==========
+    constant BURST_FIXED : std_logic_vector(1 downto 0) := "00";
+    constant BURST_INCR : std_logic_vector(1 downto 0) := "01";
+    constant BURST_WRAP : std_logic_vector(1 downto 0) := "10";
 end axi_interface_signal_groups;
 
 package body axi_interface_signal_groups is

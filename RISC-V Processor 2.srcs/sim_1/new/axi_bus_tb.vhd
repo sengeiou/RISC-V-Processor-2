@@ -17,6 +17,9 @@ architecture Behavioral of axi_bus_tb is
     signal master_interface_out : work.axi_interface_signal_groups.ToMaster;
     signal slave_interface_out : work.axi_interface_signal_groups.ToSlave;
     
+    signal burst_len : std_logic_vector(7 downto 0);
+    signal burst_size : std_logic_vector(2 downto 0);
+    signal burst_type : std_logic_vector(1 downto 0);
     signal clk, reset, execute_w, execute_r : std_logic;
     
     constant T : time := 20ns;
@@ -29,7 +32,7 @@ begin
         wait for T / 2;
     end process;
     
-    reset <= '0', '1' after 20ns;
+    reset <= '1', '0' after 20ns;
 
     axi_interconnect : entity work.axi_interconnect(rtl)
                        port map(master_to_interface_1.data_write => data_write,
@@ -37,6 +40,9 @@ begin
                                 master_to_interface_1.addr_read => addr_read,
                                 master_to_interface_1.execute_read => execute_r,
                                 master_to_interface_1.execute_write => execute_w,
+                                master_to_interface_1.burst_len => burst_len,
+                                master_to_interface_1.burst_size => burst_size,
+                                master_to_interface_1.burst_type => burst_type,
                                 
                                 master_from_interface_1 => master_interface_out,
                                 
@@ -50,6 +56,10 @@ begin
                            
     tb : process
     begin
+        burst_len <= "00000000";
+        burst_size <= "000";
+        burst_type <= "00";
+        
         execute_w <= '0';
         execute_r <= '0';
         wait for 100ns;
@@ -84,7 +94,19 @@ begin
         
         wait for 20ns;
         execute_r <= '0';
+        wait for T * 50;
+        
+        -- BURST TRANSFER TESTS
+        
+        burst_len <= "00010000";
+        burst_size <= "010";
+        burst_type <= "01";
+        addr_read <= X"0001_0000";
+        execute_r <= '1';
+        wait for 20ns;
+        execute_r <= '0';
         wait for T * 10;
+        
     end process;
 
 end Behavioral;
