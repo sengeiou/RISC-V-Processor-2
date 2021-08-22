@@ -131,7 +131,7 @@ begin
         end case;
     end process;
     
-    read_state_outputs : process(read_state_reg)
+    read_state_outputs : process(read_state_reg, read_burst_len_reg)
     begin
         to_master_interface.read_data_ch.data <= (others => '0');
         to_master_interface.read_data_ch.resp <= (others => '0');
