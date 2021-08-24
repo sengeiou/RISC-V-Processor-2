@@ -43,6 +43,7 @@ architecture rtl of axi_slave_interface is
     
     signal read_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_addr_next : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_addr_reg_en : std_logic;
     signal read_addr_incr : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
     
     signal read_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
@@ -146,12 +147,15 @@ begin
                 
         slave_handshake.rvalid <= '0';
         read_burst_len_mux_sel <= '0';
+        
+        read_addr_reg_en <= '0';
         read_burst_len_reg_en <= '0';
                 
         slave_handshake.arready <= '1';
         case read_state_reg is
             when IDLE =>
                 read_burst_len_reg_en <= '1';
+                read_addr_reg_en <= '1';
                 
                 read_addr_next_sel <= "11";
             when ADDR_STATE => 
@@ -159,6 +163,7 @@ begin
                 
                 -- ====================================
                 read_burst_len_reg_en <= '0';
+                read_addr_reg_en <= '0';
                 
                 read_addr_next_sel <= "00";
             when DATA_STATE => 
@@ -171,7 +176,11 @@ begin
                 
                 -- ====================================
                 read_burst_len_mux_sel <= '1';
-                read_burst_len_reg_en <= not read_burst_len_reg_zero;
+                read_burst_len_reg_en <= not read_burst_len_reg_zero and
+                                         master_handshake.rready;
+                read_addr_reg_en <= not read_burst_len_reg_zero and
+                                         master_handshake.rready;
+                                         
                 read_addr_next_sel <= read_burst_type_reg;
         end case;
     end process;
@@ -215,7 +224,9 @@ begin
             if (reset = '0') then
                 read_addr_reg <= (others => '0');
             else
-                read_addr_reg <= read_addr_next;
+                if (read_addr_reg_en = '1') then
+                    read_addr_reg <= read_addr_next;
+                end if;
             end if;
         end if;
     end process;

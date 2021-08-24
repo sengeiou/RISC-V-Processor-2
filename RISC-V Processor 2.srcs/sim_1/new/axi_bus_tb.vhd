@@ -1,6 +1,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
+use work.axi_interface_signal_groups.all;
+
 entity axi_bus_tb is
     
 end axi_bus_tb;
@@ -100,7 +102,7 @@ begin
         
         burst_len <= "00010000";
         burst_size <= "010";
-        burst_type <= "01";
+        burst_type <= BURST_FIXED;
         
         addr_read <= X"0001_0000";
         data_in_slave <= X"BEBA_BEBA";
