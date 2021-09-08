@@ -54,12 +54,10 @@ architecture rtl of axi_slave_interface is
     signal read_addr_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_addr_next : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_addr_reg_en : std_logic;
-    signal read_addr_incr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     
     signal read_data_reg : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
    
     signal read_burst_len_reg : std_logic_vector(7 downto 0);
-    signal read_burst_len_decr : std_logic_vector(7 downto 0);
     signal read_burst_len_reg_en : std_logic;
     signal read_burst_len_next : std_logic_vector(7 downto 0);
     
@@ -157,7 +155,7 @@ begin
         elsif (write_addr_next_sel = BURST_INCR) then
             write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);
         elsif (write_addr_next_sel = BURST_WRAP) then
-            write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);
+            write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);      -- TEMP UNTIL WRAP MODE GETS IMPLEMENTED
         else
             write_addr_next <= from_master_interface.write_addr_ch.addr;
         end if;
@@ -192,10 +190,11 @@ begin
         to_master_interface.read_data_ch.last <= '0';
                 
         slave_handshake.rvalid <= '0';
-        read_burst_len_mux_sel <= '0';
         
         read_addr_reg_en <= '0';
         read_burst_len_reg_en <= '0';
+        
+        read_burst_len_mux_sel <= '0';
                 
         slave_handshake.arready <= '1';
         case read_state_reg is
@@ -217,11 +216,13 @@ begin
                 to_master_interface.read_data_ch.last <= read_burst_len_reg_zero;
                 
                 slave_handshake.rvalid <= '1';
-                
                 slave_handshake.arready <= '0';
                 
-                -- ====================================
+                to_master_interface.read_data_ch.last <= read_burst_len_reg_zero;
+                
                 read_burst_len_mux_sel <= '1';
+                
+                -- ====================================
                 read_burst_len_reg_en <= not read_burst_len_reg_zero and
                                          master_handshake.rready;
                 read_addr_reg_en <= master_handshake.rready;
@@ -253,14 +254,16 @@ begin
         end if;
     end process;
     
-    read_burst_len_next_mux : entity work.mux_2_1(rtl)
-                              generic map(WIDTH_BITS => 8)
-                              port map(in_0 => from_master_interface.read_addr_ch.len,
-                                       in_1 => read_burst_len_decr,
-                                       output => read_burst_len_next,
-                                       sel => read_burst_len_mux_sel);
-    
-    read_burst_len_decr <= std_logic_vector(unsigned(read_burst_len_reg) - 1);
+    read_burst_len_next_mux_proc : process(read_burst_len_mux_sel, from_master_interface.read_addr_ch.len, read_burst_len_reg)
+    begin
+        if (read_burst_len_mux_sel = '0') then
+            read_burst_len_next <= from_master_interface.read_addr_ch.len;
+        elsif (read_burst_len_mux_sel = '1') then
+            read_burst_len_next <= std_logic_vector(unsigned(read_burst_len_reg) - 1);
+        else
+            read_burst_len_next <= (others => '0');
+        end if;
+    end process;
     
     -- ========== READ ADDR REGISTER CONTROL ==========
     read_addr_reg_cntrl : process(all)
@@ -276,17 +279,19 @@ begin
         end if;
     end process;
     
-    read_addr_next_mux : entity work.mux_4_1(rtl)
-                         generic map(WIDTH_BITS => 2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH)
-                         port map(in_0 => read_addr_reg,
-                                  in_1 => read_addr_incr,
-                                  in_2 => (others => '0'),      -- FOR WRAP
-                                  in_3 => from_master_interface.read_addr_ch.addr,
-                                  output => read_addr_next,
-                                  sel => read_addr_next_sel);
-    
-    read_addr_incr <= std_logic_vector(unsigned(read_addr_reg) + 4);
-    
+    read_addr_next_mux_proc : process(read_addr_next_sel)
+    begin   
+        if (read_addr_next_sel = BURST_FIXED) then
+            read_addr_next <= read_addr_reg;
+        elsif (read_addr_next_sel = BURST_INCR) then
+            read_addr_next <= std_logic_vector(unsigned(read_addr_reg) + 4);
+        elsif (read_addr_next_sel = BURST_WRAP) then
+            read_addr_next <= std_logic_vector(unsigned(read_addr_reg) + 4);        -- TEMP UNTIL WRAP IMPLEMENTED
+        else
+            read_addr_next <= from_master_interface.read_addr_ch.addr;
+        end if;
+    end process;
+   
     -- ========== REGISTER CONTROL ==========
     register_control : process(all)
     begin
