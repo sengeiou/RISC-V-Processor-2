@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
 
 use work.axi_interface_signal_groups.all;
 
@@ -23,6 +24,18 @@ architecture Behavioral of axi_bus_tb is
     signal burst_size : std_logic_vector(2 downto 0);
     signal burst_type : std_logic_vector(1 downto 0);
     signal clk, reset, execute_w, execute_r : std_logic;
+    
+    type slave_data_type is array (0 to 63) of std_logic_vector(31 downto 0);
+    constant slave_data : slave_data_type := (
+        0 => X"0000_0001",
+        4 => X"0000_0002",
+        8 => X"0000_0003",
+        12 => X"0000_0004",
+        16 => X"0000_0005",
+        20 => X"0000_0006",
+        
+        others => X"0000_0000"
+    );
     
     constant T : time := 20ns;
 begin
@@ -48,7 +61,6 @@ begin
                                 
                                 master_from_interface_1 => master_interface_out,
                                 
-                                
                                 slave_to_interface_1.data_read => data_in_slave,
                                 
                                 slave_from_interface_1 => slave_interface_out,
@@ -61,6 +73,8 @@ begin
         burst_len <= "00000000";
         burst_size <= "000";
         burst_type <= "00";
+        
+        addr_read <= X"0000_0000"; 
         
         execute_w <= '0';
         execute_r <= '0';
@@ -96,7 +110,7 @@ begin
         
         wait for 20ns;
         execute_r <= '0';
-        wait for T * 50;
+        wait for T * 25;
         
         -- BURST TRANSFER TESTS
         
@@ -105,12 +119,33 @@ begin
         burst_type <= BURST_FIXED;
         
         addr_read <= X"0001_0000";
-        data_in_slave <= X"BEBA_BEBA";
+        
         execute_r <= '1';
         wait for 20ns;
         execute_r <= '0';
-        wait for T * 10;
+        wait for 100ns;
         
+        data_in_slave <= X"0000_0001";
+        
+        wait for 20ns;
+        
+        data_in_slave <= X"0000_0002";
+        
+        wait for 20ns;
+        
+        data_in_slave <= X"0000_0003";
+        
+        wait for T * 25;
+        
+        burst_len <= "00010000";
+        burst_size <= "010";
+        burst_type <= BURST_FIXED;
+        
+        addr_write <= X"0002_0000";
+        execute_w <= '1';
+        wait for 20ns;
+        execute_w <= '0';
+        wait for T * 50;
     end process;
 
 end Behavioral;
