@@ -31,19 +31,22 @@ architecture rtl of axi_master_interface is
                              ADDR_STATE,
                              DATA_STATE,
                              FINALIZE_STATE);
-                              
+                            
+    -- ========== WRITE REGISTERS ==========                              
     signal write_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
                               
     signal write_state_reg : write_state_type;
     signal write_state_next : write_state_type;
     
-    
+    -- ========== READ REGISTERS ==========
     signal read_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_data_reg_en : std_logic;
     
     signal read_state_reg : read_state_type;
     signal read_state_next : read_state_type;
+    
+    
 begin
     -- WRITE STATE MACHINE
     write_state_transition : process(all)

@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="3100001fs"></ZoomEndTime>
-      <Cursor1Time time="2910000fs"></Cursor1Time>
+      <ZoomStartTime time="2490238fs"></ZoomStartTime>
+      <ZoomEndTime time="2750542fs"></ZoomEndTime>
+      <Cursor1Time time="2583029fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="231"></NameColumnWidth>
+      <NameColumnWidth column_width="227"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="61" />
+   <WVObjectSize size="60" />
    <wvobject fp_name="/axi_bus_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -130,22 +130,6 @@
       <obj_property name="ObjectShortName">to_slave</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_burst_len_reg" type="array">
-      <obj_property name="ElementShortName">write_burst_len_reg[7:0]</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_reg[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_burst_len_decr" type="array">
-      <obj_property name="ElementShortName">write_burst_len_decr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_decr[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_burst_len_reg_en" type="logic">
-      <obj_property name="ElementShortName">write_burst_len_reg_en</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_reg_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_burst_len_next" type="array">
-      <obj_property name="ElementShortName">write_burst_len_next[7:0]</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_next[7:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_burst_size_reg" type="array">
       <obj_property name="ElementShortName">write_burst_size_reg[2:0]</obj_property>
       <obj_property name="ObjectShortName">write_burst_size_reg[2:0]</obj_property>
@@ -157,6 +141,10 @@
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_reg" type="array">
       <obj_property name="ElementShortName">write_addr_reg[31:0]</obj_property>
       <obj_property name="ObjectShortName">write_addr_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_next" type="array">
+      <obj_property name="ElementShortName">write_addr_next[31:0]</obj_property>
+      <obj_property name="ObjectShortName">write_addr_next[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_data_reg" type="array">
       <obj_property name="ElementShortName">write_data_reg[31:0]</obj_property>
@@ -170,6 +158,10 @@
       <obj_property name="ElementShortName">read_addr_next[31:0]</obj_property>
       <obj_property name="ObjectShortName">read_addr_next[31:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_next_sel" type="array">
+      <obj_property name="ElementShortName">write_addr_next_sel[1:0]</obj_property>
+      <obj_property name="ObjectShortName">write_addr_next_sel[1:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_data_reg" type="array">
       <obj_property name="ElementShortName">read_data_reg[31:0]</obj_property>
       <obj_property name="ObjectShortName">read_data_reg[31:0]</obj_property>
@@ -177,6 +169,10 @@
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_state_reg" type="other">
       <obj_property name="ElementShortName">write_state_reg</obj_property>
       <obj_property name="ObjectShortName">write_state_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_reg_en" type="logic">
+      <obj_property name="ElementShortName">write_addr_reg_en</obj_property>
+      <obj_property name="ObjectShortName">write_addr_reg_en</obj_property>
    </wvobject>
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_state_next" type="other">
       <obj_property name="ElementShortName">write_state_next</obj_property>

@@ -2,19 +2,21 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+use work.axi_interface_signal_groups.all;
+
 entity axi_slave_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master_interface : in work.axi_interface_signal_groups.FromMasterInterfaceToBus;
-        to_master_interface : out work.axi_interface_signal_groups.ToMasterInterfaceFromBus;
+        from_master_interface : in FromMasterInterfaceToBus;
+        to_master_interface : out ToMasterInterfaceFromBus;
         
         -- HANDSHAKE SIGNALS
-        master_handshake : in work.axi_interface_signal_groups.HandshakeMasterSrc;
-        slave_handshake : out work.axi_interface_signal_groups.HandshakeSlaveSrc;
+        master_handshake : in HandshakeMasterSrc;
+        slave_handshake : out HandshakeSlaveSrc;
         
         -- OTHER DATA SIGNALS
-        from_slave : in work.axi_interface_signal_groups.FromSlave;
-        to_slave : out work.axi_interface_signal_groups.ToSlave;
+        from_slave : in FromSlave;
+        to_slave : out ToSlave;
         
         -- OTHER CONTROL SIGNALS
         clk : in std_logic;
@@ -33,33 +35,28 @@ architecture rtl of axi_slave_interface is
                              DATA_STATE);
 
     -- ========== WRITE REGISTERS ==========
-    signal write_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
-    signal write_addr_next : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_addr_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_addr_next : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_addr_reg_en : std_logic;
-    signal write_addr_incr : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
-    
-    signal write_burst_len_reg : std_logic_vector(7 downto 0);
-    signal write_burst_len_decr : std_logic_vector(7 downto 0);
-    signal write_burst_len_reg_en : std_logic;
-    signal write_burst_len_next : std_logic_vector(7 downto 0);
-    
+    signal write_addr_incr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+
     signal write_burst_size_reg : std_logic_vector(2 downto 0);
     
     signal write_burst_type_reg : std_logic_vector(1 downto 0);
     
-    signal write_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+    signal write_data_reg : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
 
     signal write_state_reg : write_state_type;
     signal write_state_next : write_state_type;
     
    
     -- ========== READ REGISTERS ==========
-    signal read_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
-    signal read_addr_next : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_addr_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_addr_next : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_addr_reg_en : std_logic;
-    signal read_addr_incr : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_addr_incr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     
-    signal read_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_DATA_BUS_WIDTH - 1 downto 0);
+    signal read_data_reg : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
    
     signal read_burst_len_reg : std_logic_vector(7 downto 0);
     signal read_burst_len_decr : std_logic_vector(7 downto 0);
@@ -77,8 +74,6 @@ architecture rtl of axi_slave_interface is
     signal read_burst_len_reg_zero : std_logic;
     signal read_addr_next_sel : std_logic_vector(1 downto 0);
     
-    signal write_burst_len_mux_sel : std_logic;
-    signal write_burst_len_reg_zero : std_logic;
     signal write_addr_next_sel : std_logic_vector(1 downto 0);
 begin
     write_state_transition : process(all)
@@ -91,7 +86,7 @@ begin
                     write_state_next <= IDLE;
                 end if;
             when DATA_STATE => 
-                if (from_master_interface.write_data_ch.last = '1' and write_burst_len_reg = "00000000") then
+                if (from_master_interface.write_data_ch.last = '1') then
                     write_state_next <= RESPONSE_STATE_1;
                 else
                     write_state_next <= DATA_STATE;
@@ -114,21 +109,26 @@ begin
         slave_handshake.awready <= '1';
         slave_handshake.wready <= '0';
         
-        write_burst_len_reg_en <= '0';
-        write_burst_len_mux_sel <= '0';
+        write_addr_reg_en <= '0';
+        
+        write_addr_next_sel <= "11";
         case write_state_reg is
             when IDLE =>
-                write_burst_len_reg_en <= master_handshake.awvalid;
+                write_addr_reg_en <= master_handshake.awvalid;
+                
             when DATA_STATE => 
                 slave_handshake.awready <= '0';
                 slave_handshake.wready <= '1';
                 
-                write_burst_len_reg_en <= not write_burst_len_reg_zero;
-                write_burst_len_mux_sel <= '1';
+                write_addr_reg_en <= '1';
+                
+                write_addr_next_sel <= write_burst_type_reg;
+                
             when RESPONSE_STATE_1 => 
                 slave_handshake.bvalid <= '1';
 
                 slave_handshake.awready <= '0';
+                
             when RESPONSE_STATE_2 => 
                 slave_handshake.bvalid <= '1';
                 
@@ -136,37 +136,32 @@ begin
         end case;
     end process;
     
-    -- ========== BURST LEN REGISTER CONTROL (WRITE) ==========
-    write_burst_len_reg_zero <= not write_burst_len_reg(7) and
-                               not write_burst_len_reg(6) and
-                               not write_burst_len_reg(5) and
-                               not write_burst_len_reg(4) and
-                               not write_burst_len_reg(3) and
-                               not write_burst_len_reg(2) and
-                               not write_burst_len_reg(1) and
-                               not write_burst_len_reg(0);
-    
-    write_burst_len_reg_cntrl : process(all)
+    -- ========== WRITE ADDRESS REGISTER CONTROL ==========
+    write_addr_reg_proc : process(all)
     begin
         if (rising_edge(clk)) then
             if (reset = '0') then
-                write_burst_len_reg <= (others => '0');
+                write_addr_reg <= (others => '0');
             else
-                if (write_burst_len_reg_en = '1') then
-                    write_burst_len_reg <= write_burst_len_next;
+                if (write_addr_reg_en = '1') then
+                    write_addr_reg <= write_addr_next;
                 end if;
             end if;
         end if;
     end process;
     
-    write_burst_len_next_mux : entity work.mux_2_1(rtl)
-                              generic map(WIDTH_BITS => 8)
-                              port map(in_0 => from_master_interface.write_addr_ch.len,
-                                       in_1 => write_burst_len_decr,
-                                       output => write_burst_len_next,
-                                       sel => write_burst_len_mux_sel);
-    
-    write_burst_len_decr <= std_logic_vector(unsigned(write_burst_len_reg) - 1);
+    write_addr_reg_next_mux_proc : process(write_addr_next_sel, write_addr_reg, from_master_interface.write_addr_ch.addr)   -- CAUTION: DO NOT USE process(all) AS TEMPTING AS IT MAY BE BECAUSE IT WONT WORK (at least in the sim)!
+    begin
+        if (write_addr_next_sel = BURST_FIXED) then
+            write_addr_next <= write_addr_reg;
+        elsif (write_addr_next_sel = BURST_INCR) then
+            write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);
+        elsif (write_addr_next_sel = BURST_WRAP) then
+            write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);
+        else
+            write_addr_next <= from_master_interface.write_addr_ch.addr;
+        end if;
+    end process;
     
     -- =========================== READING =================================
     -- READ STATE MACHINE
@@ -182,7 +177,7 @@ begin
             when ADDR_STATE => 
                     read_state_next <= DATA_STATE;
             when DATA_STATE => 
-                if (master_handshake.rready = '1' and read_burst_len_reg = "00000000") then
+                if (read_burst_len_reg_zero = '1') then
                     read_state_next <= IDLE;
                 else
                     read_state_next <= DATA_STATE;
@@ -297,7 +292,6 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '0') then
-                write_addr_reg <= (others => '0');
                 write_data_reg <= (others => '0');
                 
                 read_data_reg <= (others => '0');
@@ -313,10 +307,6 @@ begin
             else
                 if (master_handshake.wvalid = '1') then
                     write_data_reg <= from_master_interface.write_data_ch.data;
-                end if;
-            
-                if (master_handshake.awvalid = '1') then
-                    write_addr_reg <= from_master_interface.write_addr_ch.addr;
                 end if;
             
                 if (master_handshake.arvalid = '1') then     
