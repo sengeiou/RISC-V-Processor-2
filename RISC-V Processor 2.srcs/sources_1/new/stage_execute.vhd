@@ -23,6 +23,7 @@ entity stage_execute is
         reg_1_used : in std_logic;
         reg_2_used : in std_logic;
         immediate_used : in std_logic;
+        pc_used : in std_logic;
         
         reg_1_fwd_em : in std_logic;
         reg_1_fwd_mw : in std_logic;
@@ -99,7 +100,7 @@ begin
     mux_reg_2_fwd_sel(0) <= reg_2_fwd_em;
     mux_reg_2_fwd_sel(1) <= reg_2_fwd_mw;
                             
-    mux_alu_oper_1_sel(0) <= prog_flow_cntrl(1) or reg_1_fwd_em;
+    mux_alu_oper_1_sel(0) <= prog_flow_cntrl(1) or reg_1_fwd_em or pc_used;
     mux_alu_oper_1_sel(1) <= reg_1_fwd_mw or reg_1_fwd_em;
                             
     mux_alu_oper_2_sel(0) <= immediate_used;

@@ -20,6 +20,7 @@ entity instruction_decoder is
         immediate_data : out std_logic_vector(DATA_WIDTH_BITS - 1 downto 0);
         
         immediate_used : out std_logic;
+        pc_used : out std_logic;
         
         -- Branch control
         prog_flow_cntrl : out std_logic_vector(1 downto 0);
@@ -53,6 +54,7 @@ begin
     reg_rd_2_used <= '0';
     reg_wr_en <= '0';
     immediate_used <= '0';
+    pc_used <= '0';
     
     prog_flow_cntrl <= PROG_FLOW_NORM;
     
@@ -88,6 +90,17 @@ begin
         
         reg_rd_1_addr <= (others => '0');   -- Select zero as first operand
         -- Immediate decoding
+        
+        immediate_data(DATA_WIDTH_BITS - 1 downto 31) <= (others => instruction_bus(31));
+        immediate_data(30 downto 12) <= instruction_bus(30 downto 12);
+        immediate_data(11 downto 0) <= (others => '0');
+    elsif (instruction_bus(6 downto 0) = AUIPC) then
+        alu_op_sel <= "0000";
+        
+        reg_wr_en <= '1';
+        
+        pc_used <= '1';
+        immediate_used <= '1';
         
         immediate_data(DATA_WIDTH_BITS - 1 downto 31) <= (others => instruction_bus(31));
         immediate_data(30 downto 12) <= instruction_bus(30 downto 12);

@@ -14,12 +14,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1000001fs"></ZoomEndTime>
-      <Cursor1Time time="112223fs"></Cursor1Time>
+      <ZoomStartTime time="858104fs"></ZoomStartTime>
+      <ZoomEndTime time="1028380fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="211"></NameColumnWidth>
+      <NameColumnWidth column_width="207"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="49" />
@@ -200,6 +200,10 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/immediate_used" type="logic">
          <obj_property name="ElementShortName">immediate_used</obj_property>
          <obj_property name="ObjectShortName">immediate_used</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/pc_used" type="logic">
+         <obj_property name="ElementShortName">pc_used</obj_property>
+         <obj_property name="ObjectShortName">pc_used</obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/core_pipeline/stage_execute/alu_op_sel_i" type="array">
          <obj_property name="ElementShortName">alu_op_sel_i[3:0]</obj_property>

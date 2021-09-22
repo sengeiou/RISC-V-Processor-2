@@ -46,6 +46,8 @@ package pkg_pipeline is
         -- ===== CONTROL (EXECUTE) =====
         alu_op_sel : std_logic_vector(3 downto 0);
         immediate_used : std_logic;
+        pc_used : std_logic;
+        
         pc : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         
         prog_flow_cntrl : std_logic_vector(1 downto 0);
@@ -95,6 +97,7 @@ package pkg_pipeline is
                                                             reg_2_used => '0',
                                                             alu_op_sel => (others => '0'),
                                                             immediate_used => '0',
+                                                            pc_used => '0',
                                                             reg_wr_addr => (others => '0'),
                                                             reg_wr_en => '0',
                                                             prog_flow_cntrl => (others => '0'),

@@ -101,6 +101,7 @@ begin
                             reg_2_used => de_ex_register_next.reg_2_used,
                             alu_op_sel => de_ex_register_next.alu_op_sel,
                             immediate_used => de_ex_register_next.immediate_used,
+                            pc_used => de_ex_register_next.pc_used,
                             
                             prog_flow_cntrl => de_ex_register_next.prog_flow_cntrl,
                             
@@ -139,6 +140,7 @@ begin
                              reg_1_used => de_ex_register.reg_1_used,
                              reg_2_used => de_ex_register.reg_2_used,
                              immediate_used => de_ex_register.immediate_used,
+                             pc_used => de_ex_register.pc_used,
                              
                              reg_1_fwd_em => pipeline_fwd_cntrl.reg_1_fwd_em,
                              reg_1_fwd_mw => pipeline_fwd_cntrl.reg_1_fwd_mw,

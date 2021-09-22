@@ -39,6 +39,11 @@ begin
     from_master.data_write <= data_in;
     from_master.addr_write <= addr_in;
     from_master.addr_read <= addr_in;
+    
+    from_master.burst_len <= (others => '0');
+    from_master.burst_size <= "010";
+    from_master.burst_type <= BURST_FIXED;
+    
     from_master.execute_read <= execute_read;
     from_master.execute_write <= execute_write;
     
