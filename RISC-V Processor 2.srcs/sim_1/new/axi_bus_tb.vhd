@@ -116,7 +116,7 @@ begin
         
         burst_len <= "00010000";
         burst_size <= "010";
-        burst_type <= BURST_FIXED;
+        burst_type <= BURST_INCR;
         
         addr_read <= X"0001_0000";
         
@@ -138,8 +138,8 @@ begin
         wait for T * 25;
         
         burst_len <= "00010000";
-        burst_size <= "010";
-        burst_type <= BURST_FIXED;
+        burst_size <= "011";
+        burst_type <= BURST_INCR;
         
         addr_write <= X"0002_0000";
         execute_w <= '1';

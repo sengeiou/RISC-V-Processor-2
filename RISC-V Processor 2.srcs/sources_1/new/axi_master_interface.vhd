@@ -195,7 +195,7 @@ begin
                     read_state_next <= IDLE;
                 end if;
             when ADDR_STATE => 
-                if (slave_handshake.arready = '1') then
+                if (slave_handshake.arready = '0') then
                     read_state_next <= DATA_STATE;
                 else
                     read_state_next <= ADDR_STATE;
