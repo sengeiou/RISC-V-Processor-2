@@ -74,7 +74,7 @@ architecture rtl of axi_slave_interface is
     
     signal write_addr_next_sel : std_logic_vector(1 downto 0);
 begin
-    write_state_transition : process(all)
+    write_state_transition : process(master_handshake.awvalid, from_master_interface.write_data_ch.last, slave_handshake.bvalid)
     begin
         case write_state_reg is
             when IDLE =>
