@@ -157,7 +157,18 @@ begin
         wait for 20ns;
         execute_w <= '0';
         
-        wait for T * 30;
+        wait for T * 50;
+        
+        burst_len <= "00001111";
+        burst_size <= "010";
+        burst_type <= BURST_WRAP;
+        
+        addr_read <= X"1000_0010";
+        
+        execute_r <= '1';
+        wait for 20ns;
+        execute_r <= '0';
+        wait for T * 50;
         
         report "Test Done."  severity failure ;
     end process;

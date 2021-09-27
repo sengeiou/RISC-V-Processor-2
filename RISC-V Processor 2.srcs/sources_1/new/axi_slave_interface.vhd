@@ -33,7 +33,8 @@ architecture rtl of axi_slave_interface is
                               RESPONSE_STATE_2);
                               
     type read_state_type is (IDLE,
-                             ADDR_STATE,
+                             WRAP_INIT_1,
+                             WRAP_INIT_2,
                              DATA_STATE);
 
     -- ========== WRITE REGISTERS ==========
@@ -69,6 +70,15 @@ architecture rtl of axi_slave_interface is
     signal read_addr_next : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_addr_reg_en : std_logic;
     signal read_addr_incr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    
+    signal read_wrap_addr_start_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_wrap_addr_end_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_wrap_addr_start_reg_en : std_logic;
+    signal read_wrap_addr_end_reg_en : std_logic;
+    
+    signal read_burst_len_ext : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_burst_len_shifted : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_burst_size_ext : std_logic_vector(4 downto 0);
     
     signal read_data_reg : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
    
@@ -211,7 +221,7 @@ begin
     write_burst_size_ext(4 downto 3) <= "00";
     write_burst_size_ext(2 downto 0) <= write_burst_size_reg;
     
-    shifter_left_mask_gen : entity work.barrel_shifter_left_32(rtl)
+    write_shifter_left_mask_gen : entity work.barrel_shifter_left_32(rtl)
                             port map(data_in => write_burst_len_ext,
                                      data_out => write_burst_len_shifted,
                                      shift_amount => write_burst_size_ext);
@@ -249,12 +259,18 @@ begin
         case read_state_reg is 
             when IDLE => 
                 if (master_handshake.arvalid = '1') then
-                    read_state_next <= ADDR_STATE;
+                    if (from_master_interface.read_addr_ch.burst_type = BURST_WRAP) then
+                        read_state_next <= WRAP_INIT_1;
+                    else
+                        read_state_next <= DATA_STATE;
+                    end if;
                 else
                     read_state_next <= IDLE;
                 end if;
-            when ADDR_STATE => 
-                    read_state_next <= DATA_STATE;
+            when WRAP_INIT_1 => 
+                read_state_next <= WRAP_INIT_2;
+            when WRAP_INIT_2 => 
+                read_state_next <= DATA_STATE;
             when DATA_STATE => 
                 if (read_burst_len_reg_zero = '1') then
                     read_state_next <= IDLE;
@@ -274,6 +290,8 @@ begin
         
         read_addr_reg_en <= '0';
         read_burst_len_reg_en <= '0';
+        read_wrap_addr_start_reg_en <= '0';
+        read_wrap_addr_end_reg_en <= '0';
         
         read_burst_len_mux_sel <= '0';
                 
@@ -283,15 +301,12 @@ begin
                 read_burst_len_reg_en <= master_handshake.arvalid;
                 read_addr_reg_en <= master_handshake.arvalid;
                 
-                read_addr_next_sel <= "11";
-            when ADDR_STATE => 
                 slave_handshake.arready <= '0';
-                
-                -- ====================================
-                read_burst_len_reg_en <= '0';
-                read_addr_reg_en <= '1';
-                
                 read_addr_next_sel <= "11";
+            when WRAP_INIT_1 => 
+                read_wrap_addr_start_reg_en <= '1';
+            when WRAP_INIT_2 => 
+                read_wrap_addr_end_reg_en <= '1';
             when DATA_STATE => 
                 to_master_interface.read_data_ch.data <= from_slave.data_read;
                 to_master_interface.read_data_ch.last <= read_burst_len_reg_zero;
@@ -367,7 +382,11 @@ begin
         elsif (read_addr_next_sel = BURST_INCR) then
             read_addr_next <= std_logic_vector(unsigned(read_addr_reg) + unsigned(read_addr_incr));
         elsif (read_addr_next_sel = BURST_WRAP) then
-            read_addr_next <= std_logic_vector(unsigned(read_addr_reg) + 4);        -- TEMP UNTIL WRAP IMPLEMENTED
+            if (read_addr_reg = read_wrap_addr_end_reg) then
+                read_addr_next <= read_wrap_addr_start_reg;
+            else
+                read_addr_next <= std_logic_vector(unsigned(read_addr_reg) + unsigned(read_addr_incr));
+            end if;
         else
             read_addr_next <= from_master_interface.read_addr_ch.addr;
         end if;
@@ -379,6 +398,44 @@ begin
                                   shift_amount => read_burst_size_reg);
    
    read_addr_incr(31 downto 8) <= (others => '0');
+   
+       -- ========== READ WRAP ADDRESSES CONTROL ==========
+    read_burst_len_ext(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 8) <= (others => '0');
+    read_burst_len_ext(7 downto 0) <= std_logic_vector(unsigned(read_burst_len_reg) + 1);
+    
+    read_burst_size_ext(4 downto 3) <= "00";
+    read_burst_size_ext(2 downto 0) <= read_burst_size_reg;
+    
+    read_shifter_left_mask_gen : entity work.barrel_shifter_left_32(rtl)
+                            port map(data_in => read_burst_len_ext,
+                                     data_out => read_burst_len_shifted,
+                                     shift_amount => read_burst_size_ext);
+                                     
+    read_wrap_addr_start_reg_cntrl : process(all)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '0') then
+                read_wrap_addr_start_reg <= (others => '0');
+            else
+                if (read_wrap_addr_start_reg_en = '1') then
+                    read_wrap_addr_start_reg <= read_addr_reg and not std_logic_vector(unsigned(read_burst_len_shifted) - 1);
+                end if;
+            end if;
+        end if;
+    end process;
+    
+    read_wrap_addr_end_reg_cntrl : process(all)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '0') then
+                read_wrap_addr_end_reg <= (others => '0');
+            else
+                if (read_wrap_addr_end_reg_en = '1') then
+                    read_wrap_addr_end_reg <= std_logic_vector(unsigned(read_wrap_addr_start_reg) + unsigned(read_burst_len_shifted) - unsigned(read_addr_incr));
+                end if;
+            end if;
+        end if;
+    end process;
    
     -- ========== REGISTER CONTROL ==========
     register_control : process(all)
