@@ -1,6 +1,3 @@
---package axi_signals is new work.axi_interface_signal_groups;
---    generic map (AXI_DATA_BUS_WIDTH => 5);
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -9,12 +6,12 @@ use work.axi_interface_signal_groups.all;
 entity axi_interconnect is
     port(
         -- Master 1 port
-        master_to_interface_1 : in work.axi_interface_signal_groups.FromMaster; 
-        master_from_interface_1 : out work.axi_interface_signal_groups.ToMaster; 
+        master_to_interface_1 : in FromMaster; 
+        master_from_interface_1 : out ToMaster; 
         
         -- Slave 1 port 
-        slave_to_interface_1 : in work.axi_interface_signal_groups.FromSlave;
-        slave_from_interface_1 : out work.axi_interface_signal_groups.ToSlave;
+        slave_to_interface_1 : in FromSlave;
+        slave_from_interface_1 : out ToSlave;
         
         -- Control signals
         clk : in std_logic;
@@ -23,10 +20,10 @@ entity axi_interconnect is
 end axi_interconnect;
 
 architecture rtl of axi_interconnect is
-    signal read_bus_1 : work.axi_interface_signal_groups.ToMasterInterfaceFromBus;
-    signal write_bus_1 : work.axi_interface_signal_groups.FromMasterInterfaceToBus;
-    signal handshake_master_src_1 : work.axi_interface_signal_groups.HandshakeMasterSrc;
-    signal handshake_slave_src_1 : work.axi_interface_signal_groups.HandshakeSlaveSrc;
+    signal read_bus_1 : MasterBusInterfaceIn;
+    signal write_bus_1 : MasterBusInterfaceOut;
+    signal handshake_master_src_1 : HandshakeMasterSrc;
+    signal handshake_slave_src_1 : HandshakeSlaveSrc;
     
     signal axi_reset : std_logic;
 begin

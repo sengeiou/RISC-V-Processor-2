@@ -114,7 +114,7 @@ begin
         
         -- BURST TRANSFER TESTS
         
-        burst_len <= "00010000";
+        burst_len <= "00001111";
         burst_size <= "010";
         burst_type <= BURST_INCR;
         
@@ -137,8 +137,8 @@ begin
         
         wait for T * 25;
         
-        burst_len <= "00010000";
-        burst_size <= "011";
+        burst_len <= "00001111";
+        burst_size <= "010";
         burst_type <= BURST_INCR;
         
         addr_write <= X"0002_0000";
@@ -146,6 +146,20 @@ begin
         wait for 20ns;
         execute_w <= '0';
         wait for T * 50;
+        
+        burst_len <= "00001111";
+        burst_size <= "010";
+        burst_type <= BURST_WRAP;
+        
+        addr_write <= X"1000_0010";
+        
+        execute_w <= '1';
+        wait for 20ns;
+        execute_w <= '0';
+        
+        wait for T * 30;
+        
+        report "Test Done."  severity failure ;
     end process;
 
 end Behavioral;

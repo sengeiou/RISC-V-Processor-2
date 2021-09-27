@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="4000001fs"></ZoomEndTime>
-      <Cursor1Time time="740000fs"></Cursor1Time>
+      <ZoomStartTime time="3477306fs"></ZoomStartTime>
+      <ZoomEndTime time="4023697fs"></ZoomEndTime>
+      <Cursor1Time time="3580000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="219"></NameColumnWidth>
+      <NameColumnWidth column_width="211"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="66" />
+   <WVObjectSize size="68" />
    <wvobject fp_name="/axi_bus_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -125,6 +125,14 @@
       <obj_property name="ElementShortName">write_burst_type_reg[1:0]</obj_property>
       <obj_property name="ObjectShortName">write_burst_type_reg[1:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_wrap_addr_start_reg" type="array">
+      <obj_property name="ElementShortName">write_wrap_addr_start_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">write_wrap_addr_start_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_wrap_addr_end_reg" type="array">
+      <obj_property name="ElementShortName">write_wrap_addr_end_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">write_wrap_addr_end_reg[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_reg" type="array">
       <obj_property name="ElementShortName">write_addr_reg[31:0]</obj_property>
       <obj_property name="ObjectShortName">write_addr_reg[31:0]</obj_property>
@@ -209,31 +217,6 @@
       <obj_property name="ElementShortName">from_master</obj_property>
       <obj_property name="ObjectShortName">from_master</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/from_master.write_addr_ch" type="array">
-         <obj_property name="ElementShortName">.write_addr_ch</obj_property>
-         <obj_property name="ObjectShortName">.write_addr_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/from_master.write_data_ch" type="array">
-         <obj_property name="ElementShortName">.write_data_ch</obj_property>
-         <obj_property name="ObjectShortName">.write_data_ch</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/from_master.read_addr_ch" type="array">
-         <obj_property name="ElementShortName">.read_addr_ch</obj_property>
-         <obj_property name="ObjectShortName">.read_addr_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/from_master.write_addr_ch" type="array">
-         <obj_property name="ElementShortName">.write_addr_ch</obj_property>
-         <obj_property name="ObjectShortName">.write_addr_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/from_master.write_data_ch" type="array">
-         <obj_property name="ElementShortName">.write_data_ch</obj_property>
-         <obj_property name="ObjectShortName">.write_data_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/from_master.read_addr_ch" type="array">
-         <obj_property name="ElementShortName">.read_addr_ch</obj_property>
-         <obj_property name="ObjectShortName">.read_addr_ch</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/to_master" type="array">
       <obj_property name="ElementShortName">to_master</obj_property>

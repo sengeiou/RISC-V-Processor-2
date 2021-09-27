@@ -1,0 +1,42 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity barrel_shifter_left_16 is
+    port(
+        data_in : in std_logic_vector(15 downto 0);
+        data_out : out std_logic_vector(15 downto 0);
+        
+        shift_amount : in std_logic_vector(3 downto 0)
+    );
+end barrel_shifter_left_16;
+
+architecture rtl of barrel_shifter_left_16 is
+    signal shift_1_out : std_logic_vector(7 downto 0);
+    signal shift_2_out : std_logic_vector(7 downto 0);
+    signal shift_4_out : std_logic_vector(7 downto 0);
+    signal shift_8_out : std_logic_vector(7 downto 0);
+begin
+    process(all)
+    begin
+        if (shift_amount(0) = '1') then
+            shift_1_out <= data_in(6 downto 0) & "0";
+        else
+            shift_1_out <= data_in;
+        end if;
+            
+        if (shift_amount(1) = '1') then
+            shift_2_out <= shift_1_out(5 downto 0) & "00";
+        else
+            shift_2_out <= shift_1_out;
+        end if;
+        
+        if (shift_amount(2) = '1') then
+            shift_4_out <= shift_2_out(3 downto 0) & "0000";
+        else
+            shift_4_out <= shift_2_out;
+        end if;
+        
+    data_out <= shift_4_out;
+    end process;
+    
+end rtl;

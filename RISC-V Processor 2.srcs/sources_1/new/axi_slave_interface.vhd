@@ -26,6 +26,8 @@ end axi_slave_interface;
 
 architecture rtl of axi_slave_interface is
     type write_state_type is (IDLE,
+                              WRAP_INIT_1,
+                              WRAP_INIT_2,
                               DATA_STATE,
                               RESPONSE_STATE_1,
                               RESPONSE_STATE_2);
@@ -40,6 +42,20 @@ architecture rtl of axi_slave_interface is
     signal write_addr_reg_en : std_logic;
     signal write_addr_incr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
 
+    signal write_wrap_addr_start_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_wrap_addr_end_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_wrap_addr_start_reg_en : std_logic;
+    signal write_wrap_addr_end_reg_en : std_logic;
+
+    signal write_wrap_boundary_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_wrap_boundary_mask : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    
+    
+    signal write_burst_len_ext : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_burst_len_shifted : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_burst_size_ext : std_logic_vector(4 downto 0);
+    
+    signal write_burst_len_reg : std_logic_vector(7 downto 0);
     signal write_burst_size_reg : std_logic_vector(2 downto 0);
     signal write_burst_type_reg : std_logic_vector(1 downto 0);
     
@@ -73,15 +89,23 @@ architecture rtl of axi_slave_interface is
     
     signal write_addr_next_sel : std_logic_vector(1 downto 0);
 begin
-    write_state_transition : process(master_handshake.awvalid, from_master_interface.write_data_ch.last, slave_handshake.bvalid)
+    write_state_transition : process(master_handshake.awvalid, from_master_interface.write_data_ch.last, slave_handshake.bvalid, clk)
     begin
         case write_state_reg is
             when IDLE =>
                 if (master_handshake.awvalid = '1') then
-                    write_state_next <= DATA_STATE;
+                    if (from_master_interface.write_addr_ch.burst_type = BURST_WRAP) then
+                        write_state_next <= WRAP_INIT_1;
+                    else
+                        write_state_next <= DATA_STATE;
+                    end if;
                 else
                     write_state_next <= IDLE;
                 end if;
+            when WRAP_INIT_1 => 
+                write_state_next <= WRAP_INIT_2;
+            when WRAP_INIT_2 =>
+                write_state_next <= DATA_STATE;
             when DATA_STATE => 
                 if (from_master_interface.write_data_ch.last = '1') then
                     write_state_next <= RESPONSE_STATE_1;
@@ -107,11 +131,19 @@ begin
         slave_handshake.wready <= '0';
         
         write_addr_reg_en <= '0';
+        write_wrap_addr_start_reg_en <= '0';
+        write_wrap_addr_end_reg_en <= '0';
         
         write_addr_next_sel <= "11";
         case write_state_reg is
             when IDLE =>
                 write_addr_reg_en <= master_handshake.awvalid;
+                
+            when WRAP_INIT_1 => 
+                write_wrap_addr_start_reg_en <= '1';
+                
+            when WRAP_INIT_2 =>
+                write_wrap_addr_end_reg_en <= '1';
                 
             when DATA_STATE => 
                 slave_handshake.awready <= '0';
@@ -154,7 +186,12 @@ begin
         elsif (write_addr_next_sel = BURST_INCR) then
             write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + unsigned(write_addr_incr));
         elsif (write_addr_next_sel = BURST_WRAP) then
-            write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);      -- TEMP UNTIL WRAP MODE GETS IMPLEMENTED
+            if (write_addr_reg = write_wrap_addr_end_reg) then
+                write_addr_next <= write_wrap_addr_start_reg;
+            else
+                write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + unsigned(write_addr_incr));
+            end if;
+            --write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);      -- TEMP UNTIL WRAP MODE GETS IMPLEMENTED
         else
             write_addr_next <= from_master_interface.write_addr_ch.addr;
         end if;
@@ -166,6 +203,44 @@ begin
                                   shift_amount => write_burst_size_reg);
     
     write_addr_incr(31 downto 8) <= (others => '0');
+    
+    -- ========== WRITE WRAP ADDRESSES CONTROL ==========
+    write_burst_len_ext(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 8) <= (others => '0');
+    write_burst_len_ext(7 downto 0) <= std_logic_vector(unsigned(write_burst_len_reg) + 1);
+    
+    write_burst_size_ext(4 downto 3) <= "00";
+    write_burst_size_ext(2 downto 0) <= write_burst_size_reg;
+    
+    shifter_left_mask_gen : entity work.barrel_shifter_left_32(rtl)
+                            port map(data_in => write_burst_len_ext,
+                                     data_out => write_burst_len_shifted,
+                                     shift_amount => write_burst_size_ext);
+                                     
+    write_wrap_addr_start_reg_cntrl : process(all)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '0') then
+                write_wrap_addr_start_reg <= (others => '0');
+            else
+                if (write_wrap_addr_start_reg_en = '1') then
+                    write_wrap_addr_start_reg <= write_addr_reg and not std_logic_vector(unsigned(write_burst_len_shifted) - 1);
+                end if;
+            end if;
+        end if;
+    end process;
+    
+    write_wrap_addr_end_reg_cntrl : process(all)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '0') then
+                write_wrap_addr_end_reg <= (others => '0');
+            else
+                if (write_wrap_addr_end_reg_en = '1') then
+                    write_wrap_addr_end_reg <= std_logic_vector(unsigned(write_wrap_addr_start_reg) + unsigned(write_burst_len_shifted) - unsigned(write_addr_incr));
+                end if;
+            end if;
+        end if;
+    end process;
     
     -- =========================== READING =================================
     -- READ STATE MACHINE
@@ -317,6 +392,7 @@ begin
                 read_burst_type_reg <= (others => '0');
                 read_burst_size_reg <= (others => '0');
                 
+                write_burst_len_reg <= (others => '0');
                 write_burst_type_reg <= (others => '0');
                 write_burst_size_reg <= (others => '0');
                 
@@ -324,6 +400,7 @@ begin
                 read_state_reg <= IDLE;
             else
                 if (master_handshake.awvalid = '1') then
+                    write_burst_len_reg <= from_master_interface.write_addr_ch.len;
                     write_burst_type_reg <= from_master_interface.write_addr_ch.burst_type;
                     write_burst_size_reg <= from_master_interface.write_addr_ch.size;
                 end if;
