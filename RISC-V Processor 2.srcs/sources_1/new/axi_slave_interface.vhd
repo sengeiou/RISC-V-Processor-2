@@ -7,8 +7,8 @@ use work.axi_interface_signal_groups.all;
 entity axi_slave_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master_interface : in FromMasterInterfaceToBus;
-        to_master_interface : out ToMasterInterfaceFromBus;
+        from_master_interface : in MasterBusInterfaceOut;
+        to_master_interface : out MasterBusInterfaceIn;
         
         -- HANDSHAKE SIGNALS
         master_handshake : in HandshakeMasterSrc;

@@ -2,19 +2,21 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+use work.axi_interface_signal_groups.all;
+
 entity axi_master_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master : out work.axi_interface_signal_groups.FromMasterInterfaceToBus;
-        to_master : in work.axi_interface_signal_groups.ToMasterInterfaceFromBus;
+        from_master : out MasterBusInterfaceOut;
+        to_master : in MasterBusInterfaceIn;
         
         -- HANDSHAKE SIGNALS
-        master_handshake : out work.axi_interface_signal_groups.HandshakeMasterSrc;
-        slave_handshake : in work.axi_interface_signal_groups.HandshakeSlaveSrc;
+        master_handshake : out HandshakeMasterSrc;
+        slave_handshake : in HandshakeSlaveSrc;
 
         -- OTHER CONTROL SIGNALS
-        interface_to_master : out work.axi_interface_signal_groups.ToMaster;
-        master_to_interface : in work.axi_interface_signal_groups.FromMaster;
+        interface_to_master : out ToMaster;
+        master_to_interface : in FromMaster;
         
         clk : in std_logic;
         reset : in std_logic
@@ -34,8 +36,8 @@ architecture rtl of axi_master_interface is
                              FINALIZE_STATE);
                             
     -- ========== WRITE REGISTERS ==========                              
-    signal write_addr_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
-    signal write_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_addr_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_data_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
                               
     signal write_state_reg : write_state_type;
     signal write_state_next : write_state_type;
@@ -47,7 +49,7 @@ architecture rtl of axi_master_interface is
     signal write_burst_len_mux_sel : std_logic;
     
     -- ========== READ REGISTERS ==========
-    signal read_data_reg : std_logic_vector(2 ** work.axi_interface_signal_groups.AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_data_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_data_reg_en : std_logic;
     
     signal read_state_reg : read_state_type;
