@@ -47,10 +47,6 @@ architecture rtl of axi_slave_interface is
     signal write_wrap_addr_end_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_wrap_addr_start_reg_en : std_logic;
     signal write_wrap_addr_end_reg_en : std_logic;
-
-    signal write_wrap_boundary_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
-    signal write_wrap_boundary_mask : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
-    
     
     signal write_burst_len_ext : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_burst_len_shifted : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
@@ -397,9 +393,9 @@ begin
                                   data_out => read_addr_incr(7 downto 0),
                                   shift_amount => read_burst_size_reg);
    
-   read_addr_incr(31 downto 8) <= (others => '0');
+    read_addr_incr(31 downto 8) <= (others => '0');
    
-       -- ========== READ WRAP ADDRESSES CONTROL ==========
+    -- ========== READ WRAP ADDRESSES CONTROL ==========
     read_burst_len_ext(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 8) <= (others => '0');
     read_burst_len_ext(7 downto 0) <= std_logic_vector(unsigned(read_burst_len_reg) + 1);
     

@@ -53,6 +53,8 @@ package pkg_pipeline is
         prog_flow_cntrl : std_logic_vector(1 downto 0);
         
         -- ===== CONTROL (MEMORY) =====
+        transfer_data_type : std_logic_vector(2 downto 0);
+        
         execute_read : std_logic;
         execute_write : std_logic;
         
@@ -68,6 +70,8 @@ package pkg_pipeline is
         reg_2_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         
         -- ===== CONTROL (MEMORY) =====
+        transfer_data_type : std_logic_vector(2 downto 0);
+        
         execute_read : std_logic;
         execute_write : std_logic;
         
@@ -101,6 +105,7 @@ package pkg_pipeline is
                                                             reg_wr_addr => (others => '0'),
                                                             reg_wr_en => '0',
                                                             prog_flow_cntrl => (others => '0'),
+                                                            transfer_data_type => "000",
                                                             execute_read => '0',
                                                             execute_write => '0',
                                                             pc => (others => '0'));
@@ -109,6 +114,7 @@ package pkg_pipeline is
                                                               reg_2_data => (others => '0'),
                                                               reg_wr_addr => (others => '0'),
                                                               reg_wr_en => '0',
+                                                              transfer_data_type => "000",
                                                               execute_read => '0',
                                                               execute_write => '0');
                                                               

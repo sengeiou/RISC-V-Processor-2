@@ -4,6 +4,10 @@ use IEEE.NUMERIC_STD.ALL;
 
 use work.axi_interface_signal_groups.all;
 
+-- =================== TO DO =================== 
+-- 1) Strobe generation for multiple bus widths
+-- ============================================= 
+
 entity axi_master_interface is
     port(
         -- CHANNEL SIGNALS
@@ -186,7 +190,11 @@ begin
         end if;
     end process;
     
-    -- READ STATE MACHINE
+    -- ========== STROBE SIGNAL GENERATION (WRITE) ==========
+    
+    -- ============================================================================================
+    -- READING
+    -- ============================================================================================
     read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_handshake.arready, to_master.read_data_ch.last)
     begin
         case read_state_reg is 

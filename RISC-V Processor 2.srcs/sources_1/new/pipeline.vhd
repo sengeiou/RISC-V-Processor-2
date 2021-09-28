@@ -111,6 +111,8 @@ begin
                             reg_wr_addr_in => mem_wb_register.reg_wr_addr,
                             reg_wr_en_in => mem_wb_register.reg_wr_en,
                             
+                            transfer_data_type => de_ex_register_next.transfer_data_type,
+                            
                             execute_read => de_ex_register_next.execute_read,
                             execute_write => de_ex_register_next.execute_write,
                             
@@ -155,6 +157,8 @@ begin
                             from_master => from_master,
                             to_master => to_master,
                             
+                            transfer_data_type => ex_mem_register.transfer_data_type,
+                            
                             execute_read => ex_mem_register.execute_read,
                             execute_write => ex_mem_register.execute_write,
                             busy => mem_busy
@@ -190,6 +194,8 @@ begin
     -- ===================== EXECUTE / MEMORY REGISTER ===================== 
     ex_mem_register_next.reg_wr_addr <= de_ex_register.reg_wr_addr;
     ex_mem_register_next.reg_wr_en <= de_ex_register.reg_wr_en;
+    
+    ex_mem_register_next.transfer_data_type <= de_ex_register.transfer_data_type;
     
     ex_mem_register_next.execute_read <= de_ex_register.execute_read;
     ex_mem_register_next.execute_write <= de_ex_register.execute_write;

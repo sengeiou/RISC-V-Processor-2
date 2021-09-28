@@ -13,6 +13,8 @@ entity stage_memory is
         -- Control Signals
         addr_in : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         
+        transfer_data_type : in std_logic_vector(2 downto 0);
+        
         execute_read : in std_logic;
         execute_write : in std_logic;
         
@@ -41,7 +43,7 @@ begin
     from_master.addr_read <= addr_in;
     
     from_master.burst_len <= (others => '0');
-    from_master.burst_size <= "010";
+    from_master.burst_size <= '0' & transfer_data_type(1 downto 0);
     from_master.burst_type <= BURST_FIXED;
     
     from_master.execute_read <= execute_read;

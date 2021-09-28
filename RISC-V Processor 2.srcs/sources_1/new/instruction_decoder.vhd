@@ -35,6 +35,8 @@ entity instruction_decoder is
         reg_wr_en : out std_logic;
         
         -- Memory control
+        transfer_data_type : out std_logic_vector(2 downto 0);
+        
         execute_read : out std_logic;
         execute_write : out std_logic
     );
@@ -57,6 +59,8 @@ begin
     pc_used <= '0';
     
     prog_flow_cntrl <= PROG_FLOW_NORM;
+    
+    transfer_data_type <= "000";
     
     execute_read <= '0';
     execute_write <= '0';
@@ -112,6 +116,8 @@ begin
         immediate_used <= '1';
         reg_wr_en <= '1';
         
+        transfer_data_type <= instruction_bus(14 downto 12);
+        
         execute_read <= '1';
         
         immediate_data(11 downto 0) <= instruction_bus(31 downto 20);
@@ -122,6 +128,8 @@ begin
         reg_rd_1_used <= '1';
         reg_rd_2_used <= '1';       -- For forwarding purposes
         immediate_used <= '1';
+        
+        transfer_data_type <= instruction_bus(14 downto 12);
         
         execute_write <= '1';
         

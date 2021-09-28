@@ -2,8 +2,8 @@
 # Vivado v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Wed Sep 22 15:36:53 2021
-# Process ID: 2788
+# Start of session at: Mon Sep 27 15:30:47 2021
+# Process ID: 4224
 # Current directory: E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1
 # Command line: vivado.exe -log top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source top.tcl
 # Log file: E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/top.vds

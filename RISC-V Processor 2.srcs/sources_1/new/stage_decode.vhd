@@ -34,6 +34,8 @@ entity stage_decode is
         
         prog_flow_cntrl : out std_logic_vector(1 downto 0);
         
+        transfer_data_type : out std_logic_vector(2 downto 0);
+        
         execute_read : out std_logic;
         execute_write : out std_logic;
         
@@ -64,6 +66,8 @@ begin
                                    pc_used => pc_used,
                                    
                                    prog_flow_cntrl => prog_flow_cntrl,
+                                   
+                                   transfer_data_type => transfer_data_type,
                                    
                                    execute_read => execute_read,
                                    execute_write => execute_write,
