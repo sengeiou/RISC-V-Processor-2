@@ -185,7 +185,7 @@ begin
         end if;
     end process;
     
-    write_addr_reg_next_mux_proc : process(write_addr_next_sel, write_addr_reg, from_master_interface.write_addr_ch.addr)   -- CAUTION: DO NOT USE process(all) AS TEMPTING AS IT MAY BE BECAUSE IT WONT WORK (at least in the sim)!
+    write_addr_reg_next_mux_proc : process(write_addr_next_sel, write_addr_reg, write_addr_incr, write_wrap_addr_start_reg, from_master_interface.write_addr_ch.addr)   -- CAUTION: DO NOT USE process(all) AS TEMPTING AS IT MAY BE BECAUSE IT WONT WORK (at least in the sim)!
     begin
         if (write_addr_next_sel = BURST_FIXED) then
             write_addr_next <= write_addr_reg;
@@ -203,9 +203,12 @@ begin
         end if;
     end process;
     
-    shifter_left_write : entity work.barrel_shifter_left_8(rtl)
+    shifter_left_write : entity work.barrel_shifter_2(rtl)
+                         generic map(DATA_WIDTH => 8)
                          port map(data_in => "00000001",
                                   data_out => write_addr_incr(7 downto 0),
+                                  shift_direction => '1',
+                                  shift_arith => '0',
                                   shift_amount => write_burst_size_reg);
     
     write_addr_incr(31 downto 8) <= (others => '0');
@@ -217,9 +220,12 @@ begin
     write_burst_size_ext(4 downto 3) <= "00";
     write_burst_size_ext(2 downto 0) <= write_burst_size_reg;
     
-    write_shifter_left_mask_gen : entity work.barrel_shifter_left_32(rtl)
+    write_shifter_left_mask_gen : entity work.barrel_shifter_2(rtl)
+                            generic map(DATA_WIDTH => 32)
                             port map(data_in => write_burst_len_ext,
                                      data_out => write_burst_len_shifted,
+                                     shift_direction => '1',
+                                     shift_arith => '0',
                                      shift_amount => write_burst_size_ext);
                                      
     write_wrap_addr_start_reg_cntrl : process(all)
@@ -388,9 +394,12 @@ begin
         end if;
     end process;
     
-    shifter_left_read : entity work.barrel_shifter_left_8(rtl)
+    shifter_left_read : entity work.barrel_shifter_2(rtl)
+                         generic map(DATA_WIDTH => 8)
                          port map(data_in => "00000001",
                                   data_out => read_addr_incr(7 downto 0),
+                                  shift_direction => '1',
+                                  shift_arith => '0',
                                   shift_amount => read_burst_size_reg);
    
     read_addr_incr(31 downto 8) <= (others => '0');
@@ -402,9 +411,12 @@ begin
     read_burst_size_ext(4 downto 3) <= "00";
     read_burst_size_ext(2 downto 0) <= read_burst_size_reg;
     
-    read_shifter_left_mask_gen : entity work.barrel_shifter_left_32(rtl)
+    read_shifter_left_mask_gen : entity work.barrel_shifter_2(rtl)
+                            generic map(DATA_WIDTH => 32)
                             port map(data_in => read_burst_len_ext,
                                      data_out => read_burst_len_shifted,
+                                     shift_direction => '1',
+                                     shift_arith => '0',
                                      shift_amount => read_burst_size_ext);
                                      
     read_wrap_addr_start_reg_cntrl : process(all)

@@ -39,6 +39,8 @@ begin
         else
             intermediate_results(0) <= data_in;
         end if;
+        
+        
     
         for i in 1 to integer(ceil(log2(real(DATA_WIDTH)))) - 1 loop
             if (shift_amount(i) = '1') then
