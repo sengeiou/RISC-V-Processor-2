@@ -28,22 +28,6 @@ architecture rtl of arithmetic_logic_unit is
     signal i_barrel_shifter_airth : std_logic;
     signal i_barrel_shifter_direction : std_logic;
 begin
---    barrel_shifter_generate : if (OPERAND_WIDTH_BITS = 32) generate
---            barrel_shifter : entity work.barrel_shifter(rtl)
---                             port map(data_in => operand_1,
---                                      data_out => i_barrel_shifter_result,
---                                      shift_amount => operand_2(4 downto 0),
---                                      shift_arith => i_barrel_shifter_airth,
---                                      shift_direction => i_barrel_shifter_direction);
---        elsif (OPERAND_WIDTH_BITS = 64) generate
---            barrel_shifter : entity work.barrel_shifter_64(rtl)
---                         port map(data_in => operand_1,
---                                  data_out => i_barrel_shifter_result,
---                                  shift_amount => operand_2(5 downto 0),
---                                  shift_arith => i_barrel_shifter_airth,
---                                  shift_direction => i_barrel_shifter_direction);
---    end generate barrel_shifter_generate;
-    
     barrel_shifter : entity work.barrel_shifter_2(rtl)
                      generic map(DATA_WIDTH => OPERAND_WIDTH_BITS)
                      port map(data_in => operand_1,
