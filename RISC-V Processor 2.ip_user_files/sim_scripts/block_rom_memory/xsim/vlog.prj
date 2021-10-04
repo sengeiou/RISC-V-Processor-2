@@ -1,5 +1,6 @@
 sv xpm  \
 "E:/Programs/Xilinx_Vivado/Vivado/2020.2/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
+"E:/Programs/Xilinx_Vivado/Vivado/2020.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv" \
 
 verilog blk_mem_gen_v8_4_4  \
 "../../../ipstatic/simulation/blk_mem_gen_v8_4.v" \

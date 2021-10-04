@@ -11,6 +11,7 @@ entity stage_fetch is
         branch_taken : in std_logic;
         branch_target_addr : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         
+        halt : in std_logic;
         clk : in std_logic;
         reset : in std_logic
     );
@@ -25,15 +26,22 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 program_counter_reg <= (others => '0');
-            elsif (branch_taken = '0') then
-                program_counter_reg <= program_counter_next;
             else
-                program_counter_reg <= unsigned(branch_target_addr);
+                program_counter_reg <= program_counter_next;
             end if;
         end if;
     end process;
     
-    program_counter_next <= program_counter_reg + 4;
+    pc_next_mux_proc : process(program_counter_reg, halt, branch_taken, branch_target_addr)
+    begin
+        if (halt = '1') then
+            program_counter_next <= program_counter_reg;
+        elsif (branch_taken = '0') then
+            program_counter_next <= program_counter_reg + 4;
+        else
+            program_counter_next <= unsigned(branch_target_addr);
+        end if; 
+    end process;
 
     program_counter <= std_logic_vector(program_counter_reg);
 

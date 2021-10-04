@@ -82,6 +82,7 @@ begin
                   port map(program_counter => pc,
                            branch_taken => branch_taken,
                            branch_target_addr => branch_target_addr,
+                           halt => mem_busy,
                            clk => clk,
                            reset => reset);
     

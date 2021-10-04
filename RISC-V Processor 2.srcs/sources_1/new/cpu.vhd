@@ -51,10 +51,8 @@ begin
                           
     rom_memory : entity work.rom_memory_2(structural)
                  port map(data_bus => slave_to_interface_1.data_read,
-                          addr_bus => slave_from_interface_1.addr_read,
+                          addr_bus => slave_from_interface_1.addr_read(11 downto 2),
                           
                           clk => clk_cpu);
-                          
-    slave_to_interface_1.data_read <= (others => '1');
 
 end structural;
