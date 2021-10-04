@@ -40,14 +40,20 @@ begin
                       reset_cpu => reset_cpu);
 
     -- AXI Slaves
-    led_device : entity work.led_interface(rtl)
-                 port map(data_write => slave_from_interface_1.data_write,
-                          addr_write => slave_from_interface_1.addr_write,
+--    led_device : entity work.led_interface(rtl)
+--                 port map(data_write => slave_from_interface_1.data_write,
+--                          addr_write => slave_from_interface_1.addr_write,
                           
-                          led_out => led_out_debug,
+--                          led_out => led_out_debug,
                           
-                          clk_bus => clk_cpu,
-                          reset => reset_cpu);
+--                          clk_bus => clk_cpu,
+--                          reset => reset_cpu);
+                          
+    rom_memory : entity work.rom_memory_2(structural)
+                 port map(data_bus => slave_to_interface_1.data_read,
+                          addr_bus => slave_from_interface_1.addr_read,
+                          
+                          clk => clk_cpu);
                           
     slave_to_interface_1.data_read <= (others => '1');
 
