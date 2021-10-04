@@ -66,8 +66,8 @@ IKI_DLLESPEC extern void execute_10(char*, char *);
 IKI_DLLESPEC extern void execute_11(char*, char *);
 IKI_DLLESPEC extern void execute_37(char*, char *);
 IKI_DLLESPEC extern void execute_38(char*, char *);
-IKI_DLLESPEC extern void execute_101(char*, char *);
 IKI_DLLESPEC extern void execute_100(char*, char *);
+IKI_DLLESPEC extern void execute_99(char*, char *);
 IKI_DLLESPEC extern void execute_41(char*, char *);
 IKI_DLLESPEC extern void execute_42(char*, char *);
 IKI_DLLESPEC extern void execute_43(char*, char *);
@@ -122,14 +122,14 @@ IKI_DLLESPEC extern void transaction_46(char*, char*, unsigned, unsigned, unsign
 IKI_DLLESPEC extern void transaction_47(char*, char*, unsigned, unsigned, unsigned);
 IKI_DLLESPEC extern void transaction_49(char*, char*, unsigned, unsigned, unsigned);
 IKI_DLLESPEC extern void transaction_50(char*, char*, unsigned, unsigned, unsigned);
-funcp funcTab[68] = {(funcp)execute_2, (funcp)execute_3, (funcp)execute_4, (funcp)execute_5, (funcp)execute_6, (funcp)execute_7, (funcp)execute_8, (funcp)execute_9, (funcp)execute_10, (funcp)execute_11, (funcp)execute_37, (funcp)execute_38, (funcp)execute_101, (funcp)execute_100, (funcp)execute_41, (funcp)execute_42, (funcp)execute_43, (funcp)execute_44, (funcp)execute_45, (funcp)execute_46, (funcp)execute_47, (funcp)execute_48, (funcp)execute_49, (funcp)execute_51, (funcp)execute_52, (funcp)execute_53, (funcp)execute_54, (funcp)execute_65, (funcp)execute_66, (funcp)execute_67, (funcp)execute_68, (funcp)execute_69, (funcp)execute_73, (funcp)execute_74, (funcp)execute_75, (funcp)execute_76, (funcp)execute_77, (funcp)execute_78, (funcp)execute_79, (funcp)execute_80, (funcp)execute_81, (funcp)execute_85, (funcp)execute_86, (funcp)execute_87, (funcp)execute_88, (funcp)execute_89, (funcp)execute_93, (funcp)execute_94, (funcp)execute_95, (funcp)execute_96, (funcp)execute_97, (funcp)execute_98, (funcp)execute_63, (funcp)execute_64, (funcp)execute_71, (funcp)execute_72, (funcp)vlog_transfunc_eventcallback, (funcp)vhdl_transfunc_eventcallback, (funcp)transaction_38, (funcp)transaction_39, (funcp)transaction_40, (funcp)transaction_41, (funcp)transaction_44, (funcp)transaction_45, (funcp)transaction_46, (funcp)transaction_47, (funcp)transaction_49, (funcp)transaction_50};
+funcp funcTab[68] = {(funcp)execute_2, (funcp)execute_3, (funcp)execute_4, (funcp)execute_5, (funcp)execute_6, (funcp)execute_7, (funcp)execute_8, (funcp)execute_9, (funcp)execute_10, (funcp)execute_11, (funcp)execute_37, (funcp)execute_38, (funcp)execute_100, (funcp)execute_99, (funcp)execute_41, (funcp)execute_42, (funcp)execute_43, (funcp)execute_44, (funcp)execute_45, (funcp)execute_46, (funcp)execute_47, (funcp)execute_48, (funcp)execute_49, (funcp)execute_51, (funcp)execute_52, (funcp)execute_53, (funcp)execute_54, (funcp)execute_65, (funcp)execute_66, (funcp)execute_67, (funcp)execute_68, (funcp)execute_69, (funcp)execute_73, (funcp)execute_74, (funcp)execute_75, (funcp)execute_76, (funcp)execute_77, (funcp)execute_78, (funcp)execute_79, (funcp)execute_80, (funcp)execute_81, (funcp)execute_85, (funcp)execute_86, (funcp)execute_87, (funcp)execute_88, (funcp)execute_89, (funcp)execute_93, (funcp)execute_94, (funcp)execute_95, (funcp)execute_96, (funcp)execute_97, (funcp)execute_98, (funcp)execute_63, (funcp)execute_64, (funcp)execute_71, (funcp)execute_72, (funcp)vlog_transfunc_eventcallback, (funcp)vhdl_transfunc_eventcallback, (funcp)transaction_38, (funcp)transaction_39, (funcp)transaction_40, (funcp)transaction_41, (funcp)transaction_44, (funcp)transaction_45, (funcp)transaction_46, (funcp)transaction_47, (funcp)transaction_49, (funcp)transaction_50};
 const int NumRelocateId= 68;
 
 void relocate(char *dp)
 {
 	iki_relocate(dp, "xsim.dir/axi_bus_tb_behav/xsim.reloc",  (void **)funcTab, 68);
-	iki_vhdl_file_variable_register(dp + 31824);
-	iki_vhdl_file_variable_register(dp + 31880);
+	iki_vhdl_file_variable_register(dp + 31760);
+	iki_vhdl_file_variable_register(dp + 31816);
 
 
 	/*Populate the transaction function pointer field in the whole net structure */

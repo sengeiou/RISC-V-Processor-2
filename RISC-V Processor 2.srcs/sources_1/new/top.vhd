@@ -1,6 +1,26 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
+-- ============================ TO DO ============================ 
+-- 1) DRAM Controller
+-- 2) A way to enable the processor to communicate with the PC (ex. UART)
+-- 3) ROM with bootloader
+-- 4) Peripherals (GPIO, Audio, Graphics, ...)
+-- 5) Implement multiplication and floating-point RISC-V Extensions
+-- 6) Add some sort of SIMD capability
+
+-- x) Implement a branch predictor (gshare predictor or at least a more basic correlating one)
+-- x) Implement D and I caches
+-- x) Add FIFOs to the AXI interfaces
+-- x) Implement a DMA controller
+-- =============================================================== 
+
+-- ========================= TO DO (AXI) =================================
+-- 1) Generate STROBE signal in the master
+-- 2) Make AXI bus data width configurable
+-- 3) Generate proper response signals
+-- =================================================================
+
 entity top is
     port(
         LED : out std_logic_vector(15 downto 0);

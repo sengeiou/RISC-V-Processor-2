@@ -118,6 +118,11 @@ package axi_interface_signal_groups is
     constant BURST_FIXED : std_logic_vector(1 downto 0) := "00";
     constant BURST_INCR : std_logic_vector(1 downto 0) := "01";
     constant BURST_WRAP : std_logic_vector(1 downto 0) := "10";
+    
+    constant RESP_OKAY : std_logic_vector(1 downto 0) := "00";
+    constant RESP_EXOKAY : std_logic_vector(1 downto 0) := "01";
+    constant RESP_SLVERR : std_logic_vector(1 downto 0) := "10";
+    constant RESP_DECERR : std_logic_vector(1 downto 0) := "11";
 end axi_interface_signal_groups;
 
 package body axi_interface_signal_groups is

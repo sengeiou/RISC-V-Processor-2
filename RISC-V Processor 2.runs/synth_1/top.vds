@@ -2,8 +2,8 @@
 # Vivado v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Wed Sep 29 12:02:00 2021
-# Process ID: 10208
+# Start of session at: Wed Sep 29 13:35:46 2021
+# Process ID: 1248
 # Current directory: E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1
 # Command line: vivado.exe -log top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source top.tcl
 # Log file: E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/top.vds
@@ -17,11 +17,11 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100
 INFO: [Device 21-403] Loading part xc7a100tcsg324-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 16712
+INFO: [Synth 8-7075] Helper process launched with PID 18572
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1005.203 ; gain = 0.000
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1002.555 ; gain = 0.000
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-638] synthesizing module 'top' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:12]
+INFO: [Synth 8-638] synthesizing module 'top' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:26]
 INFO: [Synth 8-638] synthesizing module 'cpu' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd:15]
 INFO: [Synth 8-638] synthesizing module 'axi_interconnect' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect.vhd:22]
 INFO: [Synth 8-638] synthesizing module 'axi_master_interface' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd:30]
@@ -87,7 +87,7 @@ INFO: [Synth 8-256] done synthesizing module 'core' (19#1) [E:/Vivado Projects/R
 INFO: [Synth 8-638] synthesizing module 'led_interface' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd:18]
 INFO: [Synth 8-256] done synthesizing module 'led_interface' (20#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd:18]
 INFO: [Synth 8-256] done synthesizing module 'cpu' (21#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd:15]
-INFO: [Synth 8-3491] module 'clk_wiz_0' declared at 'e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:70' bound to instance 'your_instance_name' of component 'clk_wiz_0' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:33]
+INFO: [Synth 8-3491] module 'clk_wiz_0' declared at 'e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:70' bound to instance 'your_instance_name' of component 'clk_wiz_0' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:47]
 INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0' [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:70]
 INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0_clk_wiz' [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v:68]
 INFO: [Synth 8-6157] synthesizing module 'IBUF' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:32983]
@@ -160,20 +160,20 @@ INFO: [Synth 8-6157] synthesizing module 'BUFH' [E:/Programs/Xilinx_Vivado/Vivad
 INFO: [Synth 8-6155] done synthesizing module 'BUFH' (26#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1319]
 INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0_clk_wiz' (27#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v:68]
 INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0' (28#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:70]
-INFO: [Synth 8-256] done synthesizing module 'top' (29#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:12]
+INFO: [Synth 8-256] done synthesizing module 'top' (29#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:26]
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 1005.203 ; gain = 0.000
+Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1002.555 ; gain = 0.000
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1005.203 ; gain = 0.000
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 1002.555 ; gain = 0.000
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1005.203 ; gain = 0.000
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 1002.555 ; gain = 0.000
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.112 . Memory (MB): peak = 1005.203 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.088 . Memory (MB): peak = 1002.555 ; gain = 0.000
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout1_buf' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
 INFO: [Netlist 29-17] Analyzing 2 Unisim elements for replacement
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout1_buf' of type 'BUFGCTRL' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
@@ -202,21 +202,21 @@ Parsing XDC File [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/s
 Finished Parsing XDC File [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_late.xdc] for cell 'your_instance_name/inst'
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1048.004 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1046.434 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 1 instances were transformed.
   BUFGCE => BUFGCTRL: 1 instance 
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.015 . Memory (MB): peak = 1048.004 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.034 . Memory (MB): peak = 1046.434 ; gain = 0.000
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1048.004 ; gain = 42.801
+Finished Constraint Validation : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1046.434 ; gain = 43.879
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1048.004 ; gain = 42.801
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1046.434 ; gain = 43.879
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
@@ -224,7 +224,7 @@ Start Applying 'set_property' XDC Constraints
 Applied set_property KEEP_HIERARCHY = SOFT for your_instance_name/inst. (constraint file  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/dont_touch.xdc}, line 10).
 Applied set_property KEEP_HIERARCHY = SOFT for your_instance_name. (constraint file  auto generated constraint).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1048.004 ; gain = 42.801
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1046.434 ; gain = 43.879
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'write_state_reg_reg' in module 'axi_master_interface'
 INFO: [Synth 8-802] inferred FSM for state register 'read_state_reg_reg' in module 'axi_master_interface'
@@ -271,7 +271,7 @@ INFO: [Synth 8-3354] encoded FSM with state register 'read_state_reg_reg' using 
 INFO: [Synth 8-3354] encoded FSM with state register 'write_state_reg_reg' using encoding 'sequential' in module 'axi_slave_interface'
 WARNING: [Synth 8-327] inferring latch for variable 'read_addr_next_sel_reg' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:307]
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:14 ; elapsed = 00:00:16 . Memory (MB): peak = 1048.004 ; gain = 42.801
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:14 ; elapsed = 00:00:16 . Memory (MB): peak = 1046.434 ; gain = 43.879
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
@@ -344,25 +344,25 @@ Finished Part Resource Summary
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:26 ; elapsed = 00:00:29 . Memory (MB): peak = 1048.004 ; gain = 42.801
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:26 ; elapsed = 00:00:30 . Memory (MB): peak = 1046.434 ; gain = 43.879
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:31 ; elapsed = 00:00:35 . Memory (MB): peak = 1048.004 ; gain = 42.801
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:32 ; elapsed = 00:00:35 . Memory (MB): peak = 1046.434 ; gain = 43.879
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:32 ; elapsed = 00:00:36 . Memory (MB): peak = 1048.004 ; gain = 42.801
+Finished Timing Optimization : Time (s): cpu = 00:00:33 ; elapsed = 00:00:36 . Memory (MB): peak = 1046.434 ; gain = 43.879
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:34 ; elapsed = 00:00:37 . Memory (MB): peak = 1056.461 ; gain = 51.258
+Finished Technology Mapping : Time (s): cpu = 00:00:34 ; elapsed = 00:00:38 . Memory (MB): peak = 1058.422 ; gain = 55.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -380,37 +380,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:37 ; elapsed = 00:00:41 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Finished IO Insertion : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:37 ; elapsed = 00:00:41 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:38 ; elapsed = 00:00:41 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:38 ; elapsed = 00:00:41 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:38 ; elapsed = 00:00:41 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:38 ; elapsed = 00:00:41 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -446,20 +446,20 @@ Report Cell Usage:
 |18    |OBUF       |    16|
 +------+-----------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:38 ; elapsed = 00:00:41 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 1 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:29 ; elapsed = 00:00:38 . Memory (MB): peak = 1071.238 ; gain = 23.234
-Synthesis Optimization Complete : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1071.238 ; gain = 66.035
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:30 ; elapsed = 00:00:39 . Memory (MB): peak = 1073.230 ; gain = 26.797
+Synthesis Optimization Complete : Time (s): cpu = 00:00:38 ; elapsed = 00:00:42 . Memory (MB): peak = 1073.230 ; gain = 70.676
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.044 . Memory (MB): peak = 1071.238 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.042 . Memory (MB): peak = 1073.230 ; gain = 0.000
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout1_buf' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
 INFO: [Netlist 29-17] Analyzing 208 Unisim elements for replacement
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout1_buf' of type 'BUFGCTRL' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1071.238 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1073.230 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 1 instances were transformed.
   BUFGCE => BUFGCTRL: 1 instance 
@@ -467,7 +467,7 @@ INFO: [Project 1-111] Unisim Transformation Summary:
 INFO: [Common 17-83] Releasing license: Synthesis
 95 Infos, 9 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:44 ; elapsed = 00:00:49 . Memory (MB): peak = 1071.238 ; gain = 66.035
+synth_design: Time (s): cpu = 00:00:45 ; elapsed = 00:00:50 . Memory (MB): peak = 1073.230 ; gain = 70.676
 INFO: [Common 17-1381] The checkpoint 'E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/top.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file top_utilization_synth.rpt -pb top_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Wed Sep 29 12:02:52 2021...
+INFO: [Common 17-206] Exiting Vivado at Wed Sep 29 13:36:40 2021...

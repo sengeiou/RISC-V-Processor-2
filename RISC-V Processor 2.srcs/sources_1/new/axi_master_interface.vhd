@@ -11,8 +11,8 @@ use work.axi_interface_signal_groups.all;
 entity axi_master_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master : out MasterBusInterfaceOut;
-        to_master : in MasterBusInterfaceIn;
+        axi_bus_out : out MasterBusInterfaceOut;
+        axi_bus_in : in MasterBusInterfaceIn;
         
         -- HANDSHAKE SIGNALS
         master_handshake : out HandshakeMasterSrc;
@@ -98,14 +98,14 @@ begin
     begin
         interface_to_master.done_write <= '0'; 
         
-        from_master.write_addr_ch.addr <= (others => '0');
-        from_master.write_addr_ch.len <= (others => '0');
-        from_master.write_addr_ch.size <= (others => '0');
-        from_master.write_addr_ch.burst_type <= (others => '0');
+        axi_bus_out.write_addr_ch.addr <= (others => '0');
+        axi_bus_out.write_addr_ch.len <= (others => '0');
+        axi_bus_out.write_addr_ch.size <= (others => '0');
+        axi_bus_out.write_addr_ch.burst_type <= (others => '0');
         
-        from_master.write_data_ch.data <= (others => '0');
-        from_master.write_data_ch.strb <= "0000";      
-        from_master.write_data_ch.last <= '0';   
+        axi_bus_out.write_data_ch.data <= (others => '0');
+        axi_bus_out.write_data_ch.strb <= "0000";      
+        axi_bus_out.write_data_ch.last <= '0';   
         
         master_handshake.awvalid <= '0';
         master_handshake.wvalid <= '0';
@@ -119,14 +119,14 @@ begin
             
             when ADDR_STATE_1 => 
                 -- WRITE ADDRESS CHANNEL
-                from_master.write_addr_ch.addr <= write_addr_reg;
-                from_master.write_addr_ch.len <= master_to_interface.burst_len;
-                from_master.write_addr_ch.size <= master_to_interface.burst_size;
-                from_master.write_addr_ch.burst_type <= master_to_interface.burst_type;
+                axi_bus_out.write_addr_ch.addr <= write_addr_reg;
+                axi_bus_out.write_addr_ch.len <= master_to_interface.burst_len;
+                axi_bus_out.write_addr_ch.size <= master_to_interface.burst_size;
+                axi_bus_out.write_addr_ch.burst_type <= master_to_interface.burst_type;
                 
                 -- WRITE DATA CHANNEL
-                from_master.write_data_ch.data <= write_data_reg;
-                from_master.write_data_ch.strb <= "1111";
+                axi_bus_out.write_data_ch.data <= write_data_reg;
+                axi_bus_out.write_data_ch.strb <= "1111";
                 
                 -- HANDSHAKE
                 master_handshake.awvalid <= '1';
@@ -135,9 +135,9 @@ begin
                 write_burst_len_reg_en <= '1';
             when DATA_STATE => 
                 -- WRITE DATA CHANNEL
-                from_master.write_data_ch.data <= write_data_reg;
-                from_master.write_data_ch.strb <= "1111";
-                from_master.write_data_ch.last <= write_burst_len_reg_zero;
+                axi_bus_out.write_data_ch.data <= write_data_reg;
+                axi_bus_out.write_data_ch.strb <= "1111";
+                axi_bus_out.write_data_ch.last <= write_burst_len_reg_zero;
                 
                 -- HANDSHAKE
                 master_handshake.wvalid <= '1';
@@ -195,7 +195,7 @@ begin
     -- ============================================================================================
     -- READING
     -- ============================================================================================
-    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_handshake.arready, to_master.read_data_ch.last)
+    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_handshake.arready, axi_bus_in.read_data_ch.last)
     begin
         case read_state_reg is 
             when IDLE => 
@@ -211,7 +211,7 @@ begin
                     read_state_next <= ADDR_STATE;
                 end if;
             when DATA_STATE => 
-                if (to_master.read_data_ch.last = '1') then
+                if (axi_bus_in.read_data_ch.last = '1') then
                     read_state_next <= FINALIZE_STATE;
                 else
                     read_state_next <= DATA_STATE;
@@ -225,10 +225,10 @@ begin
     begin
         interface_to_master.done_read <= '0';
         
-        from_master.read_addr_ch.addr <= (others => '0');
-        from_master.read_addr_ch.len <= (others => '0');
-        from_master.read_addr_ch.size <= (others => '0');
-        from_master.read_addr_ch.burst_type <= (others => '0');
+        axi_bus_out.read_addr_ch.addr <= (others => '0');
+        axi_bus_out.read_addr_ch.len <= (others => '0');
+        axi_bus_out.read_addr_ch.size <= (others => '0');
+        axi_bus_out.read_addr_ch.burst_type <= (others => '0');
                 
         -- HANDSHAKE
         master_handshake.arvalid <= '0';
@@ -240,10 +240,10 @@ begin
             when IDLE =>
 
             when ADDR_STATE => 
-                from_master.read_addr_ch.addr <= master_to_interface.addr_read;
-                from_master.read_addr_ch.len <= master_to_interface.burst_len;
-                from_master.read_addr_ch.size <= master_to_interface.burst_size;
-                from_master.read_addr_ch.burst_type <= master_to_interface.burst_type;
+                axi_bus_out.read_addr_ch.addr <= master_to_interface.addr_read;
+                axi_bus_out.read_addr_ch.len <= master_to_interface.burst_len;
+                axi_bus_out.read_addr_ch.size <= master_to_interface.burst_size;
+                axi_bus_out.read_addr_ch.burst_type <= master_to_interface.burst_type;
                 
                 -- HANDSHAKE
                 master_handshake.arvalid <= '1';
@@ -274,7 +274,7 @@ begin
                 end if;
                 
                 if (read_data_reg_en = '1') then
-                    read_data_reg <= to_master.read_data_ch.data;
+                    read_data_reg <= axi_bus_in.read_data_ch.data;
                 end if;
                 
                 write_state_reg <= write_state_next;

@@ -7,8 +7,8 @@ use work.axi_interface_signal_groups.all;
 entity axi_slave_interface is
     port(
         -- CHANNEL SIGNALS
-        from_master_interface : in MasterBusInterfaceOut;
-        to_master_interface : out MasterBusInterfaceIn;
+        axi_bus_in : in MasterBusInterfaceOut;
+        axi_bus_out : out MasterBusInterfaceIn;
         
         -- HANDSHAKE SIGNALS
         master_handshake : in HandshakeMasterSrc;
@@ -95,12 +95,12 @@ architecture rtl of axi_slave_interface is
     
     signal write_addr_next_sel : std_logic_vector(1 downto 0);
 begin
-    write_state_transition : process(master_handshake.awvalid, from_master_interface.write_data_ch.last, slave_handshake.bvalid, clk)
+    write_state_transition : process(master_handshake.awvalid, axi_bus_in.write_data_ch.last, slave_handshake.bvalid, clk)
     begin
         case write_state_reg is
             when IDLE =>
                 if (master_handshake.awvalid = '1') then
-                    if (from_master_interface.write_addr_ch.burst_type = BURST_WRAP) then
+                    if (axi_bus_in.write_addr_ch.burst_type = BURST_WRAP) then
                         write_state_next <= WRAP_INIT_1;
                     else
                         write_state_next <= DATA_STATE;
@@ -113,7 +113,7 @@ begin
             when WRAP_INIT_2 =>
                 write_state_next <= DATA_STATE;
             when DATA_STATE => 
-                if (from_master_interface.write_data_ch.last = '1') then
+                if (axi_bus_in.write_data_ch.last = '1') then
                     write_state_next <= RESPONSE_STATE_1;
                 else
                     write_state_next <= DATA_STATE;
@@ -140,6 +140,8 @@ begin
         write_wrap_addr_start_reg_en <= '0';
         write_wrap_addr_end_reg_en <= '0';
         
+        axi_bus_out.write_resp_ch.resp <= RESP_OKAY;
+        
         write_addr_next_sel <= "11";
         case write_state_reg is
             when IDLE =>
@@ -160,13 +162,13 @@ begin
                 write_addr_next_sel <= write_burst_type_reg;
                 
             when RESPONSE_STATE_1 => 
+                axi_bus_out.write_resp_ch.resp <= RESP_EXOKAY;
+            
                 slave_handshake.bvalid <= '1';
-
                 slave_handshake.awready <= '0';
                 
             when RESPONSE_STATE_2 => 
                 slave_handshake.bvalid <= '1';
-                
                 slave_handshake.awready <= '0';
         end case;
     end process;
@@ -185,7 +187,7 @@ begin
         end if;
     end process;
     
-    write_addr_reg_next_mux_proc : process(write_addr_next_sel, write_addr_reg, write_addr_incr, write_wrap_addr_start_reg, from_master_interface.write_addr_ch.addr)   -- CAUTION: DO NOT USE process(all) AS TEMPTING AS IT MAY BE BECAUSE IT WONT WORK (at least in the sim)!
+    write_addr_reg_next_mux_proc : process(write_addr_next_sel, write_addr_reg, write_addr_incr, write_wrap_addr_start_reg, axi_bus_in.write_addr_ch.addr)   -- CAUTION: DO NOT USE process(all) AS TEMPTING AS IT MAY BE BECAUSE IT WONT WORK (at least in the sim)!
     begin
         if (write_addr_next_sel = BURST_FIXED) then
             write_addr_next <= write_addr_reg;
@@ -199,7 +201,7 @@ begin
             end if;
             --write_addr_next <= std_logic_vector(unsigned(write_addr_reg) + 4);      -- TEMP UNTIL WRAP MODE GETS IMPLEMENTED
         else
-            write_addr_next <= from_master_interface.write_addr_ch.addr;
+            write_addr_next <= axi_bus_in.write_addr_ch.addr;
         end if;
     end process;
     
@@ -261,7 +263,7 @@ begin
         case read_state_reg is 
             when IDLE => 
                 if (master_handshake.arvalid = '1') then
-                    if (from_master_interface.read_addr_ch.burst_type = BURST_WRAP) then
+                    if (axi_bus_in.read_addr_ch.burst_type = BURST_WRAP) then
                         read_state_next <= WRAP_INIT_1;
                     else
                         read_state_next <= DATA_STATE;
@@ -284,9 +286,9 @@ begin
     
     read_state_outputs : process(all)
     begin
-        to_master_interface.read_data_ch.data <= (others => '0');
-        to_master_interface.read_data_ch.resp <= (others => '0');
-        to_master_interface.read_data_ch.last <= '0';
+        axi_bus_out.read_data_ch.data <= (others => '0');
+        axi_bus_out.read_data_ch.resp <= (others => '0');
+        axi_bus_out.read_data_ch.last <= '0';
                 
         slave_handshake.rvalid <= '0';
         
@@ -296,6 +298,8 @@ begin
         read_wrap_addr_end_reg_en <= '0';
         
         read_burst_len_mux_sel <= '0';
+        
+        axi_bus_out.read_data_ch.resp <= RESP_OKAY; 
                 
         slave_handshake.arready <= '1';
         case read_state_reg is
@@ -310,13 +314,14 @@ begin
             when WRAP_INIT_2 => 
                 read_wrap_addr_end_reg_en <= '1';
             when DATA_STATE => 
-                to_master_interface.read_data_ch.data <= from_slave.data_read;
-                to_master_interface.read_data_ch.last <= read_burst_len_reg_zero;
+                axi_bus_out.read_data_ch.data <= from_slave.data_read;
+                axi_bus_out.read_data_ch.last <= read_burst_len_reg_zero;
                 
                 slave_handshake.rvalid <= '1';
                 slave_handshake.arready <= '0';
                 
-                to_master_interface.read_data_ch.last <= read_burst_len_reg_zero;
+                axi_bus_out.read_data_ch.last <= read_burst_len_reg_zero;
+                axi_bus_out.read_data_ch.resp <= RESP_EXOKAY;                 -- The slave will currently only respond as if every transaction is successfull. This will change in the future.
                 
                 read_burst_len_mux_sel <= '1';
                 
@@ -352,10 +357,10 @@ begin
         end if;
     end process;
     
-    read_burst_len_next_mux_proc : process(read_burst_len_mux_sel, from_master_interface.read_addr_ch.len, read_burst_len_reg)
+    read_burst_len_next_mux_proc : process(read_burst_len_mux_sel, axi_bus_in.read_addr_ch.len, read_burst_len_reg)
     begin
         if (read_burst_len_mux_sel = '0') then
-            read_burst_len_next <= from_master_interface.read_addr_ch.len;
+            read_burst_len_next <= axi_bus_in.read_addr_ch.len;
         elsif (read_burst_len_mux_sel = '1') then
             read_burst_len_next <= std_logic_vector(unsigned(read_burst_len_reg) - 1);
         else
@@ -377,7 +382,7 @@ begin
         end if;
     end process;
     
-    read_addr_next_mux_proc : process(read_addr_next_sel, read_addr_reg, read_addr_incr, from_master_interface.read_addr_ch.addr)
+    read_addr_next_mux_proc : process(read_addr_next_sel, read_addr_reg, read_addr_incr, axi_bus_in.read_addr_ch.addr)
     begin   
         if (read_addr_next_sel = BURST_FIXED) then
             read_addr_next <= read_addr_reg;
@@ -390,7 +395,7 @@ begin
                 read_addr_next <= std_logic_vector(unsigned(read_addr_reg) + unsigned(read_addr_incr));
             end if;
         else
-            read_addr_next <= from_master_interface.read_addr_ch.addr;
+            read_addr_next <= axi_bus_in.read_addr_ch.addr;
         end if;
     end process;
     
@@ -465,18 +470,18 @@ begin
                 read_state_reg <= IDLE;
             else
                 if (master_handshake.awvalid = '1') then
-                    write_burst_len_reg <= from_master_interface.write_addr_ch.len;
-                    write_burst_type_reg <= from_master_interface.write_addr_ch.burst_type;
-                    write_burst_size_reg <= from_master_interface.write_addr_ch.size;
+                    write_burst_len_reg <= axi_bus_in.write_addr_ch.len;
+                    write_burst_type_reg <= axi_bus_in.write_addr_ch.burst_type;
+                    write_burst_size_reg <= axi_bus_in.write_addr_ch.size;
                 end if;
             
                 if (master_handshake.wvalid = '1') then
-                    write_data_reg <= from_master_interface.write_data_ch.data;
+                    write_data_reg <= axi_bus_in.write_data_ch.data;
                 end if;
             
                 if (master_handshake.arvalid = '1') then     
-                    read_burst_size_reg <= from_master_interface.read_addr_ch.size;
-                    read_burst_type_reg <= from_master_interface.read_addr_ch.burst_type;
+                    read_burst_size_reg <= axi_bus_in.read_addr_ch.size;
+                    read_burst_type_reg <= axi_bus_in.read_addr_ch.burst_type;
                 end if;
             
                 write_state_reg <= write_state_next;

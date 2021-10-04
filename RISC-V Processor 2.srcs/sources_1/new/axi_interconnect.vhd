@@ -29,8 +29,8 @@ architecture rtl of axi_interconnect is
 begin
     axi_master_1 : entity work.axi_master_interface(rtl)
                    port map(-- Interconnect side signals
-                            to_master => read_bus_1,
-                            from_master => write_bus_1,
+                            axi_bus_in => read_bus_1,
+                            axi_bus_out => write_bus_1,
                             master_handshake => handshake_master_src_1,
                             slave_handshake => handshake_slave_src_1,
                             
@@ -43,8 +43,8 @@ begin
                             
     axi_slave_1 : entity work.axi_slave_interface(rtl)
                   port map(-- Interconnect side signals
-                           to_master_interface => read_bus_1,
-                           from_master_interface => write_bus_1,
+                           axi_bus_out => read_bus_1,
+                           axi_bus_in => write_bus_1,
                            master_handshake => handshake_master_src_1,
                            slave_handshake => handshake_slave_src_1,
                            

@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
-| Date         : Wed Sep 29 12:04:01 2021
+| Date         : Wed Sep 29 13:39:14 2021
 | Host         : DESKTOP-JMFHVJF running 64-bit major release  (build 9200)
 | Command      : report_timing_summary -max_paths 10 -file top_timing_summary_routed.rpt -pb top_timing_summary_routed.pb -rpx top_timing_summary_routed.rpx -warn_on_violation
 | Design       : top
@@ -907,7 +907,7 @@ Slack (MET) :             0.168ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][1]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][1]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[1]/D
   -------------------------------------------------------------------    -------------------
 
@@ -964,7 +964,7 @@ Slack (MET) :             0.172ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][11]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][11]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[11]/D
   -------------------------------------------------------------------    -------------------
 
@@ -1021,7 +1021,7 @@ Slack (MET) :             0.174ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/Q
-                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][0]
+                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][0]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -1253,7 +1253,7 @@ Slack (MET) :             0.192ns  (arrival time - required time)
     SLICE_X4Y81          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y81          FDRE (Prop_fdre_C_Q)         0.141    -0.427 r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/Q
-                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_data_ch][data][0]
+                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_data_ch][data][0]
     SLICE_X3Y80          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_data_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -1310,7 +1310,7 @@ Slack (MET) :             0.194ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/Q
-                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][4]
+                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][4]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[4]/D
   -------------------------------------------------------------------    -------------------
 
@@ -1424,7 +1424,7 @@ Slack (MET) :             0.198ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/Q
-                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][8]
+                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][8]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[8]/D
   -------------------------------------------------------------------    -------------------
 
@@ -2238,7 +2238,7 @@ Slack (MET) :             0.168ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][1]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][1]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[1]/D
   -------------------------------------------------------------------    -------------------
 
@@ -2295,7 +2295,7 @@ Slack (MET) :             0.172ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][11]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][11]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[11]/D
   -------------------------------------------------------------------    -------------------
 
@@ -2352,7 +2352,7 @@ Slack (MET) :             0.174ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/Q
-                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][0]
+                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][0]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -2584,7 +2584,7 @@ Slack (MET) :             0.192ns  (arrival time - required time)
     SLICE_X4Y81          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y81          FDRE (Prop_fdre_C_Q)         0.141    -0.427 r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/Q
-                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_data_ch][data][0]
+                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_data_ch][data][0]
     SLICE_X3Y80          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_data_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -2641,7 +2641,7 @@ Slack (MET) :             0.194ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/Q
-                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][4]
+                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][4]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[4]/D
   -------------------------------------------------------------------    -------------------
 
@@ -2755,7 +2755,7 @@ Slack (MET) :             0.198ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/Q
-                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][8]
+                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][8]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[8]/D
   -------------------------------------------------------------------    -------------------
 
@@ -3556,7 +3556,7 @@ Slack (MET) :             0.019ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][1]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][1]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[1]/D
   -------------------------------------------------------------------    -------------------
 
@@ -3619,7 +3619,7 @@ Slack (MET) :             0.023ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][11]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][11]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[11]/D
   -------------------------------------------------------------------    -------------------
 
@@ -3682,7 +3682,7 @@ Slack (MET) :             0.024ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/Q
-                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][0]
+                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][0]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -3938,7 +3938,7 @@ Slack (MET) :             0.042ns  (arrival time - required time)
     SLICE_X4Y81          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y81          FDRE (Prop_fdre_C_Q)         0.141    -0.427 r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/Q
-                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_data_ch][data][0]
+                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_data_ch][data][0]
     SLICE_X3Y80          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_data_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -4001,7 +4001,7 @@ Slack (MET) :             0.045ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/Q
-                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][4]
+                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][4]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[4]/D
   -------------------------------------------------------------------    -------------------
 
@@ -4127,7 +4127,7 @@ Slack (MET) :             0.048ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/Q
-                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][8]
+                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][8]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[8]/D
   -------------------------------------------------------------------    -------------------
 
@@ -4861,7 +4861,7 @@ Slack (MET) :             0.019ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[1]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][1]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][1]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[1]/D
   -------------------------------------------------------------------    -------------------
 
@@ -4924,7 +4924,7 @@ Slack (MET) :             0.023ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[11]/Q
-                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][11]
+                         net (fo=1, routed)           0.110    -0.314    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][11]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[11]/D
   -------------------------------------------------------------------    -------------------
 
@@ -4987,7 +4987,7 @@ Slack (MET) :             0.024ns  (arrival time - required time)
     SLICE_X5Y84          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X5Y84          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[0]/Q
-                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][0]
+                         net (fo=1, routed)           0.116    -0.308    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][0]
     SLICE_X4Y83          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -5243,7 +5243,7 @@ Slack (MET) :             0.042ns  (arrival time - required time)
     SLICE_X4Y81          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y81          FDRE (Prop_fdre_C_Q)         0.141    -0.427 r  cpu/axi_interconnect/axi_master_1/write_data_reg_reg[0]/Q
-                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_data_ch][data][0]
+                         net (fo=1, routed)           0.145    -0.282    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_data_ch][data][0]
     SLICE_X3Y80          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_data_reg_reg[0]/D
   -------------------------------------------------------------------    -------------------
 
@@ -5306,7 +5306,7 @@ Slack (MET) :             0.045ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[4]/Q
-                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][4]
+                         net (fo=1, routed)           0.114    -0.310    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][4]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[4]/D
   -------------------------------------------------------------------    -------------------
 
@@ -5432,7 +5432,7 @@ Slack (MET) :             0.048ns  (arrival time - required time)
     SLICE_X4Y85          FDRE                                         r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/C
   -------------------------------------------------------------------    -------------------
     SLICE_X4Y85          FDRE (Prop_fdre_C_Q)         0.141    -0.424 r  cpu/axi_interconnect/axi_master_1/write_addr_reg_reg[8]/Q
-                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/from_master_interface[write_addr_ch][addr][8]
+                         net (fo=1, routed)           0.147    -0.277    cpu/axi_interconnect/axi_slave_1/axi_bus_in[write_addr_ch][addr][8]
     SLICE_X4Y84          FDRE                                         r  cpu/axi_interconnect/axi_slave_1/write_addr_reg_reg[8]/D
   -------------------------------------------------------------------    -------------------
 
