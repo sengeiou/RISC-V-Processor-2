@@ -16,8 +16,10 @@ entity axi_slave_interface is
         axi_write_resp_ch : out WriteResponseChannel;
         
         -- HANDSHAKE SIGNALS
-        master_handshake : in HandshakeMasterSrc;
-        slave_handshake : out HandshakeSlaveSrc;
+        master_write_handshake : in HandshakeWriteMaster; 
+        master_read_handshake : in HandshakeReadMaster;
+        slave_write_handshake : out HandshakeWriteSlave;
+        slave_read_handshake : out HandshakeReadSlave;
         
         -- OTHER DATA SIGNALS
         from_slave : in FromSlave;
@@ -100,11 +102,11 @@ architecture rtl of axi_slave_interface is
     
     signal write_addr_next_sel : std_logic_vector(1 downto 0);
 begin
-    write_state_transition : process(master_handshake.awvalid, axi_write_data_ch.last, slave_handshake.bvalid, clk)
+    write_state_transition : process(master_write_handshake.awvalid, axi_write_data_ch.last, slave_write_handshake.bvalid, clk)
     begin
         case write_state_reg is
             when IDLE =>
-                if (master_handshake.awvalid = '1') then
+                if (master_write_handshake.awvalid = '1') then
                     if (axi_write_addr_ch.burst_type = BURST_WRAP) then
                         write_state_next <= WRAP_INIT_1;
                     else
@@ -124,7 +126,7 @@ begin
                     write_state_next <= DATA_STATE;
                 end if;
             when RESPONSE_STATE_1 => 
-                if (slave_handshake.bvalid = '1') then
+                if (slave_write_handshake.bvalid = '1') then
                     write_state_next <= RESPONSE_STATE_2;
                 else 
                     write_state_next <= RESPONSE_STATE_1;
@@ -136,10 +138,10 @@ begin
 
     write_state_outputs : process(all)
     begin
-        slave_handshake.bvalid <= '0';
+        slave_write_handshake.bvalid <= '0';
 
-        slave_handshake.awready <= '1';
-        slave_handshake.wready <= '0';
+        slave_write_handshake.awready <= '1';
+        slave_write_handshake.wready <= '0';
         
         write_addr_reg_en <= '0';
         write_wrap_addr_start_reg_en <= '0';
@@ -150,7 +152,7 @@ begin
         write_addr_next_sel <= "11";
         case write_state_reg is
             when IDLE =>
-                write_addr_reg_en <= master_handshake.awvalid;
+                write_addr_reg_en <= master_write_handshake.awvalid;
                 
             when WRAP_INIT_1 => 
                 write_wrap_addr_start_reg_en <= '1';
@@ -159,8 +161,8 @@ begin
                 write_wrap_addr_end_reg_en <= '1';
                 
             when DATA_STATE => 
-                slave_handshake.awready <= '0';
-                slave_handshake.wready <= '1';
+                slave_write_handshake.awready <= '0';
+                slave_write_handshake.wready <= '1';
                 
                 write_addr_reg_en <= '1';
                 
@@ -169,12 +171,12 @@ begin
             when RESPONSE_STATE_1 => 
                 axi_write_resp_ch.resp <= RESP_EXOKAY;
             
-                slave_handshake.bvalid <= '1';
-                slave_handshake.awready <= '0';
+                slave_write_handshake.bvalid <= '1';
+                slave_write_handshake.awready <= '0';
                 
             when RESPONSE_STATE_2 => 
-                slave_handshake.bvalid <= '1';
-                slave_handshake.awready <= '0';
+                slave_write_handshake.bvalid <= '1';
+                slave_write_handshake.awready <= '0';
         end case;
     end process;
     
@@ -267,7 +269,7 @@ begin
     begin
         case read_state_reg is 
             when IDLE => 
-                if (master_handshake.arvalid = '1') then
+                if (master_read_handshake.arvalid = '1') then
                     if (axi_read_addr_ch.burst_type = BURST_WRAP) then
                         read_state_next <= WRAP_INIT_1;
                     else
@@ -295,7 +297,7 @@ begin
         axi_read_data_ch.resp <= (others => '0');
         axi_read_data_ch.last <= '0';
                 
-        slave_handshake.rvalid <= '0';
+        slave_read_handshake.rvalid <= '0';
         
         read_addr_reg_en <= '0';
         read_burst_len_reg_en <= '0';
@@ -306,13 +308,13 @@ begin
         
         axi_read_data_ch.resp <= RESP_OKAY; 
                 
-        slave_handshake.arready <= '1';
+        slave_read_handshake.arready <= '1';
         case read_state_reg is
             when IDLE =>
-                read_burst_len_reg_en <= master_handshake.arvalid;
-                read_addr_reg_en <= master_handshake.arvalid;
+                read_burst_len_reg_en <= master_read_handshake.arvalid;
+                read_addr_reg_en <= master_read_handshake.arvalid;
                 
-                slave_handshake.arready <= '0';
+                slave_read_handshake.arready <= '0';
                 read_addr_next_sel <= "11";
             when WRAP_INIT_1 => 
                 read_wrap_addr_start_reg_en <= '1';
@@ -322,8 +324,8 @@ begin
                 axi_read_data_ch.data <= from_slave.data_read;
                 axi_read_data_ch.last <= read_burst_len_reg_zero;
                 
-                slave_handshake.rvalid <= '1';
-                slave_handshake.arready <= '0';
+                slave_read_handshake.rvalid <= '1';
+                slave_read_handshake.arready <= '0';
                 
                 axi_read_data_ch.last <= read_burst_len_reg_zero;
                 axi_read_data_ch.resp <= RESP_EXOKAY;                 -- The slave will currently only respond as if every transaction is successfull. This will change in the future.
@@ -332,8 +334,8 @@ begin
                 
                 -- ====================================
                 read_burst_len_reg_en <= not read_burst_len_reg_zero and
-                                         master_handshake.rready;
-                read_addr_reg_en <= master_handshake.rready;
+                                         master_read_handshake.rready;
+                read_addr_reg_en <= master_read_handshake.rready;
                                          
                 read_addr_next_sel <= read_burst_type_reg;
         end case;
@@ -474,17 +476,17 @@ begin
                 write_state_reg <= IDLE;
                 read_state_reg <= IDLE;
             else
-                if (master_handshake.awvalid = '1') then
+                if (master_write_handshake.awvalid = '1') then
                     write_burst_len_reg <= axi_write_addr_ch.len;
                     write_burst_type_reg <= axi_write_addr_ch.burst_type;
                     write_burst_size_reg <= axi_write_addr_ch.size;
                 end if;
             
-                if (master_handshake.wvalid = '1') then
+                if (master_write_handshake.wvalid = '1') then
                     write_data_reg <= axi_write_data_ch.data;
                 end if;
             
-                if (master_handshake.arvalid = '1') then     
+                if (master_read_handshake.arvalid = '1') then     
                     read_burst_size_reg <= axi_read_addr_ch.size;
                     read_burst_type_reg <= axi_read_addr_ch.burst_type;
                 end if;

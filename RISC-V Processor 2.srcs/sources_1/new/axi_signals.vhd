@@ -43,23 +43,31 @@ package axi_interface_signal_groups is
         last : std_logic;
     end record ReadDataChannel;
     
-    type HandshakeMasterSrc is record
+    type HandshakeWriteMaster is record
         awvalid : std_logic;
         wvalid : std_logic;
-        arvalid : std_logic;
         
         bready : std_logic;
-        rready : std_logic;
-    end record HandshakeMasterSrc;
+    end record HandshakeWriteMaster;
     
-    type HandshakeSlaveSrc is record
-        bvalid : std_logic;
-        rvalid : std_logic;
+    type HandshakeReadMaster is record
+        arvalid : std_logic;
         
-        arready : std_logic;
+        rready : std_logic;
+    end record HandshakeReadMaster;
+    
+    type HandshakeWriteSlave is record
         awready : std_logic;
         wready : std_logic;
-    end record HandshakeSlaveSrc;
+        
+        bvalid : std_logic;
+    end record HandshakeWriteSlave;
+    
+    type HandshakeReadSlave is record
+        arready : std_logic;
+        
+        rvalid : std_logic;
+    end record HandshakeReadSlave;
     
     type FromMaster is record
         -- Data signals

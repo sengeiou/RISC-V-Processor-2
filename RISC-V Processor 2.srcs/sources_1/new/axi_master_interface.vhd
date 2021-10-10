@@ -20,8 +20,10 @@ entity axi_master_interface is
         axi_write_resp_ch : in WriteResponseChannel;
         
         -- HANDSHAKE SIGNALS
-        master_handshake : out HandshakeMasterSrc;
-        slave_handshake : in HandshakeSlaveSrc;
+        master_write_handshake : out HandshakeWriteMaster; 
+        master_read_handshake : out HandshakeReadMaster;
+        slave_write_handshake : in HandshakeWriteSlave;
+        slave_read_handshake : in HandshakeReadSlave;
 
         -- OTHER CONTROL SIGNALS
         interface_to_master : out ToMaster;
@@ -77,19 +79,19 @@ begin
                     write_state_next <= IDLE;
                 end if;
             when ADDR_STATE_1 =>
-                if (slave_handshake.awready = '1') then
+                if (slave_write_handshake.awready = '1') then
                     write_state_next <= DATA_STATE;
                 else
                     write_state_next <= ADDR_STATE_1;
                 end if;
             when DATA_STATE => 
-                if (slave_handshake.wready = '1' and write_burst_len_reg_zero = '1') then
+                if (slave_write_handshake.wready = '1' and write_burst_len_reg_zero = '1') then
                     write_state_next <= RESPONSE_STATE_1;
                 else
                     write_state_next <= DATA_STATE;
                 end if;
             when RESPONSE_STATE_1 => 
-                if (slave_handshake.bvalid = '1') then
+                if (slave_write_handshake.bvalid = '1') then
                     write_state_next <= RESPONSE_STATE_2;
                 else 
                     write_state_next <= RESPONSE_STATE_1;
@@ -112,10 +114,10 @@ begin
         axi_write_data_ch.strb <= "0000";      
         axi_write_data_ch.last <= '0';   
         
-        master_handshake.awvalid <= '0';
-        master_handshake.wvalid <= '0';
+        master_write_handshake.awvalid <= '0';
+        master_write_handshake.wvalid <= '0';
                 
-        master_handshake.bready <= '0';
+        master_write_handshake.bready <= '0';
         
         write_burst_len_mux_sel <= '0';
         write_burst_len_reg_en <= '0';
@@ -134,7 +136,7 @@ begin
                 axi_write_data_ch.strb <= "1111";
                 
                 -- HANDSHAKE
-                master_handshake.awvalid <= '1';
+                master_write_handshake.awvalid <= '1';
                 
                 -- BURST CONTROL
                 write_burst_len_reg_en <= '1';
@@ -145,17 +147,17 @@ begin
                 axi_write_data_ch.last <= write_burst_len_reg_zero;
                 
                 -- HANDSHAKE
-                master_handshake.wvalid <= '1';
+                master_write_handshake.wvalid <= '1';
                 
                 -- BURST CONTROL
                 write_burst_len_mux_sel <= '1';
                 write_burst_len_reg_en <= not write_burst_len_reg_zero and
-                                          slave_handshake.wready;
+                                          slave_write_handshake.wready;
             when RESPONSE_STATE_1 => 
 
             when RESPONSE_STATE_2 => 
                 -- HANDSHAKE
-                master_handshake.bready <= '1';
+                master_write_handshake.bready <= '1';
                 
                 interface_to_master.done_write <= '1';
         end case;
@@ -200,7 +202,7 @@ begin
     -- ============================================================================================
     -- READING
     -- ============================================================================================
-    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_handshake.arready, axi_read_data_ch.last)
+    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_read_handshake.arready, axi_read_data_ch.last)
     begin
         case read_state_reg is 
             when IDLE => 
@@ -210,7 +212,7 @@ begin
                     read_state_next <= IDLE;
                 end if;
             when ADDR_STATE => 
-                if (slave_handshake.arready = '0') then
+                if (slave_read_handshake.arready = '0') then
                     read_state_next <= DATA_STATE;
                 else
                     read_state_next <= ADDR_STATE;
@@ -236,9 +238,9 @@ begin
         axi_read_addr_ch.burst_type <= (others => '0');
                 
         -- HANDSHAKE
-        master_handshake.arvalid <= '0';
+        master_read_handshake.arvalid <= '0';
 
-        master_handshake.rready <= '0';
+        master_read_handshake.rready <= '0';
                 
         read_data_reg_en <= '0';
         case read_state_reg is
@@ -251,10 +253,10 @@ begin
                 axi_read_addr_ch.burst_type <= master_to_interface.burst_type;
                 
                 -- HANDSHAKE
-                master_handshake.arvalid <= '1';
+                master_read_handshake.arvalid <= '1';
             when DATA_STATE => 
                 -- HANDSHAKE
-                master_handshake.rready <= '1';
+                master_read_handshake.rready <= '1';
                 
                 read_data_reg_en <= '1';
             when FINALIZE_STATE => 
