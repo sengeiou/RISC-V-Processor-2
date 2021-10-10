@@ -61,17 +61,6 @@ package axi_interface_signal_groups is
         wready : std_logic;
     end record HandshakeSlaveSrc;
     
-    type MasterBusInterfaceOut is record
-        write_addr_ch : WriteAddressChannel;
-        write_data_ch : WriteDataChannel;
-        read_addr_ch : ReadAddressChannel;
-    end record MasterBusInterfaceOut;
-    
-    type MasterBusInterfaceIn is record
-        read_data_ch : ReadDataChannel;
-        write_resp_ch : WriteResponseChannel;
-    end record MasterBusInterfaceIn;
-    
     type FromMaster is record
         -- Data signals
         data_write : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);

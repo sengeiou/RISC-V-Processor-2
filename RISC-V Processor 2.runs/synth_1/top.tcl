@@ -70,7 +70,6 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
-set_param chipscope.maxJobs 1
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a100tcsg324-1
 
@@ -80,7 +79,7 @@ set_param synth.vivado.isSynthRun true
 set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
 set_property webtalk.parent_dir {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.cache/wt} [current_project]
 set_property parent.project_path {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.xpr} [current_project]
-set_property XPM_LIBRARIES XPM_CDC [current_project]
+set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY} [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language VHDL [current_project]
 set_property board_part digilentinc.com:nexys-a7-100t:part0:1.0 [current_project]
@@ -88,6 +87,7 @@ set_property ip_output_repo {e:/Vivado Projects/RISC-V Processor 2/RISC-V Proces
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
+add_files {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/rom_contents.coe}}
 read_vhdl -vhdl2008 -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_signals.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd}
@@ -113,7 +113,7 @@ read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/core.vhd}
-  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd}
 }
@@ -122,6 +122,9 @@ set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/R
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_late.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_ooc.xdc}}]
+
+read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/block_rom_memory.xci}}
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/block_rom_memory_ooc.xdc}}]
 
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being

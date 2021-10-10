@@ -1,13 +1,13 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
-| Date         : Wed Sep 29 13:38:34 2021
+| Date         : Wed Oct  6 15:39:39 2021
 | Host         : DESKTOP-JMFHVJF running 64-bit major release  (build 9200)
 | Command      : report_drc -file top_drc_opted.rpt -pb top_drc_opted.pb -rpx top_drc_opted.rpx
 | Design       : top
 | Device       : xc7a100tcsg324-1
 | Speed File   : -1
-| Design State : Synthesized
+| Design State : Fully Routed
 ------------------------------------------------------------------------------------------------
 
 Report DRC
