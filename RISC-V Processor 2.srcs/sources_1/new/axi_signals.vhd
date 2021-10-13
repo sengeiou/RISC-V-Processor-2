@@ -120,6 +120,18 @@ package axi_interface_signal_groups is
     constant RESP_EXOKAY : std_logic_vector(1 downto 0) := "01";
     constant RESP_SLVERR : std_logic_vector(1 downto 0) := "10";
     constant RESP_DECERR : std_logic_vector(1 downto 0) := "11";
+    
+    -- ========== CLEAR VALUES ==========
+    constant FROM_MASTER_CLEAR : FromMaster := (data_write => (others => '0'),
+                                                addr_write => (others => '0'),
+                                                addr_read => (others => '0'),
+                                                burst_len => (others => '0'),
+                                                burst_size => (others => '0'),
+                                                burst_type => (others => '0'),
+                                                execute_read => '0',
+                                                execute_write => '0');
+                                                
+    constant FROM_SLAVE_CLEAR : FromSlave := (data_read => (others => '0'));
 end axi_interface_signal_groups;
 
 package body axi_interface_signal_groups is

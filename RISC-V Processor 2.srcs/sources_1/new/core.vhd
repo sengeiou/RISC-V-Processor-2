@@ -15,10 +15,8 @@ end core;
 architecture structural of core is
     signal instruction_debug : std_logic_vector(31 downto 0);
     signal instruction_addr_debug : std_logic_vector(31 downto 0);
-begin
-    axi_master_interface : entity work.axi_master_interface(rtl)
-                           port map();
 
+begin
     core_pipeline : entity work.pipeline(structural)
                     port map(instruction_debug => instruction_debug,
                              instruction_addr_debug => instruction_addr_debug,
@@ -31,5 +29,4 @@ begin
           port map(data => instruction_debug,
                    addr => instruction_addr_debug(7 downto 0),
                    clk => clk_cpu);
-
 end structural;
