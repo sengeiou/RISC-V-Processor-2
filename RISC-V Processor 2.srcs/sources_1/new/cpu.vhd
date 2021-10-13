@@ -20,19 +20,12 @@ architecture structural of cpu is
     signal slave_from_interface_1 : work.axi_interface_signal_groups.ToSlave;
 begin
     -- AXI Interconnect
-    axi_interconnect : entity work.axi_interconnect(rtl)
-                       port map(master_to_interface_1 => master_to_interface_1,
-                                master_from_interface_1 => master_from_interface_1,
-                                
-                                slave_to_interface_1 => slave_to_interface_1,
-                                slave_from_interface_1 => slave_from_interface_1,
-                                
-                                clk => clk_cpu,
-                                reset => reset_cpu);
+    axi_interconnect : entity work.axi_interconnect_simple(rtl)
+                       port map();
 
     -- AXI Masters
     core_1 : entity work.core(structural)
-             port map(--instruction_debug => master_from_interface_1.data_read,
+             port map(
                       from_master => master_to_interface_1,
                       to_master => master_from_interface_1,
              
