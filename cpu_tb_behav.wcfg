@@ -16,14 +16,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="541449fs"></ZoomEndTime>
-      <Cursor1Time time="2528006fs"></Cursor1Time>
+      <ZoomEndTime time="5000001fs"></ZoomEndTime>
+      <Cursor1Time time="2181113fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="195"></NameColumnWidth>
+      <NameColumnWidth column_width="191"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="53" />
+   <WVObjectSize size="67" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -562,7 +562,6 @@
    <wvobject fp_name="group287" type="group">
       <obj_property name="label">AXI SLAVE 1</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/\GEN_SLAVE_CONTROLLERS(0)\/master_controller/axi_write_addr_ch" type="array">
          <obj_property name="ElementShortName">axi_write_addr_ch</obj_property>
          <obj_property name="ObjectShortName">axi_write_addr_ch</obj_property>
@@ -771,7 +770,6 @@
    <wvobject fp_name="group346" type="group">
       <obj_property name="label">AXI SLAVE 2</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/\GEN_SLAVE_CONTROLLERS(1)\/master_controller/axi_write_addr_ch" type="array">
          <obj_property name="ElementShortName">axi_write_addr_ch</obj_property>
          <obj_property name="ObjectShortName">axi_write_addr_ch</obj_property>
@@ -976,5 +974,61 @@
          <obj_property name="ElementShortName">write_addr_next_sel[1:0]</obj_property>
          <obj_property name="ObjectShortName">write_addr_next_sel[1:0]</obj_property>
       </wvobject>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider2365">
+      <obj_property name="label">BUS CONTROLLER</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/master_read_bus_requests" type="array">
+      <obj_property name="ElementShortName">master_read_bus_requests[3:0]</obj_property>
+      <obj_property name="ObjectShortName">master_read_bus_requests[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/read_address" type="array">
+      <obj_property name="ElementShortName">read_address[31:0]</obj_property>
+      <obj_property name="ObjectShortName">read_address[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/read_master_sel" type="array">
+      <obj_property name="ElementShortName">read_master_sel[1:0]</obj_property>
+      <obj_property name="ObjectShortName">read_master_sel[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/read_slave_sel" type="array">
+      <obj_property name="ElementShortName">read_slave_sel[1:0]</obj_property>
+      <obj_property name="ObjectShortName">read_slave_sel[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/curr_master_counter_reg" type="array">
+      <obj_property name="ElementShortName">curr_master_counter_reg[1:0]</obj_property>
+      <obj_property name="ObjectShortName">curr_master_counter_reg[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/curr_master_counter_next" type="array">
+      <obj_property name="ElementShortName">curr_master_counter_next[1:0]</obj_property>
+      <obj_property name="ObjectShortName">curr_master_counter_next[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/curr_master_counter_en" type="logic">
+      <obj_property name="ElementShortName">curr_master_counter_en</obj_property>
+      <obj_property name="ObjectShortName">curr_master_counter_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/read_slave_sel_reg" type="array">
+      <obj_property name="ElementShortName">read_slave_sel_reg[1:0]</obj_property>
+      <obj_property name="ObjectShortName">read_slave_sel_reg[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/read_slave_sel_next" type="array">
+      <obj_property name="ElementShortName">read_slave_sel_next[1:0]</obj_property>
+      <obj_property name="ObjectShortName">read_slave_sel_next[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/read_slave_sel_en" type="logic">
+      <obj_property name="ElementShortName">read_slave_sel_en</obj_property>
+      <obj_property name="ObjectShortName">read_slave_sel_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/arbiter_state_reg" type="other">
+      <obj_property name="ElementShortName">arbiter_state_reg</obj_property>
+      <obj_property name="ObjectShortName">arbiter_state_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/arbiter_state_reg_next" type="other">
+      <obj_property name="ElementShortName">arbiter_state_reg_next</obj_property>
+      <obj_property name="ObjectShortName">arbiter_state_reg_next</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_controller/NUM_MASTERS" type="other">
+      <obj_property name="ElementShortName">NUM_MASTERS</obj_property>
+      <obj_property name="ObjectShortName">NUM_MASTERS</obj_property>
    </wvobject>
 </wave_config>

@@ -5,6 +5,7 @@
    <db_ref_list>
       <db_ref path="axi_read_arbiter_tb_behav.wdb" id="1">
          <top_modules>
+            <top_module name="axi_interface_signal_groups" />
             <top_module name="axi_read_arbiter_tb" />
             <top_module name="glbl" />
          </top_modules>
@@ -13,13 +14,13 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="5000001fs"></ZoomEndTime>
-      <Cursor1Time time="5000000fs"></Cursor1Time>
+      <Cursor1Time time="5000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="254"></NameColumnWidth>
-      <ValueColumnWidth column_width="59"></ValueColumnWidth>
+      <NameColumnWidth column_width="251"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="15" />
+   <WVObjectSize size="14" />
    <wvobject fp_name="/axi_read_arbiter_tb/master_bus_req" type="array">
       <obj_property name="ElementShortName">master_bus_req[3:0]</obj_property>
       <obj_property name="ObjectShortName">master_bus_req[3:0]</obj_property>
@@ -27,6 +28,10 @@
    <wvobject fp_name="/axi_read_arbiter_tb/curr_master_sel" type="array">
       <obj_property name="ElementShortName">curr_master_sel[1:0]</obj_property>
       <obj_property name="ObjectShortName">curr_master_sel[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/axi_read_arbiter_tb/read_slave_sel" type="array">
+      <obj_property name="ElementShortName">read_slave_sel[1:0]</obj_property>
+      <obj_property name="ObjectShortName">read_slave_sel[1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/axi_read_arbiter_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
@@ -41,14 +46,6 @@
       <obj_property name="ObjectShortName">T</obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider913">
-   </wvobject>
-   <wvobject fp_name="/axi_read_arbiter_tb/uut/master_bus_requests" type="array">
-      <obj_property name="ElementShortName">master_bus_requests[3:0]</obj_property>
-      <obj_property name="ObjectShortName">master_bus_requests[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_read_arbiter_tb/uut/read_bus_master_sel" type="array">
-      <obj_property name="ElementShortName">read_bus_master_sel[1:0]</obj_property>
-      <obj_property name="ObjectShortName">read_bus_master_sel[1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/axi_read_arbiter_tb/uut/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>

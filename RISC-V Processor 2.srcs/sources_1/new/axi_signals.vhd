@@ -166,6 +166,21 @@ package axi_interface_signal_groups is
                                                                    
     constant HANDSHAKE_READ_SLAVE_CLEAR : HandshakeReadSlave := (arready => '0',
                                                                  rvalid => '0');
+                                                                 
+    -- DEFAULT SIGNALS
+    constant HANDSHAKE_WRITE_MASTER_DEF : HandshakeWriteMaster := (awvalid => '0',
+                                                                    wvalid => '0',
+                                                                    bready => '0');
+                                                                    
+    constant HANDSHAKE_READ_MASTER_DEF : HandshakeReadMaster := (arvalid => '0',
+                                                                   rready => '0');
+                                                                   
+    constant HANDSHAKE_WRITE_SLAVE_DEF : HandshakeWriteSlave := (awready => '0',
+                                                                   wready => '0',
+                                                                   bvalid => '0');
+                                                                   
+    constant HANDSHAKE_READ_SLAVE_DEF : HandshakeReadSlave := (arready => '1',
+                                                                 rvalid => '0');
 end axi_interface_signal_groups;
 
 package body axi_interface_signal_groups is

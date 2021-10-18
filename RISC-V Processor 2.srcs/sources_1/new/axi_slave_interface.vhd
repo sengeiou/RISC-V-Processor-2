@@ -283,7 +283,7 @@ begin
             when WRAP_INIT_2 => 
                 read_state_next <= DATA_STATE;
             when DATA_STATE => 
-                if (read_burst_len_reg_zero = '1') then
+                if (read_burst_len_reg_zero = '1' and master_read_handshake.rready = '1') then
                     read_state_next <= IDLE;
                 else
                     read_state_next <= DATA_STATE;

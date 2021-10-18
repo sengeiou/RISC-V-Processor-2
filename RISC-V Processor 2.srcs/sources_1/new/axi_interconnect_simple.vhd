@@ -88,12 +88,28 @@ architecture rtl of axi_interconnect_simple is
     signal handshake_write_slave : HandshakeWriteSlave;
     -- =======================
     
+    signal read_bus_disable : std_logic;
+    signal write_bus_disable : std_logic;
+    
     signal write_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
     signal write_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
     
-    signal read_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
-    signal read_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
+    signal read_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
+    signal read_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
+    
+    signal master_read_bus_reqs : std_logic_vector(3 downto 0);
 begin
+    axi_bus_controller : entity work.axi_bus_controller_simple(rtl)
+                         generic map(NUM_MASTERS => 4)
+                         port map(master_read_bus_requests => master_read_bus_reqs,
+                                  read_address => read_addr_bus_ch.addr,
+                                  read_master_sel => read_bus_master_sel,
+                                  read_slave_sel => read_bus_slave_sel,
+                                  read_bus_disable => read_bus_disable,
+                                  clk => clk,
+                                  reset => reset); 
+
+    master_read_bus_reqs(3 downto 2) <= "00";
     GEN_MASTER_CONTROLLERS : for i in 0 to NUM_MASTERS - 1 generate
         master_controller : entity work.axi_master_interface(rtl)
                             port map(axi_write_addr_ch => write_addr_master_chs(i),
@@ -109,6 +125,8 @@ begin
                                      
                                      interface_to_master => to_masters(i),
                                      master_to_interface => from_masters(i),
+                                     
+                                     bus_request_read => master_read_bus_reqs(i),
                                      
                                      clk => clk,
                                      reset => reset);
@@ -171,20 +189,28 @@ begin
         read_data_master_chs <= (others => READ_DATA_CH_CLEAR);
         read_data_master_chs(to_integer(unsigned(read_bus_master_sel))) <= read_data_bus_ch;
         
-        handshake_read_master <= handshakes_read_masters_to_bus(to_integer(unsigned(read_bus_master_sel)));
+        if (read_bus_disable = '0') then
+            handshake_read_master <= handshakes_read_masters_to_bus(to_integer(unsigned(read_bus_master_sel)));
+        else
+            handshake_read_master <= HANDSHAKE_READ_MASTER_DEF;
+        end if;
         
         handshakes_read_slaves_from_bus <= (others => HANDSHAKE_READ_SLAVE);
         handshakes_read_slaves_from_bus(to_integer(unsigned(read_bus_master_sel))) <= handshake_read_slave;
     end process;
     
-    read_bus_chs_slave_proc : process(read_bus_slave_sel, read_data_slave_chs, read_addr_bus_ch, handshakes_read_slaves_to_bus, handshake_read_master)
+    read_bus_chs_slave_proc : process(read_bus_slave_sel, read_data_slave_chs, read_addr_bus_ch, handshakes_read_slaves_to_bus, handshake_read_master, read_bus_disable)
     begin
         read_data_bus_ch <= read_data_slave_chs(to_integer(unsigned(read_bus_slave_sel)));
         
         read_addr_slave_chs <= (others => READ_ADDRESS_CH_CLEAR);
         read_addr_slave_chs(to_integer(unsigned(read_bus_slave_sel))) <= read_addr_bus_ch;
         
-        handshake_read_slave <= handshakes_read_slaves_to_bus(to_integer(unsigned(read_bus_slave_sel)));
+        if (read_bus_disable = '0') then
+            handshake_read_slave <= handshakes_read_slaves_to_bus(to_integer(unsigned(read_bus_slave_sel)));
+        else
+            handshake_read_slave <= HANDSHAKE_READ_SLAVE_DEF;
+        end if;
         
         handshakes_read_masters_from_bus <= (others => HANDSHAKE_READ_MASTER);
         handshakes_read_masters_from_bus(to_integer(unsigned(read_bus_slave_sel))) <= handshake_read_master;
@@ -193,8 +219,8 @@ begin
     write_bus_master_sel <= (others => '0');
     write_bus_slave_sel <= (others => '0');
     
-    read_bus_master_sel <= "0";
-    read_bus_slave_sel <= "0";
+    --read_bus_master_sel <= "0";
+    --read_bus_slave_sel <= "0";
 
 end rtl;
 
