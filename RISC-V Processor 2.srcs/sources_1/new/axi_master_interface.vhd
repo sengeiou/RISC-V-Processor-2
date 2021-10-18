@@ -29,6 +29,9 @@ entity axi_master_interface is
         interface_to_master : out ToMaster;
         master_to_interface : in FromMaster;
         
+        bus_request_read : out std_logic;
+        bus_request_write : out std_logic;
+        
         clk : in std_logic;
         reset : in std_logic
     );
@@ -236,6 +239,8 @@ begin
         axi_read_addr_ch.len <= (others => '0');
         axi_read_addr_ch.size <= (others => '0');
         axi_read_addr_ch.burst_type <= (others => '0');
+        
+        bus_request_read <= '0';
                 
         -- HANDSHAKE
         master_read_handshake.arvalid <= '0';
@@ -245,21 +250,27 @@ begin
         read_data_reg_en <= '0';
         case read_state_reg is
             when IDLE =>
-
+                
             when ADDR_STATE => 
                 axi_read_addr_ch.addr <= master_to_interface.addr_read;
                 axi_read_addr_ch.len <= master_to_interface.burst_len;
                 axi_read_addr_ch.size <= master_to_interface.burst_size;
                 axi_read_addr_ch.burst_type <= master_to_interface.burst_type;
                 
+                bus_request_read <= '1';
+                
                 -- HANDSHAKE
                 master_read_handshake.arvalid <= '1';
             when DATA_STATE => 
+                bus_request_read <= '1';
+            
                 -- HANDSHAKE
                 master_read_handshake.rready <= '1';
                 
                 read_data_reg_en <= '1';
             when FINALIZE_STATE => 
+                bus_request_read <= '1';
+            
                 interface_to_master.done_read <= '1'; 
         end case;
     end process;

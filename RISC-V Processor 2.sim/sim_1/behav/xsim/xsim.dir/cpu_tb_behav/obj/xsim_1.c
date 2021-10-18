@@ -301,9 +301,9 @@ void wrapper_func_0(char *dp)
 
 {
 
-	iki_vlog_schedule_transaction_signal_fast_vhdl_value_time_0(dp + 177872, dp + 240368, 0, 0, 0, 0, 1, 1);
+	iki_vlog_schedule_transaction_signal_fast_vhdl_value_time_0(dp + 178088, dp + 240584, 0, 0, 0, 0, 1, 1);
 
-	iki_vlog_schedule_transaction_signal_fast_vhdl_value_time_0(dp + 178904, dp + 240424, 0, 9, 52, 61, 10, 1);
+	iki_vlog_schedule_transaction_signal_fast_vhdl_value_time_0(dp + 179120, dp + 240640, 0, 9, 52, 61, 10, 1);
 
 }
 

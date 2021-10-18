@@ -3,303 +3,33 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="axi_bus_tb_behav.wdb" id="1">
+      <db_ref path="cpu_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="axi_bus_tb" />
             <top_module name="axi_interface_signal_groups" />
+            <top_module name="cpu_tb" />
             <top_module name="glbl" />
+            <top_module name="pkg_cpu" />
+            <top_module name="pkg_pipeline" />
+            <top_module name="test" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="3477306fs"></ZoomStartTime>
-      <ZoomEndTime time="4023697fs"></ZoomEndTime>
-      <Cursor1Time time="3580000fs"></Cursor1Time>
+      <ZoomStartTime time="4999497fs"></ZoomStartTime>
+      <ZoomEndTime time="5000101fs"></ZoomEndTime>
+      <Cursor1Time time="5000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="211"></NameColumnWidth>
+      <NameColumnWidth column_width="207"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="68" />
-   <wvobject fp_name="/axi_bus_tb/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/reset" type="logic">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/execute_w" type="logic">
-      <obj_property name="ElementShortName">execute_w</obj_property>
-      <obj_property name="ObjectShortName">execute_w</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/execute_r" type="logic">
-      <obj_property name="ElementShortName">execute_r</obj_property>
-      <obj_property name="ObjectShortName">execute_r</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/T" type="other">
-      <obj_property name="ElementShortName">T</obj_property>
-      <obj_property name="ObjectShortName">T</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/data_in_slave" type="array">
-      <obj_property name="ElementShortName">data_in_slave[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_in_slave[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/read_bus_1" type="array">
-      <obj_property name="ElementShortName">read_bus_1</obj_property>
-      <obj_property name="ObjectShortName">read_bus_1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/write_bus_1" type="array">
-      <obj_property name="ElementShortName">write_bus_1</obj_property>
-      <obj_property name="ObjectShortName">write_bus_1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/handshake_master_src_1" type="array">
-      <obj_property name="ElementShortName">handshake_master_src_1</obj_property>
-      <obj_property name="ObjectShortName">handshake_master_src_1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/handshake_slave_src_1" type="array">
-      <obj_property name="ElementShortName">handshake_slave_src_1</obj_property>
-      <obj_property name="ObjectShortName">handshake_slave_src_1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/master_interface_out" type="array">
-      <obj_property name="ElementShortName">master_interface_out</obj_property>
-      <obj_property name="ObjectShortName">master_interface_out</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/slave_interface_out" type="array">
-      <obj_property name="ElementShortName">slave_interface_out</obj_property>
-      <obj_property name="ObjectShortName">slave_interface_out</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/read_state_reg" type="other">
-      <obj_property name="ElementShortName">read_state_reg</obj_property>
-      <obj_property name="ObjectShortName">read_state_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/read_state_next" type="other">
-      <obj_property name="ElementShortName">read_state_next</obj_property>
-      <obj_property name="ObjectShortName">read_state_next</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_state_reg" type="other">
-      <obj_property name="ElementShortName">write_state_reg</obj_property>
-      <obj_property name="ObjectShortName">write_state_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_state_next" type="other">
-      <obj_property name="ElementShortName">write_state_next</obj_property>
-      <obj_property name="ObjectShortName">write_state_next</obj_property>
-   </wvobject>
+   <WVObjectSize size="2" />
    <wvobject type="divider" fp_name="divider708">
       <obj_property name="label">AXI SLAVE SIGNALS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/from_master_interface" type="array">
-      <obj_property name="ElementShortName">from_master_interface</obj_property>
-      <obj_property name="ObjectShortName">from_master_interface</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/to_master_interface" type="array">
-      <obj_property name="ElementShortName">to_master_interface</obj_property>
-      <obj_property name="ObjectShortName">to_master_interface</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/master_handshake" type="array">
-      <obj_property name="ElementShortName">master_handshake</obj_property>
-      <obj_property name="ObjectShortName">master_handshake</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/slave_handshake" type="array">
-      <obj_property name="ElementShortName">slave_handshake</obj_property>
-      <obj_property name="ObjectShortName">slave_handshake</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/from_slave" type="array">
-      <obj_property name="ElementShortName">from_slave</obj_property>
-      <obj_property name="ObjectShortName">from_slave</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/to_slave" type="array">
-      <obj_property name="ElementShortName">to_slave</obj_property>
-      <obj_property name="ObjectShortName">to_slave</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_burst_size_reg" type="array">
-      <obj_property name="ElementShortName">write_burst_size_reg[2:0]</obj_property>
-      <obj_property name="ObjectShortName">write_burst_size_reg[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_burst_type_reg" type="array">
-      <obj_property name="ElementShortName">write_burst_type_reg[1:0]</obj_property>
-      <obj_property name="ObjectShortName">write_burst_type_reg[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_wrap_addr_start_reg" type="array">
-      <obj_property name="ElementShortName">write_wrap_addr_start_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_wrap_addr_start_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_wrap_addr_end_reg" type="array">
-      <obj_property name="ElementShortName">write_wrap_addr_end_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_wrap_addr_end_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_reg" type="array">
-      <obj_property name="ElementShortName">write_addr_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_addr_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_next" type="array">
-      <obj_property name="ElementShortName">write_addr_next[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_addr_next[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_incr" type="array">
-      <obj_property name="ElementShortName">write_addr_incr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_addr_incr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_data_reg" type="array">
-      <obj_property name="ElementShortName">write_data_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_data_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_addr_reg" type="array">
-      <obj_property name="ElementShortName">read_addr_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">read_addr_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_addr_next" type="array">
-      <obj_property name="ElementShortName">read_addr_next[31:0]</obj_property>
-      <obj_property name="ObjectShortName">read_addr_next[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_addr_incr" type="array">
-      <obj_property name="ElementShortName">read_addr_incr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">read_addr_incr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_next_sel" type="array">
-      <obj_property name="ElementShortName">write_addr_next_sel[1:0]</obj_property>
-      <obj_property name="ObjectShortName">write_addr_next_sel[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_data_reg" type="array">
-      <obj_property name="ElementShortName">read_data_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">read_data_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_state_reg" type="other">
-      <obj_property name="ElementShortName">write_state_reg</obj_property>
-      <obj_property name="ObjectShortName">write_state_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_addr_reg_en" type="logic">
-      <obj_property name="ElementShortName">write_addr_reg_en</obj_property>
-      <obj_property name="ObjectShortName">write_addr_reg_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/write_state_next" type="other">
-      <obj_property name="ElementShortName">write_state_next</obj_property>
-      <obj_property name="ObjectShortName">write_state_next</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_burst_len_reg" type="array">
-      <obj_property name="ElementShortName">read_burst_len_reg[7:0]</obj_property>
-      <obj_property name="ObjectShortName">read_burst_len_reg[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_burst_len_next" type="array">
-      <obj_property name="ElementShortName">read_burst_len_next[7:0]</obj_property>
-      <obj_property name="ObjectShortName">read_burst_len_next[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_burst_size_reg" type="array">
-      <obj_property name="ElementShortName">read_burst_size_reg[2:0]</obj_property>
-      <obj_property name="ObjectShortName">read_burst_size_reg[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_burst_type_reg" type="array">
-      <obj_property name="ElementShortName">read_burst_type_reg[1:0]</obj_property>
-      <obj_property name="ObjectShortName">read_burst_type_reg[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_state_reg" type="other">
-      <obj_property name="ElementShortName">read_state_reg</obj_property>
-      <obj_property name="ObjectShortName">read_state_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_state_next" type="other">
-      <obj_property name="ElementShortName">read_state_next</obj_property>
-      <obj_property name="ObjectShortName">read_state_next</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_slave_1/read_burst_len_mux_sel" type="logic">
-      <obj_property name="ElementShortName">read_burst_len_mux_sel</obj_property>
-      <obj_property name="ObjectShortName">read_burst_len_mux_sel</obj_property>
-   </wvobject>
    <wvobject type="divider" fp_name="divider922">
       <obj_property name="label">AXI MASTER SIGNALS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/from_master" type="array">
-      <obj_property name="ElementShortName">from_master</obj_property>
-      <obj_property name="ObjectShortName">from_master</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/to_master" type="array">
-      <obj_property name="ElementShortName">to_master</obj_property>
-      <obj_property name="ObjectShortName">to_master</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/master_handshake" type="array">
-      <obj_property name="ElementShortName">master_handshake</obj_property>
-      <obj_property name="ObjectShortName">master_handshake</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/slave_handshake" type="array">
-      <obj_property name="ElementShortName">slave_handshake</obj_property>
-      <obj_property name="ObjectShortName">slave_handshake</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/interface_to_master" type="array">
-      <obj_property name="ElementShortName">interface_to_master</obj_property>
-      <obj_property name="ObjectShortName">interface_to_master</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/master_to_interface" type="array">
-      <obj_property name="ElementShortName">master_to_interface</obj_property>
-      <obj_property name="ObjectShortName">master_to_interface</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/reset" type="logic">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_addr_reg" type="array">
-      <obj_property name="ElementShortName">write_addr_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_addr_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_data_reg" type="array">
-      <obj_property name="ElementShortName">write_data_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_data_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_burst_len_reg_zero" type="logic">
-      <obj_property name="ElementShortName">write_burst_len_reg_zero</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_reg_zero</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_burst_len_reg" type="array">
-      <obj_property name="ElementShortName">write_burst_len_reg[7:0]</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_reg[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_burst_len_next" type="array">
-      <obj_property name="ElementShortName">write_burst_len_next[7:0]</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_next[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_burst_len_reg_en" type="logic">
-      <obj_property name="ElementShortName">write_burst_len_reg_en</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_reg_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_burst_len_mux_sel" type="logic">
-      <obj_property name="ElementShortName">write_burst_len_mux_sel</obj_property>
-      <obj_property name="ObjectShortName">write_burst_len_mux_sel</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_state_reg" type="other">
-      <obj_property name="ElementShortName">write_state_reg</obj_property>
-      <obj_property name="ObjectShortName">write_state_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/write_state_next" type="other">
-      <obj_property name="ElementShortName">write_state_next</obj_property>
-      <obj_property name="ObjectShortName">write_state_next</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/read_data_reg" type="array">
-      <obj_property name="ElementShortName">read_data_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">read_data_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/read_data_reg_en" type="logic">
-      <obj_property name="ElementShortName">read_data_reg_en</obj_property>
-      <obj_property name="ObjectShortName">read_data_reg_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/read_state_reg" type="other">
-      <obj_property name="ElementShortName">read_state_reg</obj_property>
-      <obj_property name="ObjectShortName">read_state_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/axi_bus_tb/axi_interconnect/axi_master_1/read_state_next" type="other">
-      <obj_property name="ElementShortName">read_state_next</obj_property>
-      <obj_property name="ObjectShortName">read_state_next</obj_property>
    </wvobject>
 </wave_config>

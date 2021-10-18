@@ -139,9 +139,12 @@ begin
         write_addr_bus_ch <= write_addr_master_chs(to_integer(unsigned(write_bus_master_sel)));
         write_data_bus_ch <= write_data_master_chs(to_integer(unsigned(write_bus_master_sel)));
 
+        write_resp_master_chs <= (others => WRITE_RESPONSE_CH_CLEAR);
         write_resp_master_chs(to_integer(unsigned(write_bus_master_sel))) <= write_resp_bus_ch;
         
         handshake_write_master <= handshakes_write_masters_to_bus(to_integer(unsigned(write_bus_master_sel)));
+        
+        handshakes_write_slaves_from_bus <= (others => HANDSHAKE_WRITE_SLAVE_CLEAR);
         handshakes_write_slaves_from_bus(to_integer(unsigned(write_bus_master_sel))) <= handshake_write_slave;
     end process;
     
@@ -149,36 +152,49 @@ begin
     begin
         write_resp_bus_ch <= write_resp_slave_chs(to_integer(unsigned(write_bus_slave_sel)));
         
+        write_addr_slave_chs <= (others => WRITE_ADDRESS_CH_CLEAR);
         write_addr_slave_chs(to_integer(unsigned(write_bus_slave_sel))) <= write_addr_bus_ch;
+        
+        write_data_slave_chs <= (others => WRITE_DATA_CH_CLEAR);
         write_data_slave_chs(to_integer(unsigned(write_bus_slave_sel))) <= write_data_bus_ch;
         
         handshake_write_slave <= handshakes_write_slaves_to_bus(to_integer(unsigned(write_bus_slave_sel)));
+        
+        handshakes_write_masters_from_bus <= (others => HANDSHAKE_WRITE_MASTER);
         handshakes_write_masters_from_bus(to_integer(unsigned(write_bus_slave_sel))) <= handshake_write_master;
     end process;
     
     read_bus_chs_master_proc : process(read_bus_master_sel, read_addr_master_chs, read_data_bus_ch, handshakes_read_masters_to_bus, handshake_read_slave)
     begin
         read_addr_bus_ch <= read_addr_master_chs(to_integer(unsigned(read_bus_master_sel)));
+        
+        read_data_master_chs <= (others => READ_DATA_CH_CLEAR);
         read_data_master_chs(to_integer(unsigned(read_bus_master_sel))) <= read_data_bus_ch;
         
         handshake_read_master <= handshakes_read_masters_to_bus(to_integer(unsigned(read_bus_master_sel)));
+        
+        handshakes_read_slaves_from_bus <= (others => HANDSHAKE_READ_SLAVE);
         handshakes_read_slaves_from_bus(to_integer(unsigned(read_bus_master_sel))) <= handshake_read_slave;
     end process;
     
     read_bus_chs_slave_proc : process(read_bus_slave_sel, read_data_slave_chs, read_addr_bus_ch, handshakes_read_slaves_to_bus, handshake_read_master)
     begin
         read_data_bus_ch <= read_data_slave_chs(to_integer(unsigned(read_bus_slave_sel)));
+        
+        read_addr_slave_chs <= (others => READ_ADDRESS_CH_CLEAR);
         read_addr_slave_chs(to_integer(unsigned(read_bus_slave_sel))) <= read_addr_bus_ch;
         
         handshake_read_slave <= handshakes_read_slaves_to_bus(to_integer(unsigned(read_bus_slave_sel)));
+        
+        handshakes_read_masters_from_bus <= (others => HANDSHAKE_READ_MASTER);
         handshakes_read_masters_from_bus(to_integer(unsigned(read_bus_slave_sel))) <= handshake_read_master;
     end process;
     
     write_bus_master_sel <= (others => '0');
     write_bus_slave_sel <= (others => '0');
     
-    read_bus_master_sel <= (others => '0');
-    read_bus_slave_sel <= (others => '0');
+    read_bus_master_sel <= "0";
+    read_bus_slave_sel <= "0";
 
 end rtl;
 

@@ -132,6 +132,40 @@ package axi_interface_signal_groups is
                                                 execute_write => '0');
                                                 
     constant FROM_SLAVE_CLEAR : FromSlave := (data_read => (others => '0'));
+    
+    constant WRITE_ADDRESS_CH_CLEAR : WriteAddressChannel := (addr => (others => '0'),
+                                                              len => (others => '0'),
+                                                              size => (others => '0'),
+                                                              burst_type => (others => '0'));
+                                                              
+    constant WRITE_DATA_CH_CLEAR : WriteDataChannel := (data => (others => '0'),
+                                                        strb => (others => '0'),
+                                                        last => '0');
+                                                        
+    constant WRITE_RESPONSE_CH_CLEAR : WriteResponseChannel := (resp => (others => '0'));
+    
+    constant READ_ADDRESS_CH_CLEAR : ReadAddressChannel := (addr => (others => '0'),
+                                                            len => (others => '0'),
+                                                            size => (others => '0'),
+                                                            burst_type => (others => '0'));
+                                                             
+    constant READ_DATA_CH_CLEAR : ReadDataChannel := (data => (others => '0'),
+                                                      resp => (others => '0'),
+                                                      last => '0');
+                                                      
+    constant HANDSHAKE_WRITE_MASTER_CLEAR : HandshakeWriteMaster := (awvalid => '0',
+                                                                    wvalid => '0',
+                                                                    bready => '0');
+                                                                    
+    constant HANDSHAKE_READ_MASTER_CLEAR : HandshakeReadMaster := (arvalid => '0',
+                                                                   rready => '0');
+                                                                   
+    constant HANDSHAKE_WRITE_SLAVE_CLEAR : HandshakeWriteSlave := (awready => '0',
+                                                                   wready => '0',
+                                                                   bvalid => '0');
+                                                                   
+    constant HANDSHAKE_READ_SLAVE_CLEAR : HandshakeReadSlave := (arready => '0',
+                                                                 rvalid => '0');
 end axi_interface_signal_groups;
 
 package body axi_interface_signal_groups is
