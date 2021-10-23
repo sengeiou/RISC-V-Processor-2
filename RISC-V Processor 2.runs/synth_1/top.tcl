@@ -70,6 +70,9 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
+set_param tcl.collectionResultDisplayLimit 0
+set_param chipscope.maxJobs 1
+set_param xicom.use_bs_reader 1
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a100tcsg324-1
 
@@ -100,7 +103,9 @@ read_vhdl -vhdl2008 -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd}
 }
 read_vhdl -library xil_defaultlib {
-  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_write_bus_controller.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pkg_cpu.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_2_1.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/branching_unit.vhd}
@@ -113,6 +118,7 @@ read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/core.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd}

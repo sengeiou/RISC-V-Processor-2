@@ -33,6 +33,7 @@ entity stage_decode is
         pc_used : out std_logic;
         
         prog_flow_cntrl : out std_logic_vector(1 downto 0);
+        invert_condition : out std_logic;
         
         transfer_data_type : out std_logic_vector(2 downto 0);
         
@@ -66,6 +67,7 @@ begin
                                    pc_used => pc_used,
                                    
                                    prog_flow_cntrl => prog_flow_cntrl,
+                                   invert_condition => invert_condition,
                                    
                                    transfer_data_type => transfer_data_type,
                                    

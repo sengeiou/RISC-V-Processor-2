@@ -24,6 +24,7 @@ entity instruction_decoder is
         
         -- Branch control
         prog_flow_cntrl : out std_logic_vector(1 downto 0);
+        invert_condition : out std_logic;
         
         -- Register control
         reg_rd_1_addr : out std_logic_vector(REGFILE_ADDRESS_WIDTH_BITS - 1 downto 0);
@@ -59,6 +60,7 @@ begin
     pc_used <= '0';
     
     prog_flow_cntrl <= PROG_FLOW_NORM;
+    invert_condition <= '0';
     
     transfer_data_type <= "000";
     
@@ -158,14 +160,15 @@ begin
         immediate_data(DATA_WIDTH_BITS - 1 downto 12) <= (others => instruction_bus(31));
     elsif (instruction_bus(6 downto 0) = BR_COND) then
         if (instruction_bus(14 downto 13) = "00") then
-            alu_op_sel <= "110" & instruction_bus(12);
+            alu_op_sel <= "1100";
         elsif (instruction_bus(14 downto 13) = "10") then
-            alu_op_sel <= "001" & instruction_bus(12);
+            alu_op_sel <= "0010";
         elsif (instruction_bus(14 downto 13) = "11") then
-            alu_op_sel <= "111" & instruction_bus(12);
+            alu_op_sel <= "1110";
         end if;
         
         prog_flow_cntrl <= PROG_FLOW_COND;
+        invert_condition <= instruction_bus(12);
         
         reg_rd_1_used <= '1';
         reg_rd_2_used <= '1';

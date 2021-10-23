@@ -13,6 +13,20 @@ entity cpu is
 end cpu;
 
 architecture structural of cpu is
+    COMPONENT axi_led_ila
+
+    PORT (
+        clk : IN STD_LOGIC;
+    
+    
+    
+        probe0 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+        probe1 : IN STD_LOGIC_VECTOR(11 DOWNTO 0); 
+        probe2 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        probe3 : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
+    );
+    END COMPONENT  ;
+
     type test1 is array (2 downto 0) of ToMaster;
     type test2 is array (2 downto 0) of ToSlave;
 
@@ -29,6 +43,8 @@ architecture structural of cpu is
     signal to_slave_2 : ToSlave;
     
     signal reset_inv : std_logic;
+    
+    signal led_temp : std_logic_vector(15 downto 0);
 begin
     -- AXI Interconnect
     axi_interconnect : entity work.axi_interconnect_simple(rtl)
@@ -69,9 +85,9 @@ begin
     -- AXI Slaves
     led_device : entity work.led_interface(rtl)
                  port map(data_write => to_slave_2.data_write,
-                          addr_write => to_slave_2.addr_write,
+                          addr_write => to_slave_2.addr_write(11 downto 0),
                           
-                          led_out => led_out_debug,
+                          led_out => led_temp,
                           
                           clk_bus => clk_cpu,
                           reset => reset_cpu);
@@ -84,6 +100,8 @@ begin
                           
                           clk => clk_cpu);
                           
-    reset_inv <= not reset_cpu;                          
+    reset_inv <= not reset_cpu;     
+    led_out_debug <= led_temp;                     
+
 
 end structural;

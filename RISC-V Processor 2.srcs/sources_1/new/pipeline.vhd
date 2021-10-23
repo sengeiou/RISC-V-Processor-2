@@ -105,6 +105,7 @@ begin
                             pc_used => de_ex_register_next.pc_used,
                             
                             prog_flow_cntrl => de_ex_register_next.prog_flow_cntrl,
+                            invert_condition => de_ex_register_next.invert_condition,
                             
                             reg_wr_addr => de_ex_register_next.reg_wr_addr,
                             reg_wr_en => de_ex_register_next.reg_wr_en,
@@ -136,6 +137,8 @@ begin
                              pc => de_ex_register.pc,
                              
                              prog_flow_cntrl => de_ex_register.prog_flow_cntrl,
+                             invert_condition => de_ex_register.invert_condition,
+                             
                              branch_taken => branch_taken,
                              branch_target_addr => branch_target_addr,
                              

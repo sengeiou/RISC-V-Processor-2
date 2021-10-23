@@ -31,6 +31,7 @@ entity stage_execute is
         reg_2_fwd_mw : in std_logic;
         
         prog_flow_cntrl : in std_logic_vector(1 downto 0);
+        invert_condition : in std_logic;
         branch_target_addr : out std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         branch_taken : out std_logic
     );
@@ -57,7 +58,7 @@ begin
                      port map(pc => pc,
                               immediate => immediate_data,
                               alu_comp_res => alu_result_i(0),
-                              invert_branch_cond => alu_op_sel(0),
+                              invert_branch_cond => invert_condition,
                               reg_1_data => reg_1_data,
                               prog_flow_cntrl => prog_flow_cntrl,
                               branch_target_addr => branch_target_addr,
