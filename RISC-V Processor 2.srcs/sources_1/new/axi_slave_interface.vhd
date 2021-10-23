@@ -283,7 +283,7 @@ begin
             when WRAP_INIT_2 => 
                 read_state_next <= DATA_STATE;
             when DATA_STATE => 
-                if (read_burst_len_reg_zero = '1' and master_read_handshake.rready = '1') then
+                if (read_burst_len_reg_zero = '1' and master_read_handshake.rready = '1' and from_slave.data_ready = '1') then
                     read_state_next <= IDLE;
                 else
                     read_state_next <= DATA_STATE;
@@ -309,6 +309,7 @@ begin
         axi_read_data_ch.resp <= RESP_OKAY; 
                 
         slave_read_handshake.arready <= '1';
+
         case read_state_reg is
             when IDLE =>
                 read_burst_len_reg_en <= master_read_handshake.arvalid;
@@ -324,7 +325,7 @@ begin
                 axi_read_data_ch.data <= from_slave.data_read;
                 axi_read_data_ch.last <= read_burst_len_reg_zero;
                 
-                slave_read_handshake.rvalid <= '1';
+                slave_read_handshake.rvalid <= from_slave.data_ready;
                 slave_read_handshake.arready <= '0';
                 
                 axi_read_data_ch.last <= read_burst_len_reg_zero;
@@ -334,8 +335,8 @@ begin
                 
                 -- ====================================
                 read_burst_len_reg_en <= not read_burst_len_reg_zero and
-                                         master_read_handshake.rready;
-                read_addr_reg_en <= master_read_handshake.rready;
+                                         master_read_handshake.rready and from_slave.data_ready;
+                read_addr_reg_en <= master_read_handshake.rready and from_slave.data_ready;
                                          
                 read_addr_next_sel <= read_burst_type_reg;
         end case;

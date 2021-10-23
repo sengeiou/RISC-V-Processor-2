@@ -100,6 +100,9 @@ package axi_interface_signal_groups is
         data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
         
         -- Address signals
+        
+        -- Control signals
+        data_ready : std_logic;
     end record FromSlave;
 
     type ToSlave is record
@@ -131,7 +134,8 @@ package axi_interface_signal_groups is
                                                 execute_read => '0',
                                                 execute_write => '0');
                                                 
-    constant FROM_SLAVE_CLEAR : FromSlave := (data_read => (others => '0'));
+    constant FROM_SLAVE_CLEAR : FromSlave := (data_read => (others => '0'),
+                                              data_ready => '0');
     
     constant WRITE_ADDRESS_CH_CLEAR : WriteAddressChannel := (addr => (others => '0'),
                                                               len => (others => '0'),

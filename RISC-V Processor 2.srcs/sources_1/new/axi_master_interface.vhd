@@ -124,6 +124,8 @@ begin
         
         write_burst_len_mux_sel <= '0';
         write_burst_len_reg_en <= '0';
+        
+        bus_request_write <= '0';
         case write_state_reg is
             when IDLE =>
             
@@ -143,6 +145,8 @@ begin
                 
                 -- BURST CONTROL
                 write_burst_len_reg_en <= '1';
+                
+                bus_request_write <= '1';
             when DATA_STATE => 
                 -- WRITE DATA CHANNEL
                 axi_write_data_ch.data <= write_data_reg;
@@ -156,13 +160,17 @@ begin
                 write_burst_len_mux_sel <= '1';
                 write_burst_len_reg_en <= not write_burst_len_reg_zero and
                                           slave_write_handshake.wready;
+                                          
+                bus_request_write <= '1';
             when RESPONSE_STATE_1 => 
-
+                bus_request_write <= '1';
             when RESPONSE_STATE_2 => 
                 -- HANDSHAKE
                 master_write_handshake.bready <= '1';
                 
                 interface_to_master.done_write <= '1';
+                
+                bus_request_write <= '1';
         end case;
     end process;
     
@@ -205,7 +213,7 @@ begin
     -- ============================================================================================
     -- READING
     -- ============================================================================================
-    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_read_handshake.arready, axi_read_data_ch.last)
+    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_read_handshake.arready, axi_read_data_ch.last, slave_read_handshake.rvalid)
     begin
         case read_state_reg is 
             when IDLE => 
@@ -221,7 +229,7 @@ begin
                     read_state_next <= ADDR_STATE;
                 end if;
             when DATA_STATE => 
-                if (axi_read_data_ch.last = '1') then
+                if (axi_read_data_ch.last = '1' and slave_read_handshake.rvalid = '1') then
                     read_state_next <= FINALIZE_STATE;
                 else
                     read_state_next <= DATA_STATE;

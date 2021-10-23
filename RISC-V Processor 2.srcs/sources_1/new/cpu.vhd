@@ -19,11 +19,14 @@ architecture structural of cpu is
     signal test1S : test1;
     signal test2S : test2;
 
-    signal master_to_interface_1 : FromMaster; 
-    signal master_from_interface_1 : ToMaster; 
+    signal from_master_1 : FromMaster; 
+    signal to_master_1 : ToMaster; 
     
-    signal slave_from_interface_1 : FromSlave;
-    signal slave_to_interface_1 : ToSlave;
+    signal from_slave_1 : FromSlave;
+    signal to_slave_1 : ToSlave;
+    
+    signal from_slave_2 : FromSlave;
+    signal to_slave_2 : ToSlave;
     
     signal reset_inv : std_logic;
 begin
@@ -31,23 +34,23 @@ begin
     axi_interconnect : entity work.axi_interconnect_simple(rtl)
                        generic map(NUM_MASTERS => 4,
                                    NUM_SLAVES => 4)
-                       port map(to_masters(0) => master_from_interface_1,
+                       port map(to_masters(0) => to_master_1,
                                 to_masters(1) => test1S(0),
                                 to_masters(2) => test1S(1),
                                 to_masters(3) => test1S(2),
                        
-                                from_masters(0) => master_to_interface_1,
+                                from_masters(0) => from_master_1,
                                 from_masters(1) => FROM_MASTER_CLEAR,       -- Indicates that no device is connected to the corresponding input
                                 from_masters(2) => FROM_MASTER_CLEAR,
                                 from_masters(3) => FROM_MASTER_CLEAR,
 
-                                to_slaves(0) => slave_to_interface_1,
-                                to_slaves(1) => test2S(0),
+                                to_slaves(0) => to_slave_1,
+                                to_slaves(1) => to_slave_2,
                                 to_slaves(2) => test2S(1),
                                 to_slaves(3) => test2S(2),
                                 
-                                from_slaves(0) => slave_from_interface_1,
-                                from_slaves(1) => FROM_SLAVE_CLEAR,
+                                from_slaves(0) => from_slave_1,
+                                from_slaves(1) => from_slave_2,
                                 from_slaves(2) => FROM_SLAVE_CLEAR,
                                 from_slaves(3) => FROM_SLAVE_CLEAR,
                                 
@@ -57,25 +60,27 @@ begin
     -- AXI Masters
     core_1 : entity work.core(structural)
              port map(
-                      from_master => master_to_interface_1,
-                      to_master => master_from_interface_1,
+                      from_master => from_master_1,
+                      to_master => to_master_1,
              
                       clk_cpu => clk_cpu,
                       reset_cpu => reset_cpu);
 
     -- AXI Slaves
---    led_device : entity work.led_interface(rtl)
---                 port map(data_write => slave_from_interface_1.data_write,
---                          addr_write => slave_from_interface_1.addr_write,
+    led_device : entity work.led_interface(rtl)
+                 port map(data_write => to_slave_2.data_write,
+                          addr_write => to_slave_2.addr_write,
                           
---                          led_out => led_out_debug,
+                          led_out => led_out_debug,
                           
---                          clk_bus => clk_cpu,
---                          reset => reset_cpu);
+                          clk_bus => clk_cpu,
+                          reset => reset_cpu);
                           
     rom_memory : entity work.rom_memory_2(structural)
-                 port map(data_bus => slave_from_interface_1.data_read,
-                          addr_bus => slave_to_interface_1.addr_read(11 downto 2),
+                 port map(data_bus => from_slave_1.data_read,
+                          addr_bus => to_slave_1.addr_read(11 downto 2),
+                          
+                          data_ready => from_slave_1.data_ready,
                           
                           clk => clk_cpu);
                           
