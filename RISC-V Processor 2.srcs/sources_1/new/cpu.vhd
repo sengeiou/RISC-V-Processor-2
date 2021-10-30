@@ -50,8 +50,8 @@ architecture structural of cpu is
 begin
     -- AXI Interconnect
     axi_interconnect : entity work.axi_interconnect_simple(rtl)
-                       generic map(NUM_MASTERS => 4,
-                                   NUM_SLAVES => 4)
+                       generic map(NUM_MASTERS => 2,
+                                   NUM_SLAVES => 2)
                        port map(to_masters(0) => to_master_1,
                                 to_masters(1) => test1S(0),
                                 to_masters(2) => test1S(1),

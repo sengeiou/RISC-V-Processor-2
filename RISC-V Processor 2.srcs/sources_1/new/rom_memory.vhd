@@ -81,8 +81,8 @@ architecture rtl of rom_memory is
     signal mem : mem_type := (
         0 => "00000000000000000001000010110111",         -- LUI x1, 0x00001         -- Load base address of ROM to x1
         4 => "00000000000000000010000100110111",         -- LUI x2, 0x00002         -- Load base address of LEDs to x2
-        8 => "00000000000100000000000110110111",         -- LUI x3, 0x00100         -- Determines the amount of time between patterns
-        --8 => "00000000100000011000000110010011",
+        --8 => "00000000000100000000000110110111",         -- LUI x3, 0x00100         -- Determines the amount of time between patterns
+        8 => "00000000100000011000000110010011",
         12 => "00000000000000000001001010110111",        -- LUI x5, 0x00001 
         16 => "00000001010000101000001010010011",        -- ADDI x5, x5, 20         -- Max ROM address       
         

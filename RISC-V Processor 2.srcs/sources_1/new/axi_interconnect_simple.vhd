@@ -91,11 +91,17 @@ architecture rtl of axi_interconnect_simple is
     signal read_bus_disable : std_logic;
     signal write_bus_disable : std_logic;
     
-    signal write_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
-    signal write_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
+    --signal write_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
+    --signal write_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
     
-    signal read_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
-    signal read_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
+    --signal read_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
+    --signal read_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
+    
+    signal write_bus_slave_sel : std_logic_vector(3 downto 0);
+    signal write_bus_master_sel : std_logic_vector(3 downto 0);
+    
+    signal read_bus_slave_sel : std_logic_vector(3 downto 0);
+    signal read_bus_master_sel : std_logic_vector(3 downto 0);
     
     signal master_read_bus_reqs : std_logic_vector(3 downto 0);
     signal master_write_bus_reqs : std_logic_vector(3 downto 0);
@@ -169,74 +175,100 @@ begin
 
     write_bus_chs_master_proc : process(write_bus_master_sel, write_addr_master_chs, write_data_master_chs, write_resp_bus_ch, handshakes_write_masters_to_bus, handshake_write_slave)
     begin
-        write_addr_bus_ch <= write_addr_master_chs(to_integer(unsigned(write_bus_master_sel)));
-        write_data_bus_ch <= write_data_master_chs(to_integer(unsigned(write_bus_master_sel)));
+        if (write_bus_disable = '0' and write_bus_master_sel /= "1111") then
+            write_addr_bus_ch <= write_addr_master_chs(to_integer(unsigned(write_bus_master_sel)));
+            write_data_bus_ch <= write_data_master_chs(to_integer(unsigned(write_bus_master_sel)));
 
-        write_resp_master_chs <= (others => WRITE_RESPONSE_CH_CLEAR);
-        write_resp_master_chs(to_integer(unsigned(write_bus_master_sel))) <= write_resp_bus_ch;
+            write_resp_master_chs <= (others => WRITE_RESPONSE_CH_CLEAR);
+            write_resp_master_chs(to_integer(unsigned(write_bus_master_sel))) <= write_resp_bus_ch;
+            
+            handshakes_write_slaves_from_bus <= (others => HANDSHAKE_WRITE_SLAVE_DEF);
+            handshakes_write_slaves_from_bus(to_integer(unsigned(write_bus_master_sel))) <= handshake_write_slave;
         
-        if (write_bus_disable = '0') then
             handshake_write_master <= handshakes_write_masters_to_bus(to_integer(unsigned(write_bus_master_sel)));
         else
+            write_addr_bus_ch <= WRITE_ADDRESS_CH_CLEAR;
+            write_data_bus_ch <= WRITE_DATA_CH_CLEAR;
+
+            write_resp_master_chs <= (others => WRITE_RESPONSE_CH_CLEAR);
+            
+            handshakes_write_slaves_from_bus <= (others => HANDSHAKE_WRITE_SLAVE_DEF);
+        
             handshake_write_master <= HANDSHAKE_WRITE_MASTER_DEF;
         end if;
-        
-        handshakes_write_slaves_from_bus <= (others => HANDSHAKE_WRITE_SLAVE_DEF);
-        handshakes_write_slaves_from_bus(to_integer(unsigned(write_bus_master_sel))) <= handshake_write_slave;
     end process;
     
     write_bus_chs_slave_proc : process(write_bus_slave_sel, write_resp_slave_chs, write_addr_bus_ch, write_data_bus_ch, handshakes_write_slaves_to_bus, handshake_write_master)
     begin
-        write_resp_bus_ch <= write_resp_slave_chs(to_integer(unsigned(write_bus_slave_sel)));
+        if (write_bus_disable = '0' and write_bus_slave_sel /= "1111") then
+            write_resp_bus_ch <= write_resp_slave_chs(to_integer(unsigned(write_bus_slave_sel)));
         
-        write_addr_slave_chs <= (others => WRITE_ADDRESS_CH_CLEAR);
-        write_addr_slave_chs(to_integer(unsigned(write_bus_slave_sel))) <= write_addr_bus_ch;
-        
-        write_data_slave_chs <= (others => WRITE_DATA_CH_CLEAR);
-        write_data_slave_chs(to_integer(unsigned(write_bus_slave_sel))) <= write_data_bus_ch;
-        
-        if (write_bus_disable = '0') then
+            write_addr_slave_chs <= (others => WRITE_ADDRESS_CH_CLEAR);
+            write_addr_slave_chs(to_integer(unsigned(write_bus_slave_sel))) <= write_addr_bus_ch;
+            
+            write_data_slave_chs <= (others => WRITE_DATA_CH_CLEAR);
+            write_data_slave_chs(to_integer(unsigned(write_bus_slave_sel))) <= write_data_bus_ch;
+            
+            handshakes_write_masters_from_bus <= (others => HANDSHAKE_WRITE_MASTER_DEF);
+            handshakes_write_masters_from_bus(to_integer(unsigned(write_bus_slave_sel))) <= handshake_write_master;
+            
             handshake_write_slave <= handshakes_write_slaves_to_bus(to_integer(unsigned(write_bus_slave_sel)));
         else
+            write_resp_bus_ch <= WRITE_RESPONSE_CH_CLEAR;
+        
+            write_addr_slave_chs <= (others => WRITE_ADDRESS_CH_CLEAR);
+            write_data_slave_chs <= (others => WRITE_DATA_CH_CLEAR);
+            
+            handshakes_write_masters_from_bus <= (others => HANDSHAKE_WRITE_MASTER_DEF);
+        
             handshake_write_slave <= HANDSHAKE_WRITE_SLAVE_DEF;
         end if;
-        
-        handshakes_write_masters_from_bus <= (others => HANDSHAKE_WRITE_MASTER_DEF);
-        handshakes_write_masters_from_bus(to_integer(unsigned(write_bus_slave_sel))) <= handshake_write_master;
     end process;
     
-    read_bus_chs_master_proc : process(read_bus_master_sel, read_addr_master_chs, read_data_bus_ch, handshakes_read_masters_to_bus, handshake_read_slave)
+    read_bus_chs_master_proc : process(read_bus_master_sel, read_addr_master_chs, read_data_bus_ch, handshakes_read_masters_to_bus, handshake_read_slave, read_bus_disable)
     begin
-        read_addr_bus_ch <= read_addr_master_chs(to_integer(unsigned(read_bus_master_sel)));
+        if (read_bus_disable = '0' and read_bus_master_sel /= "1111") then
+            read_addr_bus_ch <= read_addr_master_chs(to_integer(unsigned(read_bus_master_sel)));
         
-        read_data_master_chs <= (others => READ_DATA_CH_CLEAR);
-        read_data_master_chs(to_integer(unsigned(read_bus_master_sel))) <= read_data_bus_ch;
+            read_data_master_chs <= (others => READ_DATA_CH_CLEAR);
+            read_data_master_chs(to_integer(unsigned(read_bus_master_sel))) <= read_data_bus_ch;
+            
+            handshakes_read_slaves_from_bus <= (others => HANDSHAKE_READ_SLAVE_DEF);
+            handshakes_read_slaves_from_bus(to_integer(unsigned(read_bus_master_sel))) <= handshake_read_slave;
         
-        if (read_bus_disable = '0') then
             handshake_read_master <= handshakes_read_masters_to_bus(to_integer(unsigned(read_bus_master_sel)));
         else
+            read_addr_bus_ch <= READ_ADDRESS_CH_CLEAR;
+        
+            read_data_master_chs <= (others => READ_DATA_CH_CLEAR);
+            
+            handshakes_read_slaves_from_bus <= (others => HANDSHAKE_READ_SLAVE_DEF);
+        
             handshake_read_master <= HANDSHAKE_READ_MASTER_DEF;
         end if;
-        
-        handshakes_read_slaves_from_bus <= (others => HANDSHAKE_READ_SLAVE_DEF);
-        handshakes_read_slaves_from_bus(to_integer(unsigned(read_bus_master_sel))) <= handshake_read_slave;
     end process;
     
     read_bus_chs_slave_proc : process(read_bus_slave_sel, read_data_slave_chs, read_addr_bus_ch, handshakes_read_slaves_to_bus, handshake_read_master, read_bus_disable)
     begin
-        read_data_bus_ch <= read_data_slave_chs(to_integer(unsigned(read_bus_slave_sel)));
+        if (read_bus_disable = '0' and read_bus_slave_sel /= "1111") then
+            read_data_bus_ch <= read_data_slave_chs(to_integer(unsigned(read_bus_slave_sel)));
         
-        read_addr_slave_chs <= (others => READ_ADDRESS_CH_CLEAR);
-        read_addr_slave_chs(to_integer(unsigned(read_bus_slave_sel))) <= read_addr_bus_ch;
+            read_addr_slave_chs <= (others => READ_ADDRESS_CH_CLEAR);
+            read_addr_slave_chs(to_integer(unsigned(read_bus_slave_sel))) <= read_addr_bus_ch;
         
-        if (read_bus_disable = '0') then
+            handshakes_read_masters_from_bus <= (others => HANDSHAKE_READ_MASTER_DEF);
+            handshakes_read_masters_from_bus(to_integer(unsigned(read_bus_slave_sel))) <= handshake_read_master;
+        
             handshake_read_slave <= handshakes_read_slaves_to_bus(to_integer(unsigned(read_bus_slave_sel)));
         else
+            read_data_bus_ch <= READ_DATA_CH_CLEAR;
+        
+            read_addr_slave_chs <= (others => READ_ADDRESS_CH_CLEAR);
+        
+            handshakes_read_masters_from_bus <= (others => HANDSHAKE_READ_MASTER_DEF);
+        
             handshake_read_slave <= HANDSHAKE_READ_SLAVE_DEF;
         end if;
-        
-        handshakes_read_masters_from_bus <= (others => HANDSHAKE_READ_MASTER_DEF);
-        handshakes_read_masters_from_bus(to_integer(unsigned(read_bus_slave_sel))) <= handshake_read_master;
     end process;
     
     --write_bus_master_sel <= (others => '0');

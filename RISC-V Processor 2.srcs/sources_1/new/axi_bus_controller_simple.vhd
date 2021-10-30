@@ -1,12 +1,13 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use IEEE.MATH_REAL.ALL;
 
 use work.axi_interface_signal_groups.all;
 
 entity axi_bus_controller_simple is
     generic(
-        NUM_MASTERS : integer  
+        NUM_MASTERS : integer
     );
     port(
         -- SIGNALS FROM MASTERS
@@ -14,8 +15,8 @@ entity axi_bus_controller_simple is
         
         -- SIGNALS FROM AND TO INTERCONNECT
         bus_address : in std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
-        master_sel : out std_logic_vector(1 downto 0);
-        slave_sel : out std_logic_vector(1 downto 0);
+        master_sel : out std_logic_vector(3 downto 0);
+        slave_sel : out std_logic_vector(3 downto 0);
 
         bus_disable : out std_logic;
         
@@ -30,22 +31,27 @@ architecture rtl of axi_bus_controller_simple is
                                 SLAVE_DECODE,
                                 BUS_GRANTED);
 
-    signal curr_master_counter_reg : unsigned(1 downto 0);
-    signal curr_master_counter_next : unsigned(1 downto 0);
+    signal curr_master_counter_reg : unsigned(3 downto 0);
+    signal curr_master_counter_next : unsigned(3 downto 0);
     signal curr_master_counter_en : std_logic;
+    signal curr_master_counter_reg_reset : std_logic;
     
-    signal slave_sel_reg : std_logic_vector(1 downto 0);
-    signal slave_sel_next : std_logic_vector(1 downto 0);
+    signal slave_sel_reg : std_logic_vector(3 downto 0);
+    signal slave_sel_next : std_logic_vector(3 downto 0);
     signal slave_sel_en : std_logic;
     
     signal arbiter_state_reg : arbiter_state_type;
     signal arbiter_state_reg_next : arbiter_state_type;
 begin
     -- ========== READ ARBITRATION AND DECODING ==========
+    with curr_master_counter_reg select curr_master_counter_reg_reset <=
+        '1' when to_unsigned(NUM_MASTERS - 1, 4),
+        '0' when others;
+    
     counter_update : process(clk)
     begin
         if (rising_edge(clk)) then
-            if (reset = '0') then
+            if (curr_master_counter_reg_reset = '1' or reset = '0') then
                 curr_master_counter_reg <= (others => '0');
             elsif (curr_master_counter_en = '1') then
                 curr_master_counter_reg <= curr_master_counter_next;
@@ -58,11 +64,11 @@ begin
     address_decoder : process(bus_address)
     begin
         if (bus_address(31 downto 12) = X"0000_1")  then             -- Slave 1 at addresses 0000_1000 - 0000_1FFF
-            slave_sel_next <= "00";
+            slave_sel_next <= "0000";
         elsif (bus_address(31 downto 12) = X"0000_2") then           -- Slave 2 at addresses 0000_2000 - 0000_2FFF
-            slave_sel_next <= "01";
+            slave_sel_next <= "0001";
         else
-            slave_sel_next <= "11";
+            slave_sel_next <= "1111";
         end if;
     end process;
 
@@ -81,7 +87,7 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '0') then  
-                slave_sel_reg <= "11";
+                slave_sel_reg <= "1111";
             elsif (slave_sel_en = '1') then
                 slave_sel_reg <= slave_sel_next;
             end if;
@@ -91,7 +97,7 @@ begin
     next_state_proc : process(arbiter_state_reg, master_bus_requests, curr_master_counter_reg)
     begin
         if (arbiter_state_reg = IDLE) then
-            if (master_bus_requests(to_integer(curr_master_counter_reg + 1)) = '1') then
+            if (master_bus_requests(to_integer(curr_master_counter_reg)) = '1') then
                 arbiter_state_reg_next <= SLAVE_DECODE;
             else
                 arbiter_state_reg_next <= IDLE;
@@ -107,7 +113,7 @@ begin
         end if;
     end process;
     
-    state_outputs_proc : process(arbiter_state_reg, curr_master_counter_reg)
+    state_outputs_proc : process(arbiter_state_reg, curr_master_counter_reg, master_bus_requests)
     begin
         curr_master_counter_en <= '0';
         slave_sel_en <= '0';
@@ -116,10 +122,11 @@ begin
         bus_disable <= '1';
         
         if (arbiter_state_reg = IDLE) then
-            curr_master_counter_en <= '1';
+            curr_master_counter_en <= not master_bus_requests(to_integer(curr_master_counter_reg));
         elsif (arbiter_state_reg = SLAVE_DECODE) then
             master_sel <= std_logic_vector(curr_master_counter_reg);
             
+            bus_disable <= '0';
             slave_sel_en <= '1';
         elsif (arbiter_state_reg = BUS_GRANTED) then
             master_sel <= std_logic_vector(curr_master_counter_reg);
