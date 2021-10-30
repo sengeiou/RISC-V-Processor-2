@@ -142,6 +142,7 @@ OPTRACE "add files" START { }
   add_files -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/top.dcp}}
   read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
   read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/block_rom_memory.xci}}
+  read_ip -quiet {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
 OPTRACE "read constraints: implementation" START { }
   read_xdc {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/constrs_1/new/nexys_a7_constr.xdc}}
 OPTRACE "read constraints: implementation" END { }

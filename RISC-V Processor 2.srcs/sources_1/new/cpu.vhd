@@ -8,6 +8,8 @@ entity cpu is
         led_out_debug : out std_logic_vector(15 downto 0);
     
         clk_cpu : in std_logic;
+        clk_dbg : in std_logic;
+        
         reset_cpu : in std_logic
     );
 end cpu;
@@ -80,6 +82,8 @@ begin
                       to_master => to_master_1,
              
                       clk_cpu => clk_cpu,
+                      clk_dbg => clk_dbg,
+                      
                       reset_cpu => reset_cpu);
 
     -- AXI Slaves

@@ -81,7 +81,7 @@ architecture rtl of rom_memory is
     signal mem : mem_type := (
         0 => "00000000000000000001000010110111",         -- LUI x1, 0x00001         -- Load base address of ROM to x1
         4 => "00000000000000000010000100110111",         -- LUI x2, 0x00002         -- Load base address of LEDs to x2
-        8 => "00000000000000000010000110110111",         -- LUI x3, 0x00080         -- Determines the amount of time between patterns
+        8 => "00000000000100000000000110110111",         -- LUI x3, 0x00100         -- Determines the amount of time between patterns
         --8 => "00000000100000011000000110010011",
         12 => "00000000000000000001001010110111",        -- LUI x5, 0x00001 
         16 => "00000001010000101000001010010011",        -- ADDI x5, x5, 20         -- Max ROM address       
@@ -89,7 +89,7 @@ architecture rtl of rom_memory is
         20 => "00000000000100100000001000010011",        -- ADDI x4, x4, 1          -- Wait loop
         24 => "11111110010000011001111011100011",        -- BNE x3, x4, -4
         
-        28 => "00000000000000100111001000010011",        -- ANDI x4, x4, 0          -- Reset counter
+        28 => "00000000000000100111001000010011",        -- ANDI x4, x4, 0          -- Reset counter 
         
         32 => "00000000000000001010001100000011",        -- LW x6, x1(0)            -- Load ROM data into x6
         36 => "00000000010000001000000010010011",        -- ADDI x1, x1, 4          -- Increment ROM address
@@ -102,11 +102,9 @@ architecture rtl of rom_memory is
         others => (others => '0')
     );
 begin
-    process (clk, addr)
+    process (addr)
     begin
-        if (falling_edge(clk)) then
-            data <= mem(to_integer(unsigned(addr)));
-        end if;
+        data <= mem(to_integer(unsigned(addr)));
     end process;
 
 end rtl;

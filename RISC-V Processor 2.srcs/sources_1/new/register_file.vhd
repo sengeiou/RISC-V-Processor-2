@@ -24,11 +24,12 @@ entity register_file is
         -- Data busses
         wr_data : in std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);                      -- Data input port
         rd_1_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
-        rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);        -- Data output ports
+        rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);             -- Data output ports
         
         -- Control busses
         reset : in std_logic;                                                           -- Sets all registers to 0 when high (synchronous)
         clk : in std_logic;                                                             -- Clock signal input
+        clk_dbg : in std_logic;                                                           
         wr_en : in std_logic                                                            -- Write enable
     );
 end register_file;
@@ -37,6 +38,24 @@ architecture rtl of register_file is
     type reg_file_type is array (2 ** REGFILE_SIZE - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
     
     signal reg_file : reg_file_type;
+    
+    COMPONENT ila_reg_file
+
+    PORT (
+	clk : IN STD_LOGIC;
+
+
+
+	probe0 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+	probe1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+	probe2 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+	probe3 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+	probe4 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+	probe5 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+	probe6 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+	probe7 : IN STD_LOGIC_VECTOR(31 DOWNTO 0)
+);
+END COMPONENT  ;
 begin
     reg_file_access : process(all)
     begin
@@ -53,4 +72,20 @@ begin
             end if;
         end if;
     end process;
+    
+    your_instance_name : ila_reg_file
+    PORT MAP (
+	clk => clk_dbg,
+
+
+
+	probe0 => reg_file(1), 
+	probe1 => reg_file(2), 
+	probe2 => reg_file(3), 
+	probe3 => reg_file(4), 
+	probe4 => reg_file(5), 
+	probe5 => reg_file(6), 
+	probe6 => reg_file(7),
+	probe7 => reg_file(8)
+);
 end rtl;

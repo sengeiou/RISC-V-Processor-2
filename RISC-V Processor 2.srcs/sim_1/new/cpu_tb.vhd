@@ -12,6 +12,7 @@ architecture Behavioral of cpu_tb is
 begin
     cpu : entity work.cpu(structural)
           port map(clk_cpu => clk,
+                   clk_dbg => '0',
                    reset_cpu => reset);
 
     reset <= '1', '0' after T * 2;

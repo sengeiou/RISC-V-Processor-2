@@ -20,6 +20,8 @@ entity stage_decode is
         reg_wr_en_in : in std_logic;
         
         clk : in std_logic;
+        clk_dbg : in std_logic;
+        
         reset : in std_logic;
         
         -- ========== OUTPUT CONTROL SIGNALS ==========
@@ -50,6 +52,7 @@ architecture structural of stage_decode is
     
     signal reg_1_used_i : std_logic;
     signal reg_2_used_i : std_logic;
+    
 begin
     instruction_decoder : entity work.instruction_decoder(rtl)
                           generic map (DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
@@ -95,7 +98,8 @@ begin
                              -- CONTROL
                              wr_en => reg_wr_en_in,
                              reset => reset,
-                             clk => clk);
+                             clk => clk,
+                             clk_dbg => clk_dbg);
     
     reg_1_addr <= reg_1_addr_i;
     reg_2_addr <= reg_2_addr_i;

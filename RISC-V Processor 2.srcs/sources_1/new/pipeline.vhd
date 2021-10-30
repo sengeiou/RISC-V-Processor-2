@@ -14,6 +14,8 @@ entity pipeline is
         to_master : in work.axi_interface_signal_groups.ToMaster;
     
         clk : in std_logic;
+        clk_dbg : in std_logic;
+        
         reset : in std_logic
     );
 end pipeline;
@@ -119,7 +121,8 @@ begin
                             execute_write => de_ex_register_next.execute_write,
                             
                             reset => reset,
-                            clk => clk
+                            clk => clk,
+                            clk_dbg => clk_dbg
                             );
                             
     stage_execute : entity work.stage_execute(structural)

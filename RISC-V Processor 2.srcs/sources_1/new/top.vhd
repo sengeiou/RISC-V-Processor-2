@@ -35,6 +35,7 @@ architecture strucutral of top is
      (-- Clock in ports
       -- Clock out ports
       clk_cpu          : out    std_logic;
+      clk_out2          : out    std_logic;
       -- Status and control signals
       reset             : in     std_logic;
       clk_in1           : in     std_logic
@@ -42,20 +43,23 @@ architecture strucutral of top is
     end component;
     
     signal clk_cpu : std_logic;
+    signal clk_dbg : std_logic;
 begin
     
 
     cpu : entity work.cpu(structural)
           port map(led_out_debug => LED,
                    clk_cpu => clk_cpu,
+                   clk_dbg => clk_dbg,
                    reset_cpu => BTNC);
                    
     your_instance_name : clk_wiz_0
         port map ( 
        -- Clock out ports  
         clk_cpu => clk_cpu,
+        clk_out2 => clk_dbg,
        -- Status and control signals                
-        reset => BTNC,
+        reset => '0',
         -- Clock in ports
         clk_in1 => CLK100MHZ);
 

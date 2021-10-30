@@ -132,6 +132,12 @@ set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/R
 read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/block_rom_memory.xci}}
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/block_rom_memory_ooc.xdc}}]
 
+read_ip -quiet {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
+set_property used_in_synthesis false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_reg_file_ooc.xdc}}]
+
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the

@@ -101,7 +101,7 @@ architecture rtl of axi_interconnect_simple is
     signal master_write_bus_reqs : std_logic_vector(3 downto 0);
 begin
     axi_bus_read_controller : entity work.axi_bus_controller_simple(rtl)
-                              generic map(NUM_MASTERS => 4)
+                              generic map(NUM_MASTERS => NUM_MASTERS)
                               port map(master_read_bus_requests => master_read_bus_reqs,
                                        read_address => read_addr_bus_ch.addr,
                                        read_master_sel => read_bus_master_sel,
@@ -111,7 +111,7 @@ begin
                                        reset => reset); 
 
     axi_bus_write_controller : entity work.axi_write_bus_controller_simple(rtl)
-                              generic map(NUM_MASTERS => 4)
+                              generic map(NUM_MASTERS => NUM_MASTERS)
                               port map(master_write_bus_requests => master_write_bus_reqs,
                                        write_address => write_addr_bus_ch.addr,
                                        write_master_sel => write_bus_master_sel,
