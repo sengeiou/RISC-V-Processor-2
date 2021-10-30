@@ -2,8 +2,8 @@
 # Vivado v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Sat Oct 30 18:49:26 2021
-# Process ID: 3864
+# Start of session at: Sat Oct 30 19:38:32 2021
+# Process ID: 4820
 # Current directory: E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1
 # Command line: vivado.exe -log top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source top.tcl
 # Log file: E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/top.vds
@@ -17,9 +17,9 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100
 INFO: [Device 21-403] Loading part xc7a100tcsg324-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 732
+INFO: [Synth 8-7075] Helper process launched with PID 14020
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 1002.742 ; gain = 0.000
+Starting RTL Elaboration : Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 1004.855 ; gain = 0.000
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-638] synthesizing module 'top' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:32]
 INFO: [Synth 8-638] synthesizing module 'cpu' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd:17]
@@ -28,27 +28,23 @@ INFO: [Synth 8-638] synthesizing module 'axi_interconnect_simple' [E:/Vivado Pro
 	Parameter NUM_SLAVES bound to: 4 - type: integer 
 INFO: [Synth 8-638] synthesizing module 'axi_bus_controller_simple' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd:28]
 	Parameter NUM_MASTERS bound to: 4 - type: integer 
-WARNING: [Synth 8-614] signal 'read_slave_sel_reg' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd:110]
+WARNING: [Synth 8-614] signal 'slave_sel_reg' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd:110]
 INFO: [Synth 8-256] done synthesizing module 'axi_bus_controller_simple' (1#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd:28]
-INFO: [Synth 8-638] synthesizing module 'axi_write_bus_controller_simple' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_write_bus_controller.vhd:28]
-	Parameter NUM_MASTERS bound to: 4 - type: integer 
-WARNING: [Synth 8-614] signal 'write_slave_sel_reg' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_write_bus_controller.vhd:109]
-INFO: [Synth 8-256] done synthesizing module 'axi_write_bus_controller_simple' (2#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_write_bus_controller.vhd:28]
 INFO: [Synth 8-638] synthesizing module 'axi_master_interface' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd:40]
-INFO: [Synth 8-256] done synthesizing module 'axi_master_interface' (3#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd:40]
+INFO: [Synth 8-256] done synthesizing module 'axi_master_interface' (2#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd:40]
 INFO: [Synth 8-638] synthesizing module 'axi_slave_interface' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:34]
 WARNING: [Synth 8-614] signal 'write_state_reg' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:105]
 WARNING: [Synth 8-614] signal 'axi_write_addr_ch' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:105]
 WARNING: [Synth 8-614] signal 'write_wrap_addr_end_reg' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:197]
 INFO: [Synth 8-638] synthesizing module 'barrel_shifter_2' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd:19]
 	Parameter DATA_WIDTH bound to: 8 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'barrel_shifter_2' (4#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd:19]
+INFO: [Synth 8-256] done synthesizing module 'barrel_shifter_2' (3#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd:19]
 INFO: [Synth 8-638] synthesizing module 'barrel_shifter_2__parameterized0' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd:19]
 	Parameter DATA_WIDTH bound to: 32 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'barrel_shifter_2__parameterized0' (4#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd:19]
+INFO: [Synth 8-256] done synthesizing module 'barrel_shifter_2__parameterized0' (3#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd:19]
 WARNING: [Synth 8-614] signal 'read_wrap_addr_end_reg' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:393]
 WARNING: [Synth 8-614] signal 'read_wrap_addr_start_reg' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:393]
-INFO: [Synth 8-256] done synthesizing module 'axi_slave_interface' (5#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:34]
+INFO: [Synth 8-256] done synthesizing module 'axi_slave_interface' (4#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd:34]
 WARNING: [Synth 8-614] signal 'write_bus_disable' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:170]
 WARNING: [Synth 8-614] signal 'write_bus_disable' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:188]
 WARNING: [Synth 8-614] signal 'read_bus_disable' is read in the process but is not in the sensitivity list [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:208]
@@ -67,20 +63,20 @@ CRITICAL WARNING: [Synth 8-6858] multi-driven net E:/Vivado Projects/RISC-V Proc
 CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd-113.4 with 1st driver pin 'axi_interconnect_simple:/GEN_MASTER_CONTROLLERS[3].master_controller/bus_request_write' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:113]
 CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd-113.4 with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:113]
 CRITICAL WARNING: [Synth 8-6858] multi-driven net E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd-113.4 is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:113]
-INFO: [Synth 8-256] done synthesizing module 'axi_interconnect_simple' (6#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:34]
+INFO: [Synth 8-256] done synthesizing module 'axi_interconnect_simple' (5#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:34]
 INFO: [Synth 8-638] synthesizing module 'core' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/core.vhd:17]
 INFO: [Synth 8-638] synthesizing module 'pipeline' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline.vhd:23]
 INFO: [Synth 8-638] synthesizing module 'pipeline_controller' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline_controller.vhd:20]
-INFO: [Synth 8-256] done synthesizing module 'pipeline_controller' (7#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline_controller.vhd:20]
+INFO: [Synth 8-256] done synthesizing module 'pipeline_controller' (6#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline_controller.vhd:20]
 INFO: [Synth 8-638] synthesizing module 'forwarding_unit' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/forwarding_unit.vhd:25]
-INFO: [Synth 8-256] done synthesizing module 'forwarding_unit' (8#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/forwarding_unit.vhd:25]
+INFO: [Synth 8-256] done synthesizing module 'forwarding_unit' (7#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/forwarding_unit.vhd:25]
 INFO: [Synth 8-638] synthesizing module 'stage_fetch' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_fetch.vhd:20]
-INFO: [Synth 8-256] done synthesizing module 'stage_fetch' (9#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_fetch.vhd:20]
+INFO: [Synth 8-256] done synthesizing module 'stage_fetch' (8#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_fetch.vhd:20]
 INFO: [Synth 8-638] synthesizing module 'stage_decode' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_decode.vhd:49]
 INFO: [Synth 8-638] synthesizing module 'instruction_decoder' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/instruction_decoder.vhd:46]
 	Parameter DATA_WIDTH_BITS bound to: 32 - type: integer 
 	Parameter REGFILE_ADDRESS_WIDTH_BITS bound to: 5 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'instruction_decoder' (10#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/instruction_decoder.vhd:46]
+INFO: [Synth 8-256] done synthesizing module 'instruction_decoder' (9#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/instruction_decoder.vhd:46]
 INFO: [Synth 8-638] synthesizing module 'register_file' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd:37]
 	Parameter REG_DATA_WIDTH_BITS bound to: 32 - type: integer 
 	Parameter REGFILE_SIZE bound to: 5 - type: integer 
@@ -3190,50 +3186,50 @@ INFO: [Synth 8-638] synthesizing module 'ila_reg_file' [e:/Vivado Projects/RISC-
 	Parameter C_PROBE1023_TYPE bound to: 1 - type: integer 
 INFO: [Synth 8-3491] module 'ila_v6_2_11_ila' declared at 'e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/hdl/ila_v6_2_syn_rfs.v:5642' bound to instance 'U0' of component 'ila_v6_2_11_ila' [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/synth/ila_reg_file.vhd:4254]
 INFO: [Synth 8-6157] synthesizing module 'CFGLUT5' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1524]
-INFO: [Synth 8-6155] done synthesizing module 'CFGLUT5' (18#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1524]
+INFO: [Synth 8-6155] done synthesizing module 'CFGLUT5' (17#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1524]
 INFO: [Synth 8-6157] synthesizing module 'CARRY4' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1487]
-INFO: [Synth 8-6155] done synthesizing module 'CARRY4' (19#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1487]
+INFO: [Synth 8-6155] done synthesizing module 'CARRY4' (18#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1487]
 INFO: [Synth 8-6157] synthesizing module 'SRLC32E' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78184]
-INFO: [Synth 8-6155] done synthesizing module 'SRLC32E' (28#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78184]
+INFO: [Synth 8-6155] done synthesizing module 'SRLC32E' (27#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78184]
 INFO: [Synth 8-6157] synthesizing module 'SRL16E' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78034]
-INFO: [Synth 8-6155] done synthesizing module 'SRL16E' (30#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78034]
+INFO: [Synth 8-6155] done synthesizing module 'SRL16E' (29#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78034]
 INFO: [Synth 8-6157] synthesizing module 'SRLC16E' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78123]
-INFO: [Synth 8-6155] done synthesizing module 'SRLC16E' (32#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78123]
+INFO: [Synth 8-6155] done synthesizing module 'SRLC16E' (31#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:78123]
 INFO: [Synth 8-6157] synthesizing module 'FDRE' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:13724]
-INFO: [Synth 8-6155] done synthesizing module 'FDRE' (38#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:13724]
-INFO: [Synth 8-256] done synthesizing module 'ila_reg_file' (56#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/synth/ila_reg_file.vhd:69]
+INFO: [Synth 8-6155] done synthesizing module 'FDRE' (37#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:13724]
+INFO: [Synth 8-256] done synthesizing module 'ila_reg_file' (55#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/synth/ila_reg_file.vhd:69]
 INFO: [Synth 8-6071] Mark debug on the nets applies keep_hierarchy on instance 'your_instance_name'. This will prevent further optimization [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd:76]
-INFO: [Synth 8-256] done synthesizing module 'register_file' (57#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd:37]
-INFO: [Synth 8-256] done synthesizing module 'stage_decode' (58#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_decode.vhd:49]
+INFO: [Synth 8-256] done synthesizing module 'register_file' (56#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd:37]
+INFO: [Synth 8-256] done synthesizing module 'stage_decode' (57#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_decode.vhd:49]
 INFO: [Synth 8-638] synthesizing module 'stage_execute' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_execute.vhd:40]
 INFO: [Synth 8-638] synthesizing module 'branching_unit' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/branching_unit.vhd:25]
 INFO: [Synth 8-638] synthesizing module 'mux_2_1' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_2_1.vhd:15]
 	Parameter WIDTH_BITS bound to: 32 - type: integer 
 INFO: [Synth 8-226] default block is never used [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_2_1.vhd:18]
-INFO: [Synth 8-256] done synthesizing module 'mux_2_1' (59#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_2_1.vhd:15]
-INFO: [Synth 8-256] done synthesizing module 'branching_unit' (60#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/branching_unit.vhd:25]
+INFO: [Synth 8-256] done synthesizing module 'mux_2_1' (58#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_2_1.vhd:15]
+INFO: [Synth 8-256] done synthesizing module 'branching_unit' (59#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/branching_unit.vhd:25]
 INFO: [Synth 8-638] synthesizing module 'mux_4_1' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:36]
 	Parameter WIDTH_BITS bound to: 32 - type: integer 
 INFO: [Synth 8-226] default block is never used [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:38]
-INFO: [Synth 8-256] done synthesizing module 'mux_4_1' (61#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:36]
+INFO: [Synth 8-256] done synthesizing module 'mux_4_1' (60#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:36]
 INFO: [Synth 8-638] synthesizing module 'arithmetic_logic_unit' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd:25]
 	Parameter OPERAND_WIDTH_BITS bound to: 32 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'arithmetic_logic_unit' (62#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd:25]
+INFO: [Synth 8-256] done synthesizing module 'arithmetic_logic_unit' (61#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd:25]
 INFO: [Synth 8-638] synthesizing module 'mux_4_1__parameterized0' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:36]
 	Parameter WIDTH_BITS bound to: 32 - type: integer 
 INFO: [Synth 8-226] default block is never used [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:38]
-INFO: [Synth 8-256] done synthesizing module 'mux_4_1__parameterized0' (62#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:36]
-INFO: [Synth 8-256] done synthesizing module 'stage_execute' (63#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_execute.vhd:40]
+INFO: [Synth 8-256] done synthesizing module 'mux_4_1__parameterized0' (61#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/mux_4_1.vhd:36]
+INFO: [Synth 8-256] done synthesizing module 'stage_execute' (62#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_execute.vhd:40]
 INFO: [Synth 8-638] synthesizing module 'stage_memory' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_memory.vhd:29]
-INFO: [Synth 8-256] done synthesizing module 'stage_memory' (64#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_memory.vhd:29]
-INFO: [Synth 8-256] done synthesizing module 'pipeline' (65#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline.vhd:23]
+INFO: [Synth 8-256] done synthesizing module 'stage_memory' (63#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_memory.vhd:29]
+INFO: [Synth 8-256] done synthesizing module 'pipeline' (64#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/pipeline.vhd:23]
 INFO: [Synth 8-638] synthesizing module 'rom_memory' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd:17]
 	Parameter DATA_WIDTH_BITS bound to: 32 - type: integer 
 	Parameter ADDR_WIDTH_BITS bound to: 8 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'rom_memory' (66#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd:17]
-INFO: [Synth 8-256] done synthesizing module 'core' (67#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/core.vhd:17]
+INFO: [Synth 8-256] done synthesizing module 'rom_memory' (65#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd:17]
+INFO: [Synth 8-256] done synthesizing module 'core' (66#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/core.vhd:17]
 INFO: [Synth 8-638] synthesizing module 'led_interface' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd:18]
-INFO: [Synth 8-256] done synthesizing module 'led_interface' (68#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd:18]
+INFO: [Synth 8-256] done synthesizing module 'led_interface' (67#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd:18]
 INFO: [Synth 8-638] synthesizing module 'rom_memory_2' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd:15]
 INFO: [Synth 8-3491] module 'block_rom_memory' declared at 'e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/synth/block_rom_memory.vhd:59' bound to instance 'block_ram_instance' of component 'block_rom_memory' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd:26]
 INFO: [Synth 8-638] synthesizing module 'block_rom_memory' [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/synth/block_rom_memory.vhd:67]
@@ -3313,9 +3309,9 @@ INFO: [Synth 8-638] synthesizing module 'block_rom_memory' [e:/Vivado Projects/R
 	Parameter C_COUNT_18K_BRAM bound to: 0 - type: string 
 	Parameter C_EST_POWER_SUMMARY bound to: Estimated Power for IP     :     2.622 mW - type: string 
 INFO: [Synth 8-3491] module 'blk_mem_gen_v8_4_4' declared at 'e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/hdl/blk_mem_gen_v8_4_vhsyn_rfs.vhd:195321' bound to instance 'U0' of component 'blk_mem_gen_v8_4_4' [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/synth/block_rom_memory.vhd:230]
-INFO: [Synth 8-256] done synthesizing module 'block_rom_memory' (70#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/synth/block_rom_memory.vhd:67]
-INFO: [Synth 8-256] done synthesizing module 'rom_memory_2' (71#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd:15]
-INFO: [Synth 8-256] done synthesizing module 'cpu' (72#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd:17]
+INFO: [Synth 8-256] done synthesizing module 'block_rom_memory' (69#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/synth/block_rom_memory.vhd:67]
+INFO: [Synth 8-256] done synthesizing module 'rom_memory_2' (70#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd:15]
+INFO: [Synth 8-256] done synthesizing module 'cpu' (71#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd:17]
 INFO: [Synth 8-3491] module 'clk_wiz_0' declared at 'e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:71' bound to instance 'your_instance_name' of component 'clk_wiz_0' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:56]
 INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0' [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:71]
 INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0_clk_wiz' [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v:69]
@@ -3325,7 +3321,7 @@ INFO: [Synth 8-6157] synthesizing module 'IBUF' [E:/Programs/Xilinx_Vivado/Vivad
 	Parameter IBUF_LOW_PWR bound to: TRUE - type: string 
 	Parameter IFD_DELAY_VALUE bound to: AUTO - type: string 
 	Parameter IOSTANDARD bound to: DEFAULT - type: string 
-INFO: [Synth 8-6155] done synthesizing module 'IBUF' (73#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:32983]
+INFO: [Synth 8-6155] done synthesizing module 'IBUF' (72#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:32983]
 INFO: [Synth 8-6157] synthesizing module 'MMCME2_ADV' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:39998]
 	Parameter BANDWIDTH bound to: OPTIMIZED - type: string 
 	Parameter CLKFBOUT_MULT_F bound to: 10.000000 - type: double 
@@ -3375,34 +3371,34 @@ INFO: [Synth 8-6157] synthesizing module 'MMCME2_ADV' [E:/Programs/Xilinx_Vivado
 	Parameter SS_MODE bound to: CENTER_HIGH - type: string 
 	Parameter SS_MOD_PERIOD bound to: 10000 - type: integer 
 	Parameter STARTUP_WAIT bound to: FALSE - type: string 
-INFO: [Synth 8-6155] done synthesizing module 'MMCME2_ADV' (74#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:39998]
+INFO: [Synth 8-6155] done synthesizing module 'MMCME2_ADV' (73#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:39998]
 INFO: [Synth 8-6157] synthesizing module 'BUFG' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
-INFO: [Synth 8-6155] done synthesizing module 'BUFG' (75#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
+INFO: [Synth 8-6155] done synthesizing module 'BUFG' (74#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
 INFO: [Synth 8-6157] synthesizing module 'BUFGCE' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1093]
 	Parameter CE_TYPE bound to: SYNC - type: string 
 	Parameter IS_CE_INVERTED bound to: 1'b0 
 	Parameter IS_I_INVERTED bound to: 1'b0 
 	Parameter SIM_DEVICE bound to: ULTRASCALE - type: string 
 	Parameter STARTUP_SYNC bound to: FALSE - type: string 
-INFO: [Synth 8-6155] done synthesizing module 'BUFGCE' (76#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1093]
+INFO: [Synth 8-6155] done synthesizing module 'BUFGCE' (75#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1093]
 INFO: [Synth 8-6157] synthesizing module 'BUFH' [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1319]
-INFO: [Synth 8-6155] done synthesizing module 'BUFH' (77#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1319]
-INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0_clk_wiz' (78#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v:69]
-INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0' (79#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:71]
-INFO: [Synth 8-256] done synthesizing module 'top' (80#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:32]
+INFO: [Synth 8-6155] done synthesizing module 'BUFH' (76#1) [E:/Programs/Xilinx_Vivado/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1319]
+INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0_clk_wiz' (77#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v:69]
+INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0' (78#1) [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:71]
+INFO: [Synth 8-256] done synthesizing module 'top' (79#1) [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd:32]
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:50 ; elapsed = 00:00:55 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished RTL Elaboration : Time (s): cpu = 00:00:49 ; elapsed = 00:00:57 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:51 ; elapsed = 00:00:57 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:50 ; elapsed = 00:00:58 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:51 ; elapsed = 00:00:57 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:50 ; elapsed = 00:00:58 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.512 . Memory (MB): peak = 1481.109 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.377 . Memory (MB): peak = 1480.430 ; gain = 0.000
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout1_buf' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout2_buf' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
 INFO: [Netlist 29-17] Analyzing 50 Unisim elements for replacement
@@ -3435,23 +3431,23 @@ Parsing XDC File [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/s
 Finished Parsing XDC File [e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_late.xdc] for cell 'your_instance_name/inst'
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 1481.109 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 1480.430 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 30 instances were transformed.
   BUFGCE => BUFGCTRL: 2 instances
   CFGLUT5 => CFGLUT5 (SRL16E, SRLC32E): 24 instances
   CFGLUT5 => SRLC32E: 4 instances
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.203 . Memory (MB): peak = 1481.109 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.188 . Memory (MB): peak = 1480.430 ; gain = 0.000
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:01:04 ; elapsed = 00:01:11 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Constraint Validation : Time (s): cpu = 00:01:03 ; elapsed = 00:01:12 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:01:04 ; elapsed = 00:01:11 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Loading Part and Timing Information : Time (s): cpu = 00:01:03 ; elapsed = 00:01:12 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
@@ -3462,7 +3458,7 @@ Applied set_property KEEP_HIERARCHY = SOFT for your_instance_name. (constraint f
 Applied set_property KEEP_HIERARCHY = SOFT for cpu/rom_memory/block_ram_instance. (constraint file  auto generated constraint).
 Applied set_property KEEP_HIERARCHY = SOFT for cpu/core_1/core_pipeline/stage_decode/register_file/your_instance_name. (constraint file  auto generated constraint).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:04 ; elapsed = 00:01:11 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:03 ; elapsed = 00:01:12 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'write_state_reg_reg' in module 'axi_master_interface'
 INFO: [Synth 8-802] inferred FSM for state register 'read_state_reg_reg' in module 'axi_master_interface'
@@ -3472,7 +3468,6 @@ INFO: [Synth 8-802] inferred FSM for state register 'current_state_reg' in modul
 INFO: [Synth 8-802] inferred FSM for state register 'current_state_reg' in module 'xsdbs_v1_0_2_reg_p2s__parameterized0'
 INFO: [Synth 8-802] inferred FSM for state register 'current_state_reg' in module 'ltlib_v1_0_0_generic_memrd'
 WARNING: [Synth 8-327] inferring latch for variable 'arbiter_state_reg_next_reg' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd:75]
-WARNING: [Synth 8-327] inferring latch for variable 'arbiter_state_reg_next_reg' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_write_bus_controller.vhd:74]
 ---------------------------------------------------------------------------------------------------
                    State |                     New Encoding |                Previous Encoding 
 ---------------------------------------------------------------------------------------------------
@@ -3547,7 +3542,7 @@ INFO: [Synth 8-3898] No Re-encoding of one hot register 'current_state_reg' in m
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3898] No Re-encoding of one hot register 'current_state_reg' in module 'ltlib_v1_0_0_generic_memrd'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:07 ; elapsed = 00:01:14 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:06 ; elapsed = 00:01:16 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
@@ -3567,41 +3562,41 @@ Finished Part Resource Summary
 ---------------------------------------------------------------------------------
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_write_bus_requests[1] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[1].master_controller/bus_request_write' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_write_bus_requests[1] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net master_write_bus_requests[1] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_read_bus_requests[2] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[2].master_controller/bus_request_read' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_read_bus_requests[2] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net master_read_bus_requests[2] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_write_bus_requests[2] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[2].master_controller/bus_request_write' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_write_bus_requests[2] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net master_write_bus_requests[2] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_read_bus_requests[3] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[3].master_controller/bus_request_read' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_read_bus_requests[3] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net master_read_bus_requests[3] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_write_bus_requests[3] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[3].master_controller/bus_request_write' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_write_bus_requests[3] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net master_write_bus_requests[3] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[1] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[1].master_controller/bus_request_write' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[1] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net master_bus_requests[1] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[2] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[2].master_controller/bus_request_read' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[2] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net master_bus_requests[2] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[2] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[2].master_controller/bus_request_write' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[2] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net master_bus_requests[2] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[3] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[3].master_controller/bus_request_read' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[3] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net master_bus_requests[3] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[3] with 1st driver pin 'cpu/axi_interconnect/GEN_MASTER_CONTROLLERS[3].master_controller/bus_request_write' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin master_bus_requests[3] with 2nd driver pin 'GND' [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net master_bus_requests[3] is connected to at least one constant driver which has been preserved, other driver is ignored [E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd:128]
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:34 ; elapsed = 00:01:44 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:34 ; elapsed = 00:01:46 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:45 ; elapsed = 00:01:54 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:45 ; elapsed = 00:01:58 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:01:47 ; elapsed = 00:01:57 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Timing Optimization : Time (s): cpu = 00:01:48 ; elapsed = 00:02:01 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:01:50 ; elapsed = 00:02:00 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Technology Mapping : Time (s): cpu = 00:01:51 ; elapsed = 00:02:04 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -3657,37 +3652,37 @@ WARNING: [Synth 8-3295] tying undriven pin U0:sl_iport0[2] to constant 0
 WARNING: [Synth 8-3295] tying undriven pin U0:sl_iport0[1] to constant 0
 WARNING: [Synth 8-3295] tying undriven pin U0:sl_iport0[0] to constant 0
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:01:53 ; elapsed = 00:02:03 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished IO Insertion : Time (s): cpu = 00:01:55 ; elapsed = 00:02:08 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:01:53 ; elapsed = 00:02:03 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:55 ; elapsed = 00:02:08 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:54 ; elapsed = 00:02:04 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:55 ; elapsed = 00:02:09 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:01:54 ; elapsed = 00:02:04 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:55 ; elapsed = 00:02:09 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:01:54 ; elapsed = 00:02:04 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:56 ; elapsed = 00:02:09 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:01:54 ; elapsed = 00:02:04 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:56 ; elapsed = 00:02:09 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -3729,13 +3724,13 @@ Report Cell Usage:
 |26    |OBUF       |    16|
 +------+-----------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:01:54 ; elapsed = 00:02:04 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:56 ; elapsed = 00:02:09 . Memory (MB): peak = 1480.430 ; gain = 475.574
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 15 critical warnings and 41 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:55 ; elapsed = 00:01:55 . Memory (MB): peak = 1481.109 ; gain = 478.367
-Synthesis Optimization Complete : Time (s): cpu = 00:01:54 ; elapsed = 00:02:04 . Memory (MB): peak = 1481.109 ; gain = 478.367
+Synthesis finished with 0 errors, 15 critical warnings and 40 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:58 ; elapsed = 00:02:01 . Memory (MB): peak = 1480.430 ; gain = 475.574
+Synthesis Optimization Complete : Time (s): cpu = 00:01:56 ; elapsed = 00:02:10 . Memory (MB): peak = 1480.430 ; gain = 475.574
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.155 . Memory (MB): peak = 1481.109 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.178 . Memory (MB): peak = 1480.430 ; gain = 0.000
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout1_buf' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
 WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'your_instance_name/inst/clkout2_buf' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
 INFO: [Netlist 29-17] Analyzing 678 Unisim elements for replacement
@@ -3745,7 +3740,7 @@ INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Chipscope 16-324] Core: cpu/core_1/core_pipeline/stage_decode/register_file/your_instance_name UUID: 1676f738-87ff-52b5-8c3e-72886149da30 
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1481.109 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1480.430 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 291 instances were transformed.
   BUFGCE => BUFGCTRL: 2 instances
@@ -3755,12 +3750,12 @@ INFO: [Project 1-111] Unisim Transformation Summary:
   LD => LDCE: 5 instances
 
 INFO: [Common 17-83] Releasing license: Synthesis
-129 Infos, 59 Warnings, 30 Critical Warnings and 0 Errors encountered.
+127 Infos, 57 Warnings, 30 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:02:02 ; elapsed = 00:02:13 . Memory (MB): peak = 1481.109 ; gain = 478.367
+synth_design: Time (s): cpu = 00:02:03 ; elapsed = 00:02:19 . Memory (MB): peak = 1480.430 ; gain = 475.574
 INFO: [Common 17-600] The following parameters have non-default value.
 tcl.collectionResultDisplayLimit
 INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
 INFO: [Common 17-1381] The checkpoint 'E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/top.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file top_utilization_synth.rpt -pb top_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Sat Oct 30 18:51:44 2021...
+INFO: [Common 17-206] Exiting Vivado at Sat Oct 30 19:40:57 2021...

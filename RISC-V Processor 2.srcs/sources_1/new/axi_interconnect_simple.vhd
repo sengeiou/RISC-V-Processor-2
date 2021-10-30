@@ -102,21 +102,21 @@ architecture rtl of axi_interconnect_simple is
 begin
     axi_bus_read_controller : entity work.axi_bus_controller_simple(rtl)
                               generic map(NUM_MASTERS => NUM_MASTERS)
-                              port map(master_read_bus_requests => master_read_bus_reqs,
-                                       read_address => read_addr_bus_ch.addr,
-                                       read_master_sel => read_bus_master_sel,
-                                       read_slave_sel => read_bus_slave_sel,
-                                       read_bus_disable => read_bus_disable,
+                              port map(master_bus_requests => master_read_bus_reqs,
+                                       bus_address => read_addr_bus_ch.addr,
+                                       master_sel => read_bus_master_sel,
+                                       slave_sel => read_bus_slave_sel,
+                                       bus_disable => read_bus_disable,
                                        clk => clk,
                                        reset => reset); 
 
-    axi_bus_write_controller : entity work.axi_write_bus_controller_simple(rtl)
+    axi_bus_write_controller : entity work.axi_bus_controller_simple(rtl)
                               generic map(NUM_MASTERS => NUM_MASTERS)
-                              port map(master_write_bus_requests => master_write_bus_reqs,
-                                       write_address => write_addr_bus_ch.addr,
-                                       write_master_sel => write_bus_master_sel,
-                                       write_slave_sel => write_bus_slave_sel,
-                                       write_bus_disable => write_bus_disable,
+                              port map(master_bus_requests => master_write_bus_reqs,
+                                       bus_address => write_addr_bus_ch.addr,
+                                       master_sel => write_bus_master_sel,
+                                       slave_sel => write_bus_slave_sel,
+                                       bus_disable => write_bus_disable,
                                        clk => clk,
                                        reset => reset); 
  
