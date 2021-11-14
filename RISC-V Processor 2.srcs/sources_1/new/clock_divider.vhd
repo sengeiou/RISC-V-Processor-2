@@ -23,6 +23,9 @@ architecture rtl of clock_divider is
     signal clk_div_ff_negedge : std_logic;
     signal ff_negedge_en : std_logic;
     
+    signal clk_div_ff_even : std_logic;
+    signal ff_even_en : std_logic;
+    
     signal counter_divider_equal : std_logic;
 begin
     counter_reg_process : process(clk_orig)
@@ -69,26 +72,43 @@ begin
         end if;
     end process;   
     
+    ff_even_process : process(clk_orig)
+    begin
+        if (rising_edge(clk_orig)) then
+            if (reset = '1') then
+                clk_div_ff_even <= '0';
+            elsif (ff_even_en = '1') then
+                clk_div_ff_even <= not clk_div_ff_even;
+            end if;
+        end if;
+    end process;   
+    
     process(counter_reg, divider)
     begin
         ff_posedge_en <= '0';
         ff_negedge_en <= '0';
+        ff_even_en <= '0';
         
         if (counter_reg = X"0000") then
             ff_posedge_en <= '1';
+            ff_even_en <= '1';
         end if;
         
         if (counter_reg = std_logic_vector(shift_right(unsigned(divider) + 1, 1))) then
             ff_negedge_en <= '1';
         end if;
+        
+        if (counter_reg = std_logic_vector(shift_right(unsigned(divider), 1))) then
+            ff_even_en <= '1';
+        end if;
     end process;
     
-    process(divider, clk_div_ff_negedge, clk_div_ff_posedge)
+    process(divider, clk_div_ff_negedge, clk_div_ff_posedge, clk_div_ff_even)
     begin
         if (divider(0) = '1') then
             clk_div <= clk_div_ff_negedge xor clk_div_ff_posedge;
         else
-            clk_div <= clk_div_ff_posedge;
+            clk_div <= clk_div_ff_even;
         end if;
     end process;
 

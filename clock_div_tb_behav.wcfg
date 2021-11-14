@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="4614820fs"></ZoomStartTime>
-      <ZoomEndTime time="5077036fs"></ZoomEndTime>
-      <Cursor1Time time="5000000fs"></Cursor1Time>
+      <ZoomStartTime time="2432134fs"></ZoomStartTime>
+      <ZoomEndTime time="2769626fs"></ZoomEndTime>
+      <Cursor1Time time="2561386fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="247"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="16" />
+   <WVObjectSize size="18" />
    <wvobject fp_name="/clock_div_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -83,5 +83,13 @@
    <wvobject fp_name="/clock_div_tb/uut/ff_negedge_en" type="logic">
       <obj_property name="ElementShortName">ff_negedge_en</obj_property>
       <obj_property name="ObjectShortName">ff_negedge_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/clock_div_tb/uut/clk_div_ff_even" type="logic">
+      <obj_property name="ElementShortName">clk_div_ff_even</obj_property>
+      <obj_property name="ObjectShortName">clk_div_ff_even</obj_property>
+   </wvobject>
+   <wvobject fp_name="/clock_div_tb/uut/ff_even_en" type="logic">
+      <obj_property name="ElementShortName">ff_even_en</obj_property>
+      <obj_property name="ObjectShortName">ff_even_en</obj_property>
    </wvobject>
 </wave_config>
