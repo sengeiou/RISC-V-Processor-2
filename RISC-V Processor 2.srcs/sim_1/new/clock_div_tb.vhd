@@ -31,16 +31,18 @@ begin
     
     process
     begin
-        divider <= X"0001";     -- DIVIDE BY 1
-        wait for T * 100;
         divider <= X"0002";     -- DIVIDE BY 2
         wait for T * 100;
         divider <= X"0003";     -- DIVIDE BY 3
         wait for T * 100;
-        divider <= X"0004";     -- DIVIDE BY 16
+        divider <= X"0004";     -- DIVIDE BY 4
         wait for T * 100;
-        divider <= X"0005";     -- DIVIDE BY 256
+        divider <= X"0005";     -- DIVIDE BY 5
         wait for T * 100;
+        divider <= X"0010";     -- DIVIDE BY 16
+        wait for T * 100;
+        divider <= X"0100";     -- DIVIDE BY 256
+        wait for T * 1000;
     end process;
 
 end rtl;
