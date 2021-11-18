@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="uart_interface_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="uart_interface_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="14587fs"></ZoomStartTime>
+      <ZoomEndTime time="171408fs"></ZoomEndTime>
+      <Cursor1Time time="5000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="239"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="34" />
+   <wvobject fp_name="/uart_interface_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/cs" type="logic">
+      <obj_property name="ElementShortName">cs</obj_property>
+      <obj_property name="ObjectShortName">cs</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/data_read_bus" type="array">
+      <obj_property name="ElementShortName">data_read_bus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_read_bus[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/data_write_bus" type="array">
+      <obj_property name="ElementShortName">data_write_bus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_write_bus[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/addr_bus" type="array">
+      <obj_property name="ElementShortName">addr_bus[2:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_bus[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/tx_line" type="logic">
+      <obj_property name="ElementShortName">tx_line</obj_property>
+      <obj_property name="ObjectShortName">tx_line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/T" type="other">
+      <obj_property name="ElementShortName">T</obj_property>
+      <obj_property name="ObjectShortName">T</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider318">
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/addr_bus" type="array">
+      <obj_property name="ElementShortName">addr_bus[2:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_bus[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/data_write_bus" type="array">
+      <obj_property name="ElementShortName">data_write_bus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_write_bus[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/data_read_bus" type="array">
+      <obj_property name="ElementShortName">data_read_bus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_read_bus[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/tx_line" type="logic">
+      <obj_property name="ElementShortName">tx_line</obj_property>
+      <obj_property name="ObjectShortName">tx_line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/rx_line" type="logic">
+      <obj_property name="ElementShortName">rx_line</obj_property>
+      <obj_property name="ObjectShortName">rx_line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/cs" type="logic">
+      <obj_property name="ElementShortName">cs</obj_property>
+      <obj_property name="ObjectShortName">cs</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/receiver_data_reg" type="array">
+      <obj_property name="ElementShortName">receiver_data_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">receiver_data_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_reg" type="array">
+      <obj_property name="ElementShortName">transmitter_data_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_reg_en" type="logic">
+      <obj_property name="ElementShortName">transmitter_data_reg_en</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_reg_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_reg_next" type="array">
+      <obj_property name="ElementShortName">transmitter_data_reg_next[7:0]</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_reg_next[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_shift_reg" type="array">
+      <obj_property name="ElementShortName">transmitter_data_shift_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_shift_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_shift_reg_shift_en" type="logic">
+      <obj_property name="ElementShortName">transmitter_data_shift_reg_shift_en</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_shift_reg_shift_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_shift_reg_write_en" type="logic">
+      <obj_property name="ElementShortName">transmitter_data_shift_reg_write_en</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_shift_reg_write_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_bits_transfered_counter" type="array">
+      <obj_property name="ElementShortName">transmitter_bits_transfered_counter[3:0]</obj_property>
+      <obj_property name="ObjectShortName">transmitter_bits_transfered_counter[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_bits_transfered_counter_en" type="logic">
+      <obj_property name="ElementShortName">transmitter_bits_transfered_counter_en</obj_property>
+      <obj_property name="ObjectShortName">transmitter_bits_transfered_counter_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_bits_transfered_counter_fill" type="logic">
+      <obj_property name="ElementShortName">transmitter_bits_transfered_counter_fill</obj_property>
+      <obj_property name="ObjectShortName">transmitter_bits_transfered_counter_fill</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/line_control_reg" type="array">
+      <obj_property name="ElementShortName">line_control_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">line_control_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/line_status_reg" type="array">
+      <obj_property name="ElementShortName">line_status_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">line_status_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/line_status_reg_en" type="logic">
+      <obj_property name="ElementShortName">line_status_reg_en</obj_property>
+      <obj_property name="ObjectShortName">line_status_reg_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_reg_state_set" type="logic">
+      <obj_property name="ElementShortName">transmitter_data_reg_state_set</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_reg_state_set</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_data_reg_state_reset" type="logic">
+      <obj_property name="ElementShortName">transmitter_data_reg_state_reset</obj_property>
+      <obj_property name="ObjectShortName">transmitter_data_reg_state_reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_state" type="other">
+      <obj_property name="ElementShortName">transmitter_state</obj_property>
+      <obj_property name="ObjectShortName">transmitter_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/uart_interface_tb/uut/transmitter_state_next" type="other">
+      <obj_property name="ElementShortName">transmitter_state_next</obj_property>
+      <obj_property name="ObjectShortName">transmitter_state_next</obj_property>
+   </wvobject>
+</wave_config>
