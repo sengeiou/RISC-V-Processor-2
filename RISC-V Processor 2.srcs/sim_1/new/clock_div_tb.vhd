@@ -24,7 +24,7 @@ begin
     reset <= '1', '0' after T * 2;
     
     uut : entity work.clock_divider(rtl)
-          port map(clk_orig => clk,
+          port map(clk_src => clk,
                    clk_div => clk_div,
                    divider => divider,
                    reset => reset);

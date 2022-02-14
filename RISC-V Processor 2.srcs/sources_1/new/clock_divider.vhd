@@ -6,7 +6,7 @@ entity clock_divider is
     port(
         divider : in std_logic_vector(15 downto 0);
     
-        clk_orig : in std_logic;
+        clk_src : in std_logic;
         clk_div : out std_logic;
         
         reset : in std_logic
@@ -14,6 +14,9 @@ entity clock_divider is
 end clock_divider;
 
 architecture rtl of clock_divider is
+    signal divider_reg : std_logic_vector(15 downto 0);
+    signal divider_changed : std_logic;
+
     signal counter_reg : std_logic_vector(15 downto 0);
     signal counter_reg_next : std_logic_vector(15 downto 0);
     
@@ -28,10 +31,20 @@ architecture rtl of clock_divider is
     
     signal counter_divider_equal : std_logic;
 begin
-    counter_reg_process : process(clk_orig)
+    divider_reg_process : process(clk_src)
     begin
-        if (rising_edge(clk_orig)) then
-            if (counter_divider_equal = '1' or reset = '1') then
+        if (rising_edge(clk_src)) then
+            divider_reg <= divider;
+        end if;
+    end process;
+
+    divider_changed <= '0' when divider_reg = divider else
+                       '1';
+
+    counter_reg_process : process(clk_src)
+    begin
+        if (rising_edge(clk_src)) then
+            if (counter_divider_equal = '1' or reset = '1' or divider_changed = '1') then
                 counter_reg <= (others => '0');
             else
                 counter_reg <= counter_reg_next;
@@ -50,9 +63,9 @@ begin
         end if;
     end process;
     
-    ff_posedge_process : process(clk_orig)
+    ff_posedge_process : process(clk_src)
     begin
-        if (rising_edge(clk_orig)) then
+        if (rising_edge(clk_src)) then
             if (reset = '1') then
                 clk_div_ff_posedge <= '0';
             elsif (ff_posedge_en = '1') then
@@ -61,9 +74,9 @@ begin
         end if;
     end process;
 
-    ff_negedge_process : process(clk_orig)
+    ff_negedge_process : process(clk_src)
     begin
-        if (falling_edge(clk_orig)) then
+        if (falling_edge(clk_src)) then
             if (reset = '1') then
                 clk_div_ff_negedge <= '0';
             elsif (ff_negedge_en = '1') then
@@ -72,9 +85,9 @@ begin
         end if;
     end process;   
     
-    ff_even_process : process(clk_orig)
+    ff_even_process : process(clk_src)
     begin
-        if (rising_edge(clk_orig)) then
+        if (rising_edge(clk_src)) then
             if (reset = '1') then
                 clk_div_ff_even <= '0';
             elsif (ff_even_en = '1') then
