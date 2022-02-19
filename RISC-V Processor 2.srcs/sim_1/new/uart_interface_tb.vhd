@@ -40,28 +40,9 @@ begin
                    
     process
     begin
-        dsr <= '0';
-        cts <= '1';
-        rx_line <= '1';
-        wait for T * 10;
-        cs <= '1';
-        addr_bus <= "001";
-        data_write_bus <= X"BA";
-        wait for T;
-        cs <= '1';                  -- BEGIN TRANSMISSION
-        data_write_bus <= X"02";
-        addr_bus <= "100";
-        wait for T;
-        cs <= '1';                  -- RESET REQUEST TO SEND
-        data_write_bus <= X"00";
-        addr_bus <= "100";
-        
-        wait for 1us;
-        
         cts <= '0';
         
-        wait for 1us;
-        
+        -- Setup x16 baud rate generator
         cs <= '1';
         addr_bus <= "110";
         data_write_bus <= "00011011";
@@ -81,6 +62,28 @@ begin
         cs <= '0';
         data_write_bus <= X"00";
         addr_bus <= "000";
+        
+        wait for 5us;
+    
+        dsr <= '0';
+        cts <= '0';
+        rx_line <= '1';
+        wait for T * 10;
+        cs <= '1';
+        addr_bus <= "001";
+        data_write_bus <= X"BA";
+        wait for T;
+        cs <= '1';                  -- BEGIN TRANSMISSION
+        data_write_bus <= X"02";
+        addr_bus <= "100";
+        wait for T;
+        cs <= '1';                  -- RESET REQUEST TO SEND
+        data_write_bus <= X"00";
+        addr_bus <= "100";
+        
+        wait for 100us;
+        
+       
         
         wait for 5us;
         
@@ -107,6 +110,15 @@ begin
         wait for T_R;
         
         wait for 50us;
+        
+        cs <= '1';
+        data_write_bus <= X"01";    -- 1
+        addr_bus <= "100";
+        wait for T;
+        cs <= '0';
+        data_write_bus <= X"00";
+        addr_bus <= "000";
+        wait for T;
         
         -- 0xD7
         rx_line <= '0';     -- START BIT

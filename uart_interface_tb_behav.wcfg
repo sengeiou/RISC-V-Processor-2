@@ -11,13 +11,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="255000001fs"></ZoomEndTime>
-      <Cursor1Time time="74191375fs"></Cursor1Time>
+      <ZoomStartTime time="8113747fs"></ZoomStartTime>
+      <ZoomEndTime time="9648118fs"></ZoomEndTime>
+      <Cursor1Time time="8722724fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="312"></NameColumnWidth>
-      <ValueColumnWidth column_width="138"></ValueColumnWidth>
+      <ValueColumnWidth column_width="134"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="3" />
    <wvobject fp_name="group55" type="group">
@@ -101,6 +101,34 @@
          <obj_property name="ElementShortName">modem_control_reg[7:0]</obj_property>
          <obj_property name="ObjectShortName">modem_control_reg[7:0]</obj_property>
       </wvobject>
+      <wvobject type="divider" fp_name="divider72">
+         <obj_property name="label">BAUD RATE GENERATOR</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+      </wvobject>
+      <wvobject fp_name="/uart_interface_tb/uut/baud_rate_gen_x16_counter_reg" type="array">
+         <obj_property name="ElementShortName">baud_rate_gen_x16_counter_reg[15:0]</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_gen_x16_counter_reg[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/uart_interface_tb/uut/baud_rate_gen_counter_reg" type="array">
+         <obj_property name="ElementShortName">baud_rate_gen_counter_reg[3:0]</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_gen_counter_reg[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/uart_interface_tb/uut/baud_rate_x16_tick" type="logic">
+         <obj_property name="ElementShortName">baud_rate_x16_tick</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_x16_tick</obj_property>
+      </wvobject>
+      <wvobject fp_name="/uart_interface_tb/uut/baud_rate_counter_zero" type="logic">
+         <obj_property name="ElementShortName">baud_rate_counter_zero</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_counter_zero</obj_property>
+      </wvobject>
+      <wvobject fp_name="/uart_interface_tb/uut/baud_rate_counter_zero_delay" type="logic">
+         <obj_property name="ElementShortName">baud_rate_counter_zero_delay</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_counter_zero_delay</obj_property>
+      </wvobject>
+      <wvobject fp_name="/uart_interface_tb/uut/baud_rate_tick" type="logic">
+         <obj_property name="ElementShortName">baud_rate_tick</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_tick</obj_property>
+      </wvobject>
       <wvobject type="divider" fp_name="divider60">
          <obj_property name="label">TRANSMITTER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
@@ -160,10 +188,6 @@
       <wvobject type="divider" fp_name="divider59">
          <obj_property name="label">RECEIVER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16" type="logic">
-         <obj_property name="ElementShortName">baud_x16</obj_property>
-         <obj_property name="ObjectShortName">baud_x16</obj_property>
       </wvobject>
       <wvobject fp_name="/uart_interface_tb/uut/rx_line" type="logic">
          <obj_property name="ElementShortName">rx_line</obj_property>
@@ -226,57 +250,5 @@
       <obj_property name="label">BAUD RATE GENERATOR</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/divider" type="array">
-         <obj_property name="ElementShortName">divider[15:0]</obj_property>
-         <obj_property name="ObjectShortName">divider[15:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/clk_src" type="logic">
-         <obj_property name="ElementShortName">clk_src</obj_property>
-         <obj_property name="ObjectShortName">clk_src</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/clk_div" type="logic">
-         <obj_property name="ElementShortName">clk_div</obj_property>
-         <obj_property name="ObjectShortName">clk_div</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/reset" type="logic">
-         <obj_property name="ElementShortName">reset</obj_property>
-         <obj_property name="ObjectShortName">reset</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/counter_reg" type="array">
-         <obj_property name="ElementShortName">counter_reg[15:0]</obj_property>
-         <obj_property name="ObjectShortName">counter_reg[15:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/counter_reg_next" type="array">
-         <obj_property name="ElementShortName">counter_reg_next[15:0]</obj_property>
-         <obj_property name="ObjectShortName">counter_reg_next[15:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/clk_div_ff_posedge" type="logic">
-         <obj_property name="ElementShortName">clk_div_ff_posedge</obj_property>
-         <obj_property name="ObjectShortName">clk_div_ff_posedge</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/ff_posedge_en" type="logic">
-         <obj_property name="ElementShortName">ff_posedge_en</obj_property>
-         <obj_property name="ObjectShortName">ff_posedge_en</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/clk_div_ff_negedge" type="logic">
-         <obj_property name="ElementShortName">clk_div_ff_negedge</obj_property>
-         <obj_property name="ObjectShortName">clk_div_ff_negedge</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/ff_negedge_en" type="logic">
-         <obj_property name="ElementShortName">ff_negedge_en</obj_property>
-         <obj_property name="ObjectShortName">ff_negedge_en</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/clk_div_ff_even" type="logic">
-         <obj_property name="ElementShortName">clk_div_ff_even</obj_property>
-         <obj_property name="ObjectShortName">clk_div_ff_even</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/ff_even_en" type="logic">
-         <obj_property name="ElementShortName">ff_even_en</obj_property>
-         <obj_property name="ObjectShortName">ff_even_en</obj_property>
-      </wvobject>
-      <wvobject fp_name="/uart_interface_tb/uut/baud_x16_generator/counter_divider_equal" type="logic">
-         <obj_property name="ElementShortName">counter_divider_equal</obj_property>
-         <obj_property name="ObjectShortName">counter_divider_equal</obj_property>
-      </wvobject>
    </wvobject>
 </wave_config>

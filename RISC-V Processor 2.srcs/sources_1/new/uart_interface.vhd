@@ -2,6 +2,10 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+-- TO DO
+-- 1) Add resynchronization on every non spurious data line chang
+--
+
 entity uart_interface is
     port(
         addr_bus : in std_logic_vector(2 downto 0);
@@ -57,6 +61,7 @@ architecture rtl of uart_interface is
     -- ========== CONTROL REGISTERS ==========
     signal divisor_latch_ls : std_logic_vector(7 downto 0);     -- Lower 8 bits of the divisor
     signal divisor_latch_ms : std_logic_vector(7 downto 0);     -- Upper 8 bits of the divisor
+    signal divisor_updated : std_logic;
     
     signal line_control_reg : std_logic_vector(7 downto 0);      
     signal line_status_reg : std_logic_vector(7 downto 0);      -- 0 -> Transmitter data hold reg. empty (1 - yes, 0 - no) | 1 -> Line used (1 - yes, 0 - no)
@@ -66,8 +71,17 @@ architecture rtl of uart_interface is
     signal modem_control_reg_en : std_logic;
     
     -- OTHER
+    signal baud_rate_gen_x16_counter_reg : std_logic_vector(15 downto 0);
+    signal baud_rate_x16_tick : std_logic;
+    
+    signal baud_rate_gen_counter_reg : std_logic_vector(3 downto 0);
+    signal baud_rate_counter_zero : std_logic;
+    signal baud_rate_counter_zero_delay : std_logic;
+    signal baud_rate_tick : std_logic;
+    signal baud_rate_tick_happened : std_logic;
+    
+    
     signal divisor_latch_full : std_logic_vector(15 downto 0);
-    signal baud_x16 : std_logic;
     
     signal transmitter_data_reg_state_set : std_logic;
     signal transmitter_data_reg_state_reset : std_logic;
@@ -92,15 +106,49 @@ architecture rtl of uart_interface is
     signal receiver_state_next : receiver_state_type;
 begin
 
-    -- =================== BAUD RATE GENERATOR x16 ===================
+    -- =================== RX CONTROL ===================
     divisor_latch_full <= divisor_latch_ms & divisor_latch_ls;
 
-    baud_x16_generator : entity work.clock_divider(rtl)
-                          port map(divider => divisor_latch_full,
-                                   clk_src => clk,
-                                   clk_div => baud_x16,
-                                   reset => reset);
+    baud_rate_gen_x16_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                baud_rate_gen_x16_counter_reg <= (others => '0');
+            elsif (baud_rate_x16_tick = '1' or divisor_updated = '1') then
+                baud_rate_gen_x16_counter_reg <= divisor_latch_full;
+            else
+                baud_rate_gen_x16_counter_reg <= std_logic_vector(unsigned(baud_rate_gen_x16_counter_reg) - 1);
+            end if;
+        end if;
+    end process;
+    
+    baud_rate_x16_tick <= '1' when baud_rate_gen_x16_counter_reg = X"0000" else
+                                          '0';
 
+    baud_rate_gen_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                baud_rate_gen_counter_reg <= (others => '0');
+            elsif (baud_rate_x16_tick = '1') then
+                baud_rate_gen_counter_reg <= std_logic_vector(unsigned(baud_rate_gen_counter_reg) - 1);
+            end if;
+        end if;
+    end process;
+    
+    baud_rate_counter_zero <= '1' when baud_rate_gen_counter_reg = X"0" else
+                              '0';
+    
+    baud_rate_cnt_zero_delay : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            baud_rate_counter_zero_delay <= baud_rate_counter_zero;
+        end if;
+    end process;
+    
+    baud_rate_tick <= baud_rate_counter_zero and (not baud_rate_counter_zero_delay);
+    
+-- =================== LINE STATUS REGISTER LOGIC ===================
     transmitter_data_reg_state_set <= '0';
 
     line_status_reg_proc : process(clk)
@@ -117,17 +165,6 @@ begin
         end if;
     end process;
     
-    modem_control_reg_proc : process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                modem_control_reg <= (others => '0');
-            elsif (modem_control_reg_en = '1') then
-                modem_control_reg <= data_write_bus;
-            end if;
-        end if;
-    end process;
-    
     transmitter_data_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
@@ -140,46 +177,50 @@ begin
     end process;
 
     register_control_proc : process(all)
-    begin
+    begin    
         if (rising_edge(clk)) then
+            data_read_bus <= (others => '0');
+            transmitter_data_reg_next <= (others => '0');
+            modem_control_reg <= (others => '0');
+                    
+            transmitter_data_reg_state_reset <= '0';    
+            line_status_reg_en <= '0';
+            transmitter_data_reg_en <= '0';
+            modem_control_reg_en <= '0'; 
+            divisor_updated <= '0';
+        
             if (reset = '1') then
                 line_control_reg <= (others => '0');
                 
                 divisor_latch_ls <= (others => '1');
                 divisor_latch_ms <= (others => '1');
             end if;
-        end if;
- 
-        data_read_bus <= (others => '0');
-        transmitter_data_reg_next <= (others => '0');
             
-        transmitter_data_reg_state_reset <= '0';    
-        line_status_reg_en <= '0';
-        transmitter_data_reg_en <= '0';
-        modem_control_reg_en <= '0'; 
-        
-        if (cs = '1') then                  -- ALLOCATED ADDRESSES ARE TEMPORARY AND DO NOT CORRESPOND TO THE 16550 UART IC!!!
-            case addr_bus is 
-                when "000" =>
-                    data_read_bus <= receiver_data_reg;
-                when "001" =>
-                    transmitter_data_reg_next <= data_write_bus;
-                    transmitter_data_reg_en <= '1';
-                            
-                    transmitter_data_reg_state_reset <= '1';
-                           
-                    line_status_reg_en <= '1';
-                when "010" =>
-                    data_read_bus <= line_status_reg;
-                when "100" =>       -- MODEM CONTROL REGISTER
-                    modem_control_reg_en <= '1';
-                when "110" =>
-                    divisor_latch_ls <= data_write_bus;
-                when "111" =>
-                    divisor_latch_ms <= data_write_bus;
-                when others =>
-                           
-            end case;
+            if (cs = '1') then                  -- ALLOCATED ADDRESSES ARE TEMPORARY AND DO NOT CORRESPOND TO THE 16550 UART IC!!!
+                case addr_bus is 
+                    when "000" =>
+                        data_read_bus <= receiver_data_reg;
+                    when "001" =>
+                        transmitter_data_reg_next <= data_write_bus;
+                        transmitter_data_reg_en <= '1';
+                                
+                        transmitter_data_reg_state_reset <= '1';
+                               
+                        line_status_reg_en <= '1';
+                    when "010" =>
+                        data_read_bus <= line_status_reg;
+                    when "100" =>       -- MODEM CONTROL REGISTER
+                        modem_control_reg <= data_write_bus;
+                    when "110" =>
+                        divisor_latch_ls <= data_write_bus;
+                        divisor_updated <= '1';
+                    when "111" =>
+                        divisor_latch_ms <= data_write_bus;
+                        divisor_updated <= '1';
+                    when others =>
+                               
+                end case;
+            end if;
         end if;
     end process;
     
@@ -235,21 +276,23 @@ begin
                     transmitter_state_next <= IDLE;
                 end if;
             when INIT_TRANSMISSION =>
-                if (clr_to_send = '0') then
+                if (clr_to_send = '0' and baud_rate_tick = '1') then
                     transmitter_state_next <= START_BIT;
                 else
                     transmitter_state_next <= INIT_TRANSMISSION;
                 end if;
             when START_BIT =>
-                transmitter_state_next <= DATA_TRANSFER;
+                transmitter_state_next <= DATA_TRANSFER when baud_rate_tick = '1' else
+                                          START_BIT;
             when DATA_TRANSFER =>
-                if (transmitter_bits_transfered_counter = 0) then
+                if (transmitter_bits_transfered_counter = 0 and baud_rate_tick = '1') then
                     transmitter_state_next <= END_BIT;
                 else
                     transmitter_state_next <= DATA_TRANSFER;
                 end if;
             when END_BIT =>
-                transmitter_state_next <= IDLE;
+                transmitter_state_next <= IDLE when baud_rate_tick = '1' else
+                                          END_BIT;
             when others =>
                 transmitter_state_next <= IDLE;
         end case;
@@ -277,8 +320,8 @@ begin
             when DATA_TRANSFER =>
                 tx_line <= transmitter_data_shift_reg(0);
                 
-                transmitter_data_shift_reg_shift_en <= '1';
-                transmitter_bits_transfered_counter_en <= '1';
+                transmitter_data_shift_reg_shift_en <= baud_rate_tick;
+                transmitter_bits_transfered_counter_en <= baud_rate_tick;
             when END_BIT =>
                 tx_line <= '1';
             when others =>
@@ -301,26 +344,26 @@ begin
     end process;
     
     -- =================== RECEIVER SAMPLER COUNTER REG ===================
-    receiver_sampler_reg_update : process(baud_x16)
+    receiver_sampler_reg_update : process(clk)
     begin  
-        if (rising_edge(baud_x16)) then      -- MAYBE MAKE IT CLOCK ON THE "NORMAL" CLK SIGNAL? PROBLEM OR NOT?
+        if (rising_edge(clk)) then
             if (reset = '1') then
                 receiver_sampler_counter_reg <= (others => '0');
             elsif (receiver_sampler_counter_reg_fill_en = '1') then
                 receiver_sampler_counter_reg <= receiver_sampler_counter_fill;
-            elsif (receiver_sampler_counter_reg_count_en = '1') then
+            elsif (receiver_sampler_counter_reg_count_en = '1' and baud_rate_x16_tick = '1') then
                 receiver_sampler_counter_reg <= std_logic_vector(unsigned(receiver_sampler_counter_reg) - 1);
             end if;
         end if;
     end process;
     
     -- =================== RECEIVER SHIFT REGISTER CONTROL ===================
-    receiver_shift_reg_update : process(baud_x16)
+    receiver_shift_reg_update : process(clk)
     begin
         if (reset = '1') then
             receiver_data_shift_reg <= (others => '0');
-        elsif (rising_edge(baud_x16)) then     -- MAYBE MAKE IT CLOCK ON THE "NORMAL" CLK SIGNAL? PROBLEM OR NOT?
-            if (receiver_sampler_counter_reg = X"0") then
+        elsif (rising_edge(clk)) then
+            if (receiver_sampler_counter_reg = X"0" and baud_rate_x16_tick = '1') then
                 receiver_data_shift_reg(7 downto 1) <= receiver_data_shift_reg(6 downto 0);
                 receiver_data_shift_reg(0) <= rx_line;
             end if;
@@ -328,25 +371,25 @@ begin
     end process;
     
     -- =================== RECEIVER STATE MACHINE CONTROL ===================
-    receiver_state_reg_update : process(baud_x16)
+    receiver_state_reg_update : process(clk)
     begin
-        if (rising_edge(baud_x16)) then
+        if (rising_edge(clk)) then
             if (reset = '1') then
                 receiver_state <= IDLE;
             else
-                receiver_state <= receiver_state_next;
+                receiver_state <= receiver_state_next when (baud_rate_x16_tick = '1' or receiver_state = IDLE);
             end if;
         end if;
     end process;
     
-    receiver_bits_received_counter_reg_update : process(baud_x16)
+    receiver_bits_received_counter_reg_update : process(clk)
     begin
-        if (reset = '1') then
-            receiver_bits_received_counter_reg <= (others => '0');
-        elsif (rising_edge(baud_x16)) then     -- MAYBE MAKE IT CLOCK ON THE "NORMAL" CLK SIGNAL? PROBLEM OR NOT?
-            if (receiver_bits_received_counter_reg_fill_en = '1') then
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                receiver_bits_received_counter_reg <= (others => '0');
+            elsif (receiver_bits_received_counter_reg_fill_en = '1') then
                 receiver_bits_received_counter_reg <= receiver_bits_received_counter_fill;
-            elsif (receiver_sampler_counter_reg = X"0") then
+            elsif (receiver_sampler_counter_reg = "0000" and baud_rate_x16_tick = '1') then
                 receiver_bits_received_counter_reg <= std_logic_vector(unsigned(receiver_bits_received_counter_reg) - 1);
             end if;
         end if;
@@ -362,11 +405,8 @@ begin
                     receiver_state_next <= IDLE;
                 end if;
             when INIT_RECEIVE =>
-                if (rx_line = '1') then
-                    receiver_state_next <= INIT_RECEIVE;
-                else
-                    receiver_state_next <= START_BIT;
-                end if;
+                receiver_state_next <= START_BIT when rx_line = '0' else
+                                       INIT_RECEIVE;
             when START_BIT => 
                 receiver_state_next <= START_VALID;
             when START_VALID =>
@@ -410,7 +450,6 @@ begin
                 receiver_sampler_counter_reg_fill_en <= '1';
             when START_VALID =>
                 receiver_bits_received_counter_fill <= "1000";
-            
                 
                 receiver_bits_received_counter_reg_fill_en <= '1';
                 receiver_sampler_counter_reg_count_en <= '1';
