@@ -59,7 +59,6 @@ architecture rtl of uart_interface is
     signal rx_data_reg_en : std_logic;
     
     signal rx_data_shift_reg : std_logic_vector(7 downto 0);
-    signal rx_data_shift_reg_shift_en : std_logic;
     
     signal rx_sampler_counter_reg : std_logic_vector(3 downto 0);
     signal rx_sampler_counter_fill : std_logic_vector(3 downto 0);
@@ -96,7 +95,6 @@ architecture rtl of uart_interface is
     signal baud_rate_counter_zero : std_logic;
     signal baud_rate_counter_zero_delay : std_logic;
     signal baud_rate_tick : std_logic;
-    signal baud_rate_tick_happened : std_logic;
     
     
     signal divisor_latch_full : std_logic_vector(15 downto 0);
@@ -120,8 +118,9 @@ architecture rtl of uart_interface is
     signal receiver_state : receiver_state_type;
     signal receiver_state_next : receiver_state_type;
 begin
-
-    -- =================== RX CONTROL ===================
+    -- ============================================================= 
+    --                    BAUD RATE GENERATION
+    -- =============================================================
     divisor_latch_full <= divisor_latch_ms & divisor_latch_ls;
 
     baud_rate_gen_x16_proc : process(clk)
@@ -163,7 +162,9 @@ begin
     
     baud_rate_tick <= baud_rate_counter_zero and (not baud_rate_counter_zero_delay);
     
--- =================== LINE STATUS REGISTER LOGIC ===================
+    -- ============================================================= 
+    --                   LINE STATUS REGISTER
+    -- =============================================================
     tx_data_reg_state_set <= '0';
 
     line_status_reg_proc : process(clk)
@@ -180,17 +181,9 @@ begin
         end if;
     end process;
     
-    transmitter_data_reg_proc : process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                tx_data_reg <= (others => '0');
-            elsif (tx_data_reg_en = '1') then
-                tx_data_reg <= tx_data_reg_next;
-            end if;
-        end if;
-    end process;
-
+    -- ============================================================= 
+    --              REG. FILE READ & WRITE CONTROL
+    -- =============================================================
     register_write_control : process(all)
     begin    
         if (rising_edge(clk)) then
@@ -256,7 +249,21 @@ begin
         end if;
     end process;
     
-    transmitter_bits_transfered_counter_proc : process(clk)
+    -- ============================================================= 
+    --                         TRANSMITTER
+    -- =============================================================
+    tx_data_reg_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                tx_data_reg <= (others => '0');
+            elsif (tx_data_reg_en = '1') then
+                tx_data_reg <= tx_data_reg_next;
+            end if;
+        end if;
+    end process;
+    
+    tx_bits_transfered_counter_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
@@ -271,7 +278,7 @@ begin
         end if;
     end process;
     
-    transmitter_data_shift_reg_proc : process(clk)
+    tx_data_shift_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
@@ -285,9 +292,8 @@ begin
             end if;
         end if;
     end process;
-    
-    -- ==================== TRANSMITTER STATE MACHINE CONTROL ====================
-    transmitter_state_reg_update : process(clk)
+
+    transmitter_state_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
@@ -361,8 +367,12 @@ begin
         end case;
     end process;
     
+    -- ============================================================= 
+    --                         RECEIVER
+    -- =============================================================
+    
     -- =================== RECEIVER DATA REG ===================
-    receiver_data_reg_update : process(clk)
+    receiver_data_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
@@ -376,7 +386,7 @@ begin
     end process;
     
     -- =================== RECEIVER SAMPLER COUNTER REG ===================
-    receiver_sampler_reg_update : process(clk)
+    rx_sampler_counter_reg_proc : process(clk)
     begin  
         if (rising_edge(clk)) then
             if (reset = '1') then
@@ -390,7 +400,7 @@ begin
     end process;
     
     -- =================== RECEIVER SHIFT REGISTER CONTROL ===================
-    receiver_shift_reg_update : process(clk)
+    rx_data_shift_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
@@ -405,7 +415,7 @@ begin
     end process;
     
     -- =================== RECEIVER STATE MACHINE CONTROL ===================
-    receiver_state_reg_update : process(clk)
+    receiver_state_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
@@ -416,7 +426,7 @@ begin
         end if;
     end process;
     
-    receiver_bits_received_counter_reg_update : process(clk)
+    rx_bits_received_counter_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then

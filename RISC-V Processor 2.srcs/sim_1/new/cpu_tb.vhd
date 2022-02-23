@@ -57,7 +57,9 @@ begin
         uart_rx <= '1';     -- END BIT
         wait for T_BAUD;
         
-        --report "Simulation Finished." severity FAILURE;
+        wait for 20ms;
+        
+        report "Simulation Finished." severity FAILURE;
     end process;
 
 end Behavioral;

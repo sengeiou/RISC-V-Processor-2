@@ -16,12 +16,12 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="5000001fs"></ZoomEndTime>
-      <Cursor1Time time="1131745fs"></Cursor1Time>
+      <ZoomEndTime time="13005000001fs"></ZoomEndTime>
+      <Cursor1Time time="6388899371fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="176"></NameColumnWidth>
-      <ValueColumnWidth column_width="65"></ValueColumnWidth>
+      <ValueColumnWidth column_width="61"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="71" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -1153,10 +1153,6 @@
          <obj_property name="ElementShortName">rx_data_shift_reg[7:0]</obj_property>
          <obj_property name="ObjectShortName">rx_data_shift_reg[7:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_data_shift_reg_shift_en" type="logic">
-         <obj_property name="ElementShortName">rx_data_shift_reg_shift_en</obj_property>
-         <obj_property name="ObjectShortName">rx_data_shift_reg_shift_en</obj_property>
-      </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_sampler_counter_reg" type="array">
          <obj_property name="ElementShortName">rx_sampler_counter_reg[3:0]</obj_property>
          <obj_property name="ObjectShortName">rx_sampler_counter_reg[3:0]</obj_property>
@@ -1244,10 +1240,6 @@
       <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_tick" type="logic">
          <obj_property name="ElementShortName">baud_rate_tick</obj_property>
          <obj_property name="ObjectShortName">baud_rate_tick</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_tick_happened" type="logic">
-         <obj_property name="ElementShortName">baud_rate_tick_happened</obj_property>
-         <obj_property name="ObjectShortName">baud_rate_tick_happened</obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/uart_controller/divisor_latch_full" type="array">
          <obj_property name="ElementShortName">divisor_latch_full[15:0]</obj_property>
