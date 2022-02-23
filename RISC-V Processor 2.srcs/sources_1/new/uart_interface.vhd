@@ -194,7 +194,6 @@ begin
     register_write_control : process(all)
     begin    
         if (rising_edge(clk)) then
-            data_read_bus <= (others => '0');
             tx_data_reg_next <= (others => '0');
             modem_control_reg <= (others => '0');
                     
@@ -393,12 +392,14 @@ begin
     -- =================== RECEIVER SHIFT REGISTER CONTROL ===================
     receiver_shift_reg_update : process(clk)
     begin
-        if (reset = '1') then
-            rx_data_shift_reg <= (others => '0');
-        elsif (rising_edge(clk)) then
-            if (rx_sampler_counter_reg = X"0" and baud_rate_x16_tick = '1') then
-                rx_data_shift_reg(7 downto 1) <= rx_data_shift_reg(6 downto 0);
-                rx_data_shift_reg(0) <= rx;
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                rx_data_shift_reg <= (others => '0');
+            else
+                if (rx_sampler_counter_reg = X"0" and baud_rate_x16_tick = '1') then
+                    rx_data_shift_reg(7 downto 1) <= rx_data_shift_reg(6 downto 0);
+                    rx_data_shift_reg(0) <= rx;
+                end if;
             end if;
         end if;
     end process;

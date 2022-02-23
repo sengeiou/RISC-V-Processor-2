@@ -112,6 +112,9 @@ begin
                           
                           clk => clk_cpu);
                           
+                          
+    from_slave_3.data_read(31 downto 8) <= (others => '0');
+    from_slave_3.data_ready <= '1';
     uart_controller : entity work.uart_interface(rtl)
                       port map(data_read_bus => from_slave_3.data_read(7 downto 0),
                                data_write_bus => to_slave_3.data_write(7 downto 0),
