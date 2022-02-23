@@ -90,13 +90,7 @@ architecture rtl of axi_interconnect_simple is
     
     signal read_bus_disable : std_logic;
     signal write_bus_disable : std_logic;
-    
-    --signal write_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
-    --signal write_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_MASTERS)))) - 1 downto 0);
-    
-    --signal read_bus_slave_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
-    --signal read_bus_master_sel : std_logic_vector(integer(ceil(log2(real(NUM_SLAVES)))) - 1 downto 0);
-    
+
     signal write_bus_slave_sel : std_logic_vector(3 downto 0);
     signal write_bus_master_sel : std_logic_vector(3 downto 0);
     

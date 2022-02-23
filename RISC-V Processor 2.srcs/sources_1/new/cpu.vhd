@@ -104,6 +104,12 @@ begin
                           
                           clk => clk_cpu);
                           
+    uart_controller : entity work.uart_interface(rtl)
+                      port map(data_read_bus => from_slave_3.data_read,
+                               data_write_bus => to_slave_3.data_write,
+                               
+                               addr_bus => to_slave_3.addr_)
+                          
     reset_inv <= not reset_cpu;     
     led_out_debug <= led_temp;                     
 

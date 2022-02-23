@@ -3,12 +3,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 -- TO DO
--- 1) Add resynchronization on every non spurious data line chang
+-- 1) Add resynchronization on every non spurious data line change
+-- 2) Add options to change number of data bits per transfer
+-- 3) Add parity bit options
+-- 4) Add number of end bits options
 --
 
 entity uart_interface is
     port(
-        addr_bus : in std_logic_vector(2 downto 0);
+        addr_read_bus : in std_logic_vector(2 downto 0);
+        addr_write_bus : in std_logic_vector(2 downto 0);
         
         data_write_bus : in std_logic_vector(7 downto 0);
         data_read_bus : out std_logic_vector(7 downto 0);
@@ -28,49 +32,63 @@ entity uart_interface is
 end uart_interface;
 
 architecture rtl of uart_interface is
-    -- ========== DATA REGISTERS ==========
-    signal receiver_data_reg : std_logic_vector(7 downto 0);
-    signal receiver_data_reg_en : std_logic;
-    
-    signal transmitter_data_reg : std_logic_vector(7 downto 0);
-    signal transmitter_data_reg_en : std_logic;
-    signal transmitter_data_reg_next : std_logic_vector(7 downto 0);
-    
-    signal transmitter_data_shift_reg : std_logic_vector(7 downto 0);
-    signal transmitter_data_shift_reg_shift_en : std_logic;
-    signal transmitter_data_shift_reg_write_en : std_logic;
-    
-    signal transmitter_bits_transfered_counter : unsigned(3 downto 0);
-    signal transmitter_bits_transfered_counter_en : std_logic;
-    signal transmitter_bits_transfered_counter_fill : std_logic;
-    
-    ------------------------
-    signal receiver_data_shift_reg : std_logic_vector(7 downto 0);
-    signal receiver_data_shift_reg_shift_en : std_logic;
-    
-    signal receiver_sampler_counter_reg : std_logic_vector(3 downto 0);
-    signal receiver_sampler_counter_fill : std_logic_vector(3 downto 0);
-    signal receiver_sampler_counter_reg_count_en : std_logic;
-    signal receiver_sampler_counter_reg_fill_en : std_logic;
-    
-    signal receiver_bits_received_counter_reg : std_logic_vector(3 downto 0);
-    signal receiver_bits_received_counter_fill : std_logic_vector(3 downto 0);
-    signal receiver_bits_received_counter_reg_count_en : std_logic;
-    signal receiver_bits_received_counter_reg_fill_en : std_logic;
+    -- =============================================================
+    --                TX DATA REGISTERS & CONTROL
+    -- =============================================================
 
-    -- ========== CONTROL REGISTERS ==========
+    
+    signal tx_data_reg : std_logic_vector(7 downto 0);
+    signal tx_data_reg_en : std_logic;
+    signal tx_data_reg_next : std_logic_vector(7 downto 0);
+    
+    signal tx_data_shift_reg : std_logic_vector(7 downto 0);
+    signal tx_data_shift_reg_shift_en : std_logic;
+    signal tx_data_shift_reg_write_en : std_logic;
+    
+    signal tx_bits_transfered_counter : unsigned(3 downto 0);
+    signal tx_bits_transfered_counter_en : std_logic;
+    signal tx_bits_transfered_counter_fill_en : std_logic;
+    
+    signal tx_data_reg_state_set : std_logic;
+    signal tx_data_reg_state_reset : std_logic;
+    
+    -- =============================================================
+    --                RX DATA REGISTERS & CONTROL
+    -- =============================================================
+    signal rx_data_reg : std_logic_vector(7 downto 0);
+    signal rx_data_reg_en : std_logic;
+    
+    signal rx_data_shift_reg : std_logic_vector(7 downto 0);
+    signal rx_data_shift_reg_shift_en : std_logic;
+    
+    signal rx_sampler_counter_reg : std_logic_vector(3 downto 0);
+    signal rx_sampler_counter_fill : std_logic_vector(3 downto 0);
+    signal rx_sampler_counter_reg_count_en : std_logic;
+    signal rx_sampler_counter_reg_fill_en : std_logic;
+    
+    signal rx_bits_received_counter_reg : std_logic_vector(3 downto 0);
+    signal rx_bits_received_counter_fill : std_logic_vector(3 downto 0);
+    signal rx_bits_received_counter_reg_count_en : std_logic;
+    signal rx_bits_received_counter_reg_fill_en : std_logic;
+
+    -- =============================================================
+    --                  UART 16550 REGISTER SET
+    -- =============================================================
     signal divisor_latch_ls : std_logic_vector(7 downto 0);     -- Lower 8 bits of the divisor
     signal divisor_latch_ms : std_logic_vector(7 downto 0);     -- Upper 8 bits of the divisor
     signal divisor_updated : std_logic;
     
-    signal line_control_reg : std_logic_vector(7 downto 0);      
+    signal line_control_reg : std_logic_vector(7 downto 0);     
+     
     signal line_status_reg : std_logic_vector(7 downto 0);      -- 0 -> Transmitter data hold reg. empty (1 - yes, 0 - no) | 1 -> Line used (1 - yes, 0 - no)
     signal line_status_reg_en : std_logic;
     
     signal modem_control_reg : std_logic_vector(7 downto 0);
     signal modem_control_reg_en : std_logic;
     
-    -- OTHER
+    -- ============================================================= 
+    --              BAUD RATE GENERATION REGISTERS
+    -- =============================================================
     signal baud_rate_gen_x16_counter_reg : std_logic_vector(15 downto 0);
     signal baud_rate_x16_tick : std_logic;
     
@@ -82,9 +100,6 @@ architecture rtl of uart_interface is
     
     
     signal divisor_latch_full : std_logic_vector(15 downto 0);
-    
-    signal transmitter_data_reg_state_set : std_logic;
-    signal transmitter_data_reg_state_reset : std_logic;
     
     type transmitter_state_type is (IDLE,
                                     INIT_TRANSMISSION,
@@ -149,7 +164,7 @@ begin
     baud_rate_tick <= baud_rate_counter_zero and (not baud_rate_counter_zero_delay);
     
 -- =================== LINE STATUS REGISTER LOGIC ===================
-    transmitter_data_reg_state_set <= '0';
+    tx_data_reg_state_set <= '0';
 
     line_status_reg_proc : process(clk)
     begin
@@ -160,7 +175,7 @@ begin
                 line_status_reg(7 downto 1) <= line_status_reg(7 downto 1);
                 
                 
-                line_status_reg(0) <= (line_status_reg(0) and not transmitter_data_reg_state_reset) or transmitter_data_reg_state_set;
+                line_status_reg(0) <= (line_status_reg(0) and not tx_data_reg_state_reset) or tx_data_reg_state_set;
             end if;
         end if;
     end process;
@@ -169,23 +184,23 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                transmitter_data_reg <= (others => '0');
-            elsif (transmitter_data_reg_en = '1') then
-                transmitter_data_reg <= transmitter_data_reg_next;
+                tx_data_reg <= (others => '0');
+            elsif (tx_data_reg_en = '1') then
+                tx_data_reg <= tx_data_reg_next;
             end if;
         end if;
     end process;
 
-    register_control_proc : process(all)
+    register_write_control : process(all)
     begin    
         if (rising_edge(clk)) then
             data_read_bus <= (others => '0');
-            transmitter_data_reg_next <= (others => '0');
+            tx_data_reg_next <= (others => '0');
             modem_control_reg <= (others => '0');
                     
-            transmitter_data_reg_state_reset <= '0';    
+            tx_data_reg_state_reset <= '0';    
             line_status_reg_en <= '0';
-            transmitter_data_reg_en <= '0';
+            tx_data_reg_en <= '0';
             modem_control_reg_en <= '0'; 
             divisor_updated <= '0';
         
@@ -194,21 +209,15 @@ begin
                 
                 divisor_latch_ls <= (others => '1');
                 divisor_latch_ms <= (others => '1');
-            end if;
-            
-            if (cs = '1') then                  -- ALLOCATED ADDRESSES ARE TEMPORARY AND DO NOT CORRESPOND TO THE 16550 UART IC!!!
-                case addr_bus is 
-                    when "000" =>
-                        data_read_bus <= receiver_data_reg;
+            elsif (cs = '1') then                  -- ALLOCATED ADDRESSES ARE TEMPORARY AND DO NOT CORRESPOND TO THE 16550 UART IC!!!
+                case addr_write_bus is
                     when "001" =>
-                        transmitter_data_reg_next <= data_write_bus;
-                        transmitter_data_reg_en <= '1';
+                        tx_data_reg_next <= data_write_bus;
+                        tx_data_reg_en <= '1';
                                 
-                        transmitter_data_reg_state_reset <= '1';
+                        tx_data_reg_state_reset <= '1';
                                
                         line_status_reg_en <= '1';
-                    when "010" =>
-                        data_read_bus <= line_status_reg;
                     when "100" =>       -- MODEM CONTROL REGISTER
                         modem_control_reg <= data_write_bus;
                     when "110" =>
@@ -218,7 +227,31 @@ begin
                         divisor_latch_ms <= data_write_bus;
                         divisor_updated <= '1';
                     when others =>
-                               
+                        
+                end case;
+            end if;
+        end if;
+    end process;
+    
+    register_read_control : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (cs = '1') then                  -- ALLOCATED ADDRESSES ARE TEMPORARY AND DO NOT CORRESPOND TO THE 16550 UART IC!!!
+                case addr_read_bus is 
+                    when "000" =>
+                        data_read_bus <= rx_data_reg;
+                    when "001" =>
+                        data_read_bus <= (others => '0');
+                    when "010" =>
+                        data_read_bus <= line_status_reg;
+                    when "100" =>
+                        data_read_bus <= (others => '0');
+                    when "110" =>
+                        data_read_bus <= divisor_latch_ls;
+                    when "111" =>
+                        data_read_bus <= data_write_bus;
+                    when others =>
+                        data_read_bus <= (others => '0');
                 end case;
             end if;
         end if;
@@ -228,12 +261,12 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                transmitter_bits_transfered_counter <= (others => '0');
+                tx_bits_transfered_counter <= (others => '0');
             else
-                if (transmitter_bits_transfered_counter_fill = '1') then
-                    transmitter_bits_transfered_counter <= "0111";      -- 8 BITS FOR NOW
-                elsif (transmitter_bits_transfered_counter_en = '1') then
-                    transmitter_bits_transfered_counter <= transmitter_bits_transfered_counter - 1;
+                if (tx_bits_transfered_counter_fill_en = '1') then
+                    tx_bits_transfered_counter <= "0111";      -- 8 BITS FOR NOW
+                elsif (tx_bits_transfered_counter_en = '1') then
+                    tx_bits_transfered_counter <= tx_bits_transfered_counter - 1;
                 end if;
             end if;
         end if;
@@ -243,12 +276,12 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                transmitter_data_shift_reg <= (others => '0');
+                tx_data_shift_reg <= (others => '0');
             else
-                if (transmitter_data_shift_reg_write_en = '1') then
-                    transmitter_data_shift_reg <= transmitter_data_reg;
-                elsif (transmitter_data_shift_reg_shift_en = '1') then
-                    transmitter_data_shift_reg <= std_logic_vector(shift_right(unsigned(transmitter_data_shift_reg), 1));
+                if (tx_data_shift_reg_write_en = '1') then
+                    tx_data_shift_reg <= tx_data_reg;
+                elsif (tx_data_shift_reg_shift_en = '1') then
+                    tx_data_shift_reg <= std_logic_vector(shift_right(unsigned(tx_data_shift_reg), 1));
                 end if;
             end if;
         end if;
@@ -285,7 +318,7 @@ begin
                 transmitter_state_next <= DATA_TRANSFER when baud_rate_tick = '1' else
                                           START_BIT;
             when DATA_TRANSFER =>
-                if (transmitter_bits_transfered_counter = 0 and baud_rate_tick = '1') then
+                if (tx_bits_transfered_counter = 0 and baud_rate_tick = '1') then
                     transmitter_state_next <= END_BIT;
                 else
                     transmitter_state_next <= DATA_TRANSFER;
@@ -300,11 +333,11 @@ begin
     
     transmitter_state_machine_outputs : process(all)
     begin
-        transmitter_data_shift_reg_write_en <= '0';
-        transmitter_data_shift_reg_shift_en <= '0';
+        tx_data_shift_reg_write_en <= '0';
+        tx_data_shift_reg_shift_en <= '0';
         
-        transmitter_bits_transfered_counter_fill <= '0';
-        transmitter_bits_transfered_counter_en <= '0';
+        tx_bits_transfered_counter_fill_en <= '0';
+        tx_bits_transfered_counter_en <= '0';
         
         req_to_send <= '1';
         case transmitter_state is
@@ -315,13 +348,13 @@ begin
             when START_BIT => 
                 tx_line <= '0';
                 
-                transmitter_data_shift_reg_write_en <= '1';
-                transmitter_bits_transfered_counter_fill <= '1';
+                tx_data_shift_reg_write_en <= '1';
+                tx_bits_transfered_counter_fill_en <= '1';
             when DATA_TRANSFER =>
-                tx_line <= transmitter_data_shift_reg(0);
+                tx_line <= tx_data_shift_reg(0);
                 
-                transmitter_data_shift_reg_shift_en <= baud_rate_tick;
-                transmitter_bits_transfered_counter_en <= baud_rate_tick;
+                tx_data_shift_reg_shift_en <= baud_rate_tick;
+                tx_bits_transfered_counter_en <= baud_rate_tick;
             when END_BIT =>
                 tx_line <= '1';
             when others =>
@@ -334,10 +367,10 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                receiver_data_reg <= (others => '0');
+                rx_data_reg <= (others => '0');
             else
-                if (receiver_data_reg_en = '1') then
-                    receiver_data_reg <= receiver_data_shift_reg;
+                if (rx_data_reg_en = '1') then
+                    rx_data_reg <= rx_data_shift_reg;
                 end if;
             end if;
         end if;
@@ -348,11 +381,11 @@ begin
     begin  
         if (rising_edge(clk)) then
             if (reset = '1') then
-                receiver_sampler_counter_reg <= (others => '0');
-            elsif (receiver_sampler_counter_reg_fill_en = '1') then
-                receiver_sampler_counter_reg <= receiver_sampler_counter_fill;
-            elsif (receiver_sampler_counter_reg_count_en = '1' and baud_rate_x16_tick = '1') then
-                receiver_sampler_counter_reg <= std_logic_vector(unsigned(receiver_sampler_counter_reg) - 1);
+                rx_sampler_counter_reg <= (others => '0');
+            elsif (rx_sampler_counter_reg_fill_en = '1') then
+                rx_sampler_counter_reg <= rx_sampler_counter_fill;
+            elsif (rx_sampler_counter_reg_count_en = '1' and baud_rate_x16_tick = '1') then
+                rx_sampler_counter_reg <= std_logic_vector(unsigned(rx_sampler_counter_reg) - 1);
             end if;
         end if;
     end process;
@@ -361,11 +394,11 @@ begin
     receiver_shift_reg_update : process(clk)
     begin
         if (reset = '1') then
-            receiver_data_shift_reg <= (others => '0');
+            rx_data_shift_reg <= (others => '0');
         elsif (rising_edge(clk)) then
-            if (receiver_sampler_counter_reg = X"0" and baud_rate_x16_tick = '1') then
-                receiver_data_shift_reg(7 downto 1) <= receiver_data_shift_reg(6 downto 0);
-                receiver_data_shift_reg(0) <= rx_line;
+            if (rx_sampler_counter_reg = X"0" and baud_rate_x16_tick = '1') then
+                rx_data_shift_reg(7 downto 1) <= rx_data_shift_reg(6 downto 0);
+                rx_data_shift_reg(0) <= rx_line;
             end if;
         end if;
     end process;
@@ -386,16 +419,16 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                receiver_bits_received_counter_reg <= (others => '0');
-            elsif (receiver_bits_received_counter_reg_fill_en = '1') then
-                receiver_bits_received_counter_reg <= receiver_bits_received_counter_fill;
-            elsif (receiver_sampler_counter_reg = "0000" and baud_rate_x16_tick = '1') then
-                receiver_bits_received_counter_reg <= std_logic_vector(unsigned(receiver_bits_received_counter_reg) - 1);
+                rx_bits_received_counter_reg <= (others => '0');
+            elsif (rx_bits_received_counter_reg_fill_en = '1') then
+                rx_bits_received_counter_reg <= rx_bits_received_counter_fill;
+            elsif (rx_sampler_counter_reg = "0000" and baud_rate_x16_tick = '1') then
+                rx_bits_received_counter_reg <= std_logic_vector(unsigned(rx_bits_received_counter_reg) - 1);
             end if;
         end if;
     end process;
     
-    receiver_next_state : process(rx_line, receiver_sampler_counter_reg, receiver_state, receiver_bits_received_counter_reg, modem_control_reg)
+    receiver_next_state : process(rx_line, rx_sampler_counter_reg, receiver_state, rx_bits_received_counter_reg, modem_control_reg)
     begin
         case receiver_state is 
             when IDLE => 
@@ -410,15 +443,15 @@ begin
             when START_BIT => 
                 receiver_state_next <= START_VALID;
             when START_VALID =>
-                if (receiver_sampler_counter_reg = X"0" and rx_line = '0') then
+                if (rx_sampler_counter_reg = X"0" and rx_line = '0') then
                     receiver_state_next <= DATA_TRANSFER;
-                elsif (not (receiver_sampler_counter_reg = X"0")) then
+                elsif (not (rx_sampler_counter_reg = X"0")) then
                     receiver_state_next <= START_VALID;
                 else
                     receiver_state_next <= IDLE;
                 end if;
             when DATA_TRANSFER => 
-                if (receiver_bits_received_counter_reg = X"0") then
+                if (rx_bits_received_counter_reg = X"0") then
                     receiver_state_next <= END_BIT;
                 else
                     receiver_state_next <= DATA_TRANSFER;
@@ -430,15 +463,15 @@ begin
     
     receiver_state_machine_outputs : process(all)
     begin
-        receiver_sampler_counter_fill <= (others => '0');
-        receiver_bits_received_counter_fill <= (others => '0');
+        rx_sampler_counter_fill <= (others => '0');
+        rx_bits_received_counter_fill <= (others => '0');
         
-        receiver_sampler_counter_reg_count_en <= '0';
-        receiver_sampler_counter_reg_fill_en <= '0';
+        rx_sampler_counter_reg_count_en <= '0';
+        rx_sampler_counter_reg_fill_en <= '0';
         
-        receiver_bits_received_counter_reg_count_en <= '0';
-        receiver_bits_received_counter_reg_fill_en <= '0';
-        receiver_data_reg_en <= '0';
+        rx_bits_received_counter_reg_count_en <= '0';
+        rx_bits_received_counter_reg_fill_en <= '0';
+        rx_data_reg_en <= '0';
         data_term_ready <= '1';
         case receiver_state is 
             when IDLE => 
@@ -446,17 +479,17 @@ begin
             when INIT_RECEIVE => 
                 
             when START_BIT => 
-                receiver_sampler_counter_fill <= "0110";
-                receiver_sampler_counter_reg_fill_en <= '1';
+                rx_sampler_counter_fill <= "0110";
+                rx_sampler_counter_reg_fill_en <= '1';
             when START_VALID =>
-                receiver_bits_received_counter_fill <= "1000";
+                rx_bits_received_counter_fill <= "1000";
                 
-                receiver_bits_received_counter_reg_fill_en <= '1';
-                receiver_sampler_counter_reg_count_en <= '1';
+                rx_bits_received_counter_reg_fill_en <= '1';
+                rx_sampler_counter_reg_count_en <= '1';
             when DATA_TRANSFER => 
-                receiver_sampler_counter_reg_count_en <= '1';
+                rx_sampler_counter_reg_count_en <= '1';
             when END_BIT =>
-                receiver_data_reg_en <= '1';
+                rx_data_reg_en <= '1';
         end case;
     end process;
 

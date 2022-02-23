@@ -26,7 +26,8 @@ begin
     reset <= '1', '0' after T * 2;
     
     uut : entity work.uart_interface(rtl)
-          port map(addr_bus => addr_bus,
+          port map(addr_read_bus => addr_bus,
+                   addr_write_bus => addr_bus,
                    data_read_bus => data_read_bus,
                    data_write_bus => data_write_bus,
                    tx_line => tx_line,
@@ -40,6 +41,8 @@ begin
                    
     process
     begin
+        wait for T * 2;
+    
         cts <= '0';
         
         -- Setup x16 baud rate generator
