@@ -15,15 +15,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="746428fs"></ZoomStartTime>
-      <ZoomEndTime time="985715fs"></ZoomEndTime>
-      <Cursor1Time time="830000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="5000001fs"></ZoomEndTime>
+      <Cursor1Time time="1131745fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="176"></NameColumnWidth>
-      <ValueColumnWidth column_width="69"></ValueColumnWidth>
+      <ValueColumnWidth column_width="65"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="70" />
+   <WVObjectSize size="71" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -1048,5 +1048,226 @@
    <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/axi_bus_read_controller/bus_disable" type="logic">
       <obj_property name="ElementShortName">bus_disable</obj_property>
       <obj_property name="ObjectShortName">bus_disable</obj_property>
+   </wvobject>
+   <wvobject fp_name="group828" type="group">
+      <obj_property name="label">UART</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/addr_read_bus" type="array">
+         <obj_property name="ElementShortName">addr_read_bus[2:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_read_bus[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/addr_write_bus" type="array">
+         <obj_property name="ElementShortName">addr_write_bus[2:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_write_bus[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/data_write_bus" type="array">
+         <obj_property name="ElementShortName">data_write_bus[7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_write_bus[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/data_read_bus" type="array">
+         <obj_property name="ElementShortName">data_read_bus[7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_read_bus[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx" type="logic">
+         <obj_property name="ElementShortName">tx</obj_property>
+         <obj_property name="ObjectShortName">tx</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx" type="logic">
+         <obj_property name="ElementShortName">rx</obj_property>
+         <obj_property name="ObjectShortName">rx</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rts" type="logic">
+         <obj_property name="ElementShortName">rts</obj_property>
+         <obj_property name="ObjectShortName">rts</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/cts" type="logic">
+         <obj_property name="ElementShortName">cts</obj_property>
+         <obj_property name="ObjectShortName">cts</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/dtr" type="logic">
+         <obj_property name="ElementShortName">dtr</obj_property>
+         <obj_property name="ObjectShortName">dtr</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/dsr" type="logic">
+         <obj_property name="ElementShortName">dsr</obj_property>
+         <obj_property name="ObjectShortName">dsr</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/cs" type="logic">
+         <obj_property name="ElementShortName">cs</obj_property>
+         <obj_property name="ObjectShortName">cs</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_reg" type="array">
+         <obj_property name="ElementShortName">tx_data_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">tx_data_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_reg_en" type="logic">
+         <obj_property name="ElementShortName">tx_data_reg_en</obj_property>
+         <obj_property name="ObjectShortName">tx_data_reg_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_reg_next" type="array">
+         <obj_property name="ElementShortName">tx_data_reg_next[7:0]</obj_property>
+         <obj_property name="ObjectShortName">tx_data_reg_next[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_shift_reg" type="array">
+         <obj_property name="ElementShortName">tx_data_shift_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">tx_data_shift_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_shift_reg_shift_en" type="logic">
+         <obj_property name="ElementShortName">tx_data_shift_reg_shift_en</obj_property>
+         <obj_property name="ObjectShortName">tx_data_shift_reg_shift_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_shift_reg_write_en" type="logic">
+         <obj_property name="ElementShortName">tx_data_shift_reg_write_en</obj_property>
+         <obj_property name="ObjectShortName">tx_data_shift_reg_write_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_bits_transfered_counter" type="array">
+         <obj_property name="ElementShortName">tx_bits_transfered_counter[3:0]</obj_property>
+         <obj_property name="ObjectShortName">tx_bits_transfered_counter[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_bits_transfered_counter_en" type="logic">
+         <obj_property name="ElementShortName">tx_bits_transfered_counter_en</obj_property>
+         <obj_property name="ObjectShortName">tx_bits_transfered_counter_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_bits_transfered_counter_fill_en" type="logic">
+         <obj_property name="ElementShortName">tx_bits_transfered_counter_fill_en</obj_property>
+         <obj_property name="ObjectShortName">tx_bits_transfered_counter_fill_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_reg_state_set" type="logic">
+         <obj_property name="ElementShortName">tx_data_reg_state_set</obj_property>
+         <obj_property name="ObjectShortName">tx_data_reg_state_set</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/tx_data_reg_state_reset" type="logic">
+         <obj_property name="ElementShortName">tx_data_reg_state_reset</obj_property>
+         <obj_property name="ObjectShortName">tx_data_reg_state_reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_data_reg" type="array">
+         <obj_property name="ElementShortName">rx_data_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">rx_data_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_data_reg_en" type="logic">
+         <obj_property name="ElementShortName">rx_data_reg_en</obj_property>
+         <obj_property name="ObjectShortName">rx_data_reg_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_data_shift_reg" type="array">
+         <obj_property name="ElementShortName">rx_data_shift_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">rx_data_shift_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_data_shift_reg_shift_en" type="logic">
+         <obj_property name="ElementShortName">rx_data_shift_reg_shift_en</obj_property>
+         <obj_property name="ObjectShortName">rx_data_shift_reg_shift_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_sampler_counter_reg" type="array">
+         <obj_property name="ElementShortName">rx_sampler_counter_reg[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rx_sampler_counter_reg[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_sampler_counter_fill" type="array">
+         <obj_property name="ElementShortName">rx_sampler_counter_fill[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rx_sampler_counter_fill[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_sampler_counter_reg_count_en" type="logic">
+         <obj_property name="ElementShortName">rx_sampler_counter_reg_count_en</obj_property>
+         <obj_property name="ObjectShortName">rx_sampler_counter_reg_count_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_sampler_counter_reg_fill_en" type="logic">
+         <obj_property name="ElementShortName">rx_sampler_counter_reg_fill_en</obj_property>
+         <obj_property name="ObjectShortName">rx_sampler_counter_reg_fill_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_bits_received_counter_reg" type="array">
+         <obj_property name="ElementShortName">rx_bits_received_counter_reg[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rx_bits_received_counter_reg[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_bits_received_counter_fill" type="array">
+         <obj_property name="ElementShortName">rx_bits_received_counter_fill[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rx_bits_received_counter_fill[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_bits_received_counter_reg_count_en" type="logic">
+         <obj_property name="ElementShortName">rx_bits_received_counter_reg_count_en</obj_property>
+         <obj_property name="ObjectShortName">rx_bits_received_counter_reg_count_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/rx_bits_received_counter_reg_fill_en" type="logic">
+         <obj_property name="ElementShortName">rx_bits_received_counter_reg_fill_en</obj_property>
+         <obj_property name="ObjectShortName">rx_bits_received_counter_reg_fill_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/divisor_latch_ls" type="array">
+         <obj_property name="ElementShortName">divisor_latch_ls[7:0]</obj_property>
+         <obj_property name="ObjectShortName">divisor_latch_ls[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/divisor_latch_ms" type="array">
+         <obj_property name="ElementShortName">divisor_latch_ms[7:0]</obj_property>
+         <obj_property name="ObjectShortName">divisor_latch_ms[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/divisor_updated" type="logic">
+         <obj_property name="ElementShortName">divisor_updated</obj_property>
+         <obj_property name="ObjectShortName">divisor_updated</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/line_control_reg" type="array">
+         <obj_property name="ElementShortName">line_control_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">line_control_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/line_status_reg" type="array">
+         <obj_property name="ElementShortName">line_status_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">line_status_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/line_status_reg_en" type="logic">
+         <obj_property name="ElementShortName">line_status_reg_en</obj_property>
+         <obj_property name="ObjectShortName">line_status_reg_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/modem_control_reg" type="array">
+         <obj_property name="ElementShortName">modem_control_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">modem_control_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/modem_control_reg_en" type="logic">
+         <obj_property name="ElementShortName">modem_control_reg_en</obj_property>
+         <obj_property name="ObjectShortName">modem_control_reg_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_gen_x16_counter_reg" type="array">
+         <obj_property name="ElementShortName">baud_rate_gen_x16_counter_reg[15:0]</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_gen_x16_counter_reg[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_x16_tick" type="logic">
+         <obj_property name="ElementShortName">baud_rate_x16_tick</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_x16_tick</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_gen_counter_reg" type="array">
+         <obj_property name="ElementShortName">baud_rate_gen_counter_reg[3:0]</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_gen_counter_reg[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_counter_zero" type="logic">
+         <obj_property name="ElementShortName">baud_rate_counter_zero</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_counter_zero</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_counter_zero_delay" type="logic">
+         <obj_property name="ElementShortName">baud_rate_counter_zero_delay</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_counter_zero_delay</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_tick" type="logic">
+         <obj_property name="ElementShortName">baud_rate_tick</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_tick</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/baud_rate_tick_happened" type="logic">
+         <obj_property name="ElementShortName">baud_rate_tick_happened</obj_property>
+         <obj_property name="ObjectShortName">baud_rate_tick_happened</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/divisor_latch_full" type="array">
+         <obj_property name="ElementShortName">divisor_latch_full[15:0]</obj_property>
+         <obj_property name="ObjectShortName">divisor_latch_full[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/transmitter_state" type="other">
+         <obj_property name="ElementShortName">transmitter_state</obj_property>
+         <obj_property name="ObjectShortName">transmitter_state</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/transmitter_state_next" type="other">
+         <obj_property name="ElementShortName">transmitter_state_next</obj_property>
+         <obj_property name="ObjectShortName">transmitter_state_next</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/receiver_state" type="other">
+         <obj_property name="ElementShortName">receiver_state</obj_property>
+         <obj_property name="ObjectShortName">receiver_state</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/uart_controller/receiver_state_next" type="other">
+         <obj_property name="ElementShortName">receiver_state_next</obj_property>
+         <obj_property name="ObjectShortName">receiver_state_next</obj_property>
+      </wvobject>
    </wvobject>
 </wave_config>

@@ -17,13 +17,13 @@ entity uart_interface is
         data_write_bus : in std_logic_vector(7 downto 0);
         data_read_bus : out std_logic_vector(7 downto 0);
         
-        tx_line : out std_logic;
-        rx_line : in std_logic;
+        tx : out std_logic;
+        rx : in std_logic;
         
-        req_to_send : out std_logic;
-        clr_to_send : in std_logic;
-        data_term_ready : out std_logic;
-        data_set_ready : in std_logic;
+        rts : out std_logic;
+        cts : in std_logic;
+        dtr : out std_logic;
+        dsr : in std_logic;
         
         cs : in std_logic;
         reset : in std_logic;
@@ -309,7 +309,7 @@ begin
                     transmitter_state_next <= IDLE;
                 end if;
             when INIT_TRANSMISSION =>
-                if (clr_to_send = '0' and baud_rate_tick = '1') then
+                if (cts = '0' and baud_rate_tick = '1') then
                     transmitter_state_next <= START_BIT;
                 else
                     transmitter_state_next <= INIT_TRANSMISSION;
@@ -339,26 +339,26 @@ begin
         tx_bits_transfered_counter_fill_en <= '0';
         tx_bits_transfered_counter_en <= '0';
         
-        req_to_send <= '1';
+        rts <= '1';
         case transmitter_state is
             when IDLE =>
-                tx_line <= '1';
+                tx <= '1';
             when INIT_TRANSMISSION => 
-                req_to_send <= '0';
+                rts <= '0';
             when START_BIT => 
-                tx_line <= '0';
+                tx <= '0';
                 
                 tx_data_shift_reg_write_en <= '1';
                 tx_bits_transfered_counter_fill_en <= '1';
             when DATA_TRANSFER =>
-                tx_line <= tx_data_shift_reg(0);
+                tx <= tx_data_shift_reg(0);
                 
                 tx_data_shift_reg_shift_en <= baud_rate_tick;
                 tx_bits_transfered_counter_en <= baud_rate_tick;
             when END_BIT =>
-                tx_line <= '1';
+                tx <= '1';
             when others =>
-                tx_line <= '1';
+                tx <= '1';
         end case;
     end process;
     
@@ -398,7 +398,7 @@ begin
         elsif (rising_edge(clk)) then
             if (rx_sampler_counter_reg = X"0" and baud_rate_x16_tick = '1') then
                 rx_data_shift_reg(7 downto 1) <= rx_data_shift_reg(6 downto 0);
-                rx_data_shift_reg(0) <= rx_line;
+                rx_data_shift_reg(0) <= rx;
             end if;
         end if;
     end process;
@@ -428,7 +428,7 @@ begin
         end if;
     end process;
     
-    receiver_next_state : process(rx_line, rx_sampler_counter_reg, receiver_state, rx_bits_received_counter_reg, modem_control_reg)
+    receiver_next_state : process(rx, rx_sampler_counter_reg, receiver_state, rx_bits_received_counter_reg, modem_control_reg)
     begin
         case receiver_state is 
             when IDLE => 
@@ -438,12 +438,12 @@ begin
                     receiver_state_next <= IDLE;
                 end if;
             when INIT_RECEIVE =>
-                receiver_state_next <= START_BIT when rx_line = '0' else
+                receiver_state_next <= START_BIT when rx = '0' else
                                        INIT_RECEIVE;
             when START_BIT => 
                 receiver_state_next <= START_VALID;
             when START_VALID =>
-                if (rx_sampler_counter_reg = X"0" and rx_line = '0') then
+                if (rx_sampler_counter_reg = X"0" and rx = '0') then
                     receiver_state_next <= DATA_TRANSFER;
                 elsif (not (rx_sampler_counter_reg = X"0")) then
                     receiver_state_next <= START_VALID;
@@ -472,10 +472,10 @@ begin
         rx_bits_received_counter_reg_count_en <= '0';
         rx_bits_received_counter_reg_fill_en <= '0';
         rx_data_reg_en <= '0';
-        data_term_ready <= '1';
+        dtr <= '1';
         case receiver_state is 
             when IDLE => 
-                data_term_ready <= modem_control_reg(0);
+                dtr <= modem_control_reg(0);
             when INIT_RECEIVE => 
                 
             when START_BIT => 

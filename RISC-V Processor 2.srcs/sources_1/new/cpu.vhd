@@ -6,6 +6,11 @@ use work.axi_interface_signal_groups.all;
 entity cpu is
     port(
         led_out_debug : out std_logic_vector(15 downto 0);
+        
+        uart_rx : in std_logic;
+        uart_tx : out std_logic;
+        uart_cts : out std_logic;
+        uart_rts : in std_logic;
     
         clk_cpu : in std_logic;
         clk_dbg : in std_logic;
@@ -44,14 +49,17 @@ architecture structural of cpu is
     signal from_slave_2 : FromSlave;
     signal to_slave_2 : ToSlave;
     
+    signal from_slave_3 : FromSlave;
+    signal to_slave_3 : ToSlave;
+    
     signal reset_inv : std_logic;
     
     signal led_temp : std_logic_vector(15 downto 0);
 begin
     -- AXI Interconnect
     axi_interconnect : entity work.axi_interconnect_simple(rtl)
-                       generic map(NUM_MASTERS => 2,
-                                   NUM_SLAVES => 2)
+                       generic map(NUM_MASTERS => 4,
+                                   NUM_SLAVES => 4)
                        port map(to_masters(0) => to_master_1,
                                 to_masters(1) => test1S(0),
                                 to_masters(2) => test1S(1),
@@ -64,12 +72,12 @@ begin
 
                                 to_slaves(0) => to_slave_1,
                                 to_slaves(1) => to_slave_2,
-                                to_slaves(2) => test2S(1),
+                                to_slaves(2) => to_slave_3,
                                 to_slaves(3) => test2S(2),
                                 
                                 from_slaves(0) => from_slave_1,
                                 from_slaves(1) => from_slave_2,
-                                from_slaves(2) => FROM_SLAVE_CLEAR,
+                                from_slaves(2) => from_slave_3,
                                 from_slaves(3) => FROM_SLAVE_CLEAR,
                                 
                                 clk => clk_cpu,
@@ -105,10 +113,21 @@ begin
                           clk => clk_cpu);
                           
     uart_controller : entity work.uart_interface(rtl)
-                      port map(data_read_bus => from_slave_3.data_read,
-                               data_write_bus => to_slave_3.data_write,
+                      port map(data_read_bus => from_slave_3.data_read(7 downto 0),
+                               data_write_bus => to_slave_3.data_write(7 downto 0),
                                
-                               addr_bus => to_slave_3.addr_)
+                               addr_read_bus => to_slave_3.addr_read(2 downto 0),
+                               addr_write_bus => to_slave_3.addr_write(2 downto 0),
+                               
+                               rx => uart_rx,
+                               tx => uart_tx,
+                               cts => uart_rts,
+                               rts => uart_cts,
+                               dsr => '0',
+                               
+                               clk => clk_cpu,
+                               reset => reset_cpu,
+                               cs => '1');
                           
     reset_inv <= not reset_cpu;     
     led_out_debug <= led_temp;                     

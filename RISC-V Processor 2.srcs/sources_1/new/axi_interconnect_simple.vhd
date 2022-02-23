@@ -267,9 +267,6 @@ begin
     
     --write_bus_master_sel <= (others => '0');
     --write_bus_slave_sel <= (others => '0');
-    
-    --read_bus_master_sel <= "0";
-    --read_bus_slave_sel <= "0";
 
 end rtl;
 
