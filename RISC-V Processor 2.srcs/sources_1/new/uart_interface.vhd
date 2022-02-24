@@ -2,12 +2,19 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+-- CURRENTLY FUNCTIONAL 
+-- 1) 8 bit transmission and receiving
+-- 2) handshaking signals
+
 -- TO DO
 -- 1) Add resynchronization on every non spurious data line change
 -- 2) Add options to change number of data bits per transfer
 -- 3) Add parity bit options
 -- 4) Add number of end bits options
 --
+
+-- Currently only the first character that was received immediately after sending the receive command will be stored into the register,
+-- while all subsequent ones will be discarded. This might need to be changed
 
 entity uart_interface is
     port(
@@ -35,8 +42,6 @@ architecture rtl of uart_interface is
     -- =============================================================
     --                TX DATA REGISTERS & CONTROL
     -- =============================================================
-
-    
     signal tx_data_reg : std_logic_vector(7 downto 0);
     signal tx_data_reg_en : std_logic;
     signal tx_data_reg_next : std_logic_vector(7 downto 0);
@@ -48,9 +53,6 @@ architecture rtl of uart_interface is
     signal tx_bits_transfered_counter : unsigned(3 downto 0);
     signal tx_bits_transfered_counter_en : std_logic;
     signal tx_bits_transfered_counter_fill_en : std_logic;
-    
-    signal tx_data_reg_state_set : std_logic;
-    signal tx_data_reg_state_reset : std_logic;
     
     -- =============================================================
     --                RX DATA REGISTERS & CONTROL
@@ -69,6 +71,9 @@ architecture rtl of uart_interface is
     signal rx_bits_received_counter_fill : std_logic_vector(3 downto 0);
     signal rx_bits_received_counter_reg_count_en : std_logic;
     signal rx_bits_received_counter_reg_fill_en : std_logic;
+    
+    signal rx_data_recv_complete : std_logic;
+    signal rx_data_reg_read : std_logic;
 
     -- =============================================================
     --                  UART 16550 REGISTER SET
@@ -165,8 +170,6 @@ begin
     -- ============================================================= 
     --                   LINE STATUS REGISTER
     -- =============================================================
-    tx_data_reg_state_set <= '0';
-
     line_status_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
@@ -176,7 +179,7 @@ begin
                 line_status_reg(7 downto 1) <= line_status_reg(7 downto 1);
                 
                 
-                line_status_reg(0) <= (line_status_reg(0) and not tx_data_reg_state_reset) or tx_data_reg_state_set;
+                line_status_reg(0) <= (line_status_reg(0) and not rx_data_reg_read) or rx_data_recv_complete;
             end if;
         end if;
     end process;
@@ -190,7 +193,7 @@ begin
             tx_data_reg_next <= (others => '0');
             modem_control_reg <= (others => '0');
                     
-            tx_data_reg_state_reset <= '0';    
+            rx_data_reg_read <= '0';    
             line_status_reg_en <= '0';
             tx_data_reg_en <= '0';
             modem_control_reg_en <= '0'; 
@@ -207,7 +210,7 @@ begin
                         tx_data_reg_next <= data_write_bus;
                         tx_data_reg_en <= '1';
                                 
-                        tx_data_reg_state_reset <= '1';
+                        rx_data_reg_read <= '1';
                                
                         line_status_reg_en <= '1';
                     when "100" =>       -- MODEM CONTROL REGISTER
@@ -483,6 +486,7 @@ begin
         rx_bits_received_counter_reg_count_en <= '0';
         rx_bits_received_counter_reg_fill_en <= '0';
         rx_data_reg_en <= '0';
+        rx_data_recv_complete <= '0';
         dtr <= '1';
         case receiver_state is 
             when IDLE => 
@@ -500,6 +504,7 @@ begin
             when DATA_TRANSFER => 
                 rx_sampler_counter_reg_count_en <= '1';
             when END_BIT =>
+                rx_data_recv_complete <= '1';
                 rx_data_reg_en <= '1';
         end case;
     end process;
