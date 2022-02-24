@@ -26,14 +26,14 @@ begin
     
     reset <= '0', '1' after 15ns;
     
-    uut : entity work.axi_bus_controller_simple(rtl)
-          generic map(NUM_MASTERS => 4)
-          port map(master_read_bus_requests => master_bus_req,
-                   read_address => addr,
-                   read_master_sel => curr_master_sel,
-                   read_slave_sel => read_slave_sel,
-                   clk => clk,
-                   reset => reset);
+--    uut : entity work.axi_bus_controller_simple(rtl)
+--          generic map(NUM_MASTERS => 4)
+--          port map(master_read_bus_requests => master_bus_req,
+--                   read_address => addr,
+--                   read_master_sel => curr_master_sel,
+--                   read_slave_sel => read_slave_sel,
+--                   clk => clk,
+--                   reset => reset);
     
     process
     begin

@@ -407,8 +407,8 @@ begin
                 rx_data_shift_reg <= (others => '0');
             else
                 if (rx_sampler_counter_reg = X"0" and baud_rate_x16_tick = '1') then
-                    rx_data_shift_reg(7 downto 1) <= rx_data_shift_reg(6 downto 0);
-                    rx_data_shift_reg(0) <= rx;
+                    rx_data_shift_reg(6 downto 0) <= rx_data_shift_reg(7 downto 1);
+                    rx_data_shift_reg(7) <= rx;
                 end if;
             end if;
         end if;

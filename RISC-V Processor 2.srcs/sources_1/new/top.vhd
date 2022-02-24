@@ -27,8 +27,8 @@ entity top is
         CLK100MHZ : in std_logic;
         BTNC : in std_logic;
         
-        UART_TX : out std_logic;
-        UART_RX : in std_logic
+        UART_TXD_IN : in std_logic;
+        UART_RXD_OUT : out std_logic
         
     );
 end top;
@@ -54,8 +54,8 @@ begin
     cpu : entity work.cpu(structural)
           port map(led_out_debug => LED,
           
-                   uart_rx => UART_RX,
-                   uart_tx => UART_TX,
+                   uart_rx => UART_TXD_IN,
+                   uart_tx => UART_RXD_OUT,
                    uart_rts => '0',
           
                    clk_cpu => clk_cpu,

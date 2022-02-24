@@ -101,6 +101,7 @@ read_vhdl -vhdl2008 -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/stage_decode.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/uart_interface.vhd}
 }
 read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd}
@@ -121,6 +122,12 @@ read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd}
   {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/top.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/register_var.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/configuration.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/priority_encoder_2_4.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/axi_read_arbiter_tb.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/clock_divider.vhd}
+  {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/new/uart_tx_control.vhd}
 }
 read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc}}]
@@ -131,11 +138,26 @@ set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/R
 read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/block_rom_memory.xci}}
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/block_rom_memory_ooc.xdc}}]
 
-read_ip -quiet {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
+read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
 set_property used_in_synthesis false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_reg_file_ooc.xdc}}]
+
+read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/axi_led_ila/axi_led_ila.xci}}
+set_property used_in_synthesis false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/axi_led_ila/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/axi_led_ila/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/axi_led_ila/ila_v6_2/constraints/ila.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/axi_led_ila/axi_led_ila_ooc.xdc}}]
+
+read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/ila_0/ila_0.xci}}
+set_property used_in_synthesis false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila.xdc}}]
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/ila_0/ila_0_ooc.xdc}}]
+
+read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/fifo_generator_0/fifo_generator_0.xci}}
+set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.gen/sources_1/ip/fifo_generator_0/fifo_generator_0.xdc}}]
 
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
