@@ -1,0 +1,12 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0" \
+"../../../../RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v" \
+"../../../../RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v" \
+"../../../../RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/sim/block_rom_memory.v" \
+"../../../../RISC-V Processor 2.gen/sources_1/ip/fifo_generator_0/sim/fifo_generator_0.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

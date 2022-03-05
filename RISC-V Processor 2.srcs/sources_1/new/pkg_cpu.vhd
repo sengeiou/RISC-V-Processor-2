@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.MATH_REAL.ALL;
 
 -- ======================================
 -- TO DO:
@@ -47,4 +48,24 @@ package pkg_cpu is
     constant PROG_FLOW_COND : std_logic_vector(1 downto 0) := "01";
     constant PROG_FLOW_JAL : std_logic_vector(1 downto 0) := "10";
     constant PROG_FLOW_JALR : std_logic_vector(1 downto 0) := "11";
+    
+    -- CDB Configuration
+    constant RESERVATION_STATION_ENTRIES : integer range 1 to 1024 := 4;
+    constant OPCODE_BITS : integer := 8;
+    constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
+    
+    type cdb_type is record
+        opcode : std_logic_vector(OPCODE_BITS - 1 downto 0);
+        res_stat_1 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        res_stat_2 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        operand_1 : std_logic_vector(OPERAND_BITS - 1 downto 0);
+        operand_2 : std_logic_vector(OPERAND_BITS - 1 downto 0);
+    end record;
 end pkg_cpu;
+
+
+
+
+
+
+
