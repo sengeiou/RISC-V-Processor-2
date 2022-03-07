@@ -12,6 +12,8 @@ package pkg_cpu is
     constant CPU_DATA_WIDTH_BITS : integer := 32;
     constant CPU_ADDR_WIDTH_BITS : integer := 32;
     constant ENABLE_BIG_REGFILE : integer range 0 to 1 := 1;        -- Selects between 16 entry register file and the 32 entry one (RV32E and RV32I)
+    constant REGFILE_SIZE : integer range 1 to 1024 := 32;
+    constant RESERVATION_STATION_ENTRY_CNT : integer range 1 to 1023 := 7;
     
     -- Debugging Configuration
     constant ENABLE_REGFILE_ILA : boolean := true;

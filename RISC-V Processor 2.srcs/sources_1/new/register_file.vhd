@@ -57,7 +57,7 @@ architecture rtl of register_file is
 );
 END COMPONENT  ;
 begin
-    reg_file_access : process(all)
+    reg_file_access : process(rd_1_addr, rd_2_addr, clk)
     begin
         -- Read from registers
         rd_1_data <= reg_file(to_integer(unsigned(rd_1_addr)));
