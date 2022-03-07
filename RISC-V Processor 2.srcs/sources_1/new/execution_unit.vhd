@@ -6,7 +6,7 @@ use WORK.PKG_CPU.ALL;
 -- Implements the Tomasulo algorithm with unified reservation station. Might get broken up into multiple modules
 -- in the future
 
-entity stage_execute_2 is
+entity execution_unit is
     port(
         decoded_instruction : in std_logic_vector(53 downto 0);     -- OPCODE | REG_S1 | REG_S2 | REG_DST | IMMEDIATE 
         
@@ -15,9 +15,9 @@ entity stage_execute_2 is
         reset : in std_logic;
         clk : in std_logic
     );
-end stage_execute_2;
+end execution_unit;
 
-architecture rtl of stage_execute_2 is
+architecture rtl of execution_unit is
     COMPONENT fifo_generator_1
         PORT (
           clk : IN STD_LOGIC;
