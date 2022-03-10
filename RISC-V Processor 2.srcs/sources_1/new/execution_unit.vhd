@@ -21,7 +21,7 @@ entity execution_unit is
     );
 end execution_unit;
 
-architecture rtl of execution_unit is
+architecture structural of execution_unit is
     COMPONENT fifo_generator_1
         PORT (
           clk : IN STD_LOGIC;
@@ -136,4 +136,4 @@ begin
                                         reset => reset,
                                         clk => clk);
 
-end rtl;
+end structural;
