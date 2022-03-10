@@ -14,18 +14,22 @@ entity priority_encoder is
 end priority_encoder;
 
 architecture rtl of priority_encoder is
-
+    constant D_ZERO : std_logic_vector(NUM_INPUTS - 1 downto 0) := (others => '0');
 begin
     process(d)
         variable max : integer;
     begin
-        for k in 0 to NUM_INPUTS - 1 loop
-            if (d(k) = '1') then
-                max := k;
-            end if;
-        end loop;
+        if (d = D_ZERO) then
+            q <= (others => '0');
+        else
+            for k in 0 to NUM_INPUTS - 1 loop
+                if (d(k) = '1') then
+                    max := k;
+                end if;
+            end loop;
         
-        q <= std_logic_vector(to_unsigned(max, integer(ceil(log2(real(NUM_INPUTS))))));
+            q <= std_logic_vector(to_unsigned(max, integer(ceil(log2(real(NUM_INPUTS))))));
+        end if;
     end process;
 
 end rtl;

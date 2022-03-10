@@ -66,7 +66,7 @@ begin
         -- Writing to registers
         if (falling_edge(clk)) then
             if (reset = '1') then
-                reg_file <= (others => (others => '0'));
+                reg_file <= (others => (others => '1'));
             elsif (reset = '0' and wr_en = '1' and unsigned(wr_addr) /= 0) then
                 reg_file(to_integer(unsigned(wr_addr))) <= wr_data;
             end if;

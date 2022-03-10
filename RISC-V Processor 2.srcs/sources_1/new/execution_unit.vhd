@@ -38,6 +38,12 @@ architecture rtl of execution_unit is
     signal rf_rd_data_1 : std_logic_vector(31 downto 0);
     signal rf_rd_data_2 : std_logic_vector(31 downto 0);
     
+    -- ========== RESERVATION STATION PORT 0 ==========
+    signal p0_operand_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    signal p0_operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    signal p0_operation : std_logic_vector(6 downto 0);
+    -- ================================================
+    
     signal next_instruction : std_logic_vector(53 downto 0);
     
     signal iq_full : std_logic;
@@ -89,12 +95,21 @@ begin
                                    i1_operand_2 => rf_rd_data_2,
                                    i1_dest_reg => decoded_instruction(36 downto 32),
                                    
+                                   o1_operand_1 => p0_operand_1,
+                                   o1_operand_2 => p0_operand_2,
+                                   o1_opcode_bits => p0_operation,
+                                   
                                    write_en => instr_ready,
-                                   read_en => '0',
+                                   rs_dispatch_1_en => '1',
                                    
                                    clk => clk,
                                    reset => reset);
       
-
+    integer_branch_func_unit : entity work.integer_branch_fu(structural)
+                               generic map(OPERAND_BITS => CPU_DATA_WIDTH_BITS)
+                               port map(operand_1 => p0_operand_1,
+                                        operand_2 => p0_operand_2,
+                                        --result => ,
+                                        operation_sel => p0_operation(3 downto 0));
 
 end rtl;
