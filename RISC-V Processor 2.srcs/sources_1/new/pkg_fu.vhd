@@ -7,6 +7,7 @@ package pkg_fu is
     type int_br_pipeline_reg_1_type is record
         operand_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         rf_write_reg_addr : std_logic_vector(4 downto 0);
         rs_entry_tag : std_logic_vector(2 downto 0);

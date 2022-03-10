@@ -29,8 +29,7 @@ entity register_file is
         -- Control busses
         reset : in std_logic;                                                           -- Sets all registers to 0 when high (synchronous)
         clk : in std_logic;                                                             -- Clock signal input
-        clk_dbg : in std_logic;                                                           
-        wr_en : in std_logic                                                            -- Write enable
+        clk_dbg : in std_logic                                                           
     );
 end register_file;
 
@@ -66,8 +65,8 @@ begin
         -- Writing to registers
         if (falling_edge(clk)) then
             if (reset = '1') then
-                reg_file <= (others => (others => '1'));
-            elsif (reset = '0' and wr_en = '1' and unsigned(wr_addr) /= 0) then
+                reg_file <= (others => (others => '0'));
+            elsif (reset = '0' and unsigned(wr_addr) /= 0) then
                 reg_file(to_integer(unsigned(wr_addr))) <= wr_data;
             end if;
         end if;

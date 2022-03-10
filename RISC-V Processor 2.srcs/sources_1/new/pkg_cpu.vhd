@@ -54,7 +54,7 @@ package pkg_cpu is
     -- CDB Configuration
     constant RESERVATION_STATION_ENTRIES : integer range 1 to 1024 := 4;
     constant OPERATION_TYPE_BITS : integer := 3;
-    constant OPERATION_SELECT_BITS : integer := 4;
+    constant OPERATION_SELECT_BITS : integer := 5;
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
     
     type cdb_type is record

@@ -8,10 +8,10 @@ end stage_execute_tb;
 architecture Behavioral of stage_execute_tb is
     signal clk, rst, instr_rdy : std_logic;
     
-    signal opcode : std_logic_vector(6 downto 0);
+    signal opcode : std_logic_vector(7 downto 0);
     signal rs1, rs2, rd : std_logic_vector(4 downto 0);
     signal imm : std_logic_vector(31 downto 0);
-    signal instr_in : std_logic_vector(53 downto 0);
+    signal instr_in : std_logic_vector(54 downto 0);
     
     constant T : time := 20ns;
 begin
@@ -35,7 +35,7 @@ begin
     
     process
     begin
-        opcode <= "0000000";
+        opcode <= "00000000";
         rs1 <= "00001";
         rs2 <= "00001";
         imm <= X"0000_0000";
@@ -44,16 +44,16 @@ begin
         
         wait for T * 10;
         
-        opcode <= "0000000";
+        opcode <= "00010000";
         rs1 <= "00001";
         rs2 <= "00001";
-        imm <= X"0000_0000";
+        imm <= X"0000_0001";
         rd <= "00101";
         instr_rdy <= '1';
         
         wait for T;
         
-        opcode <= "0000000";
+        opcode <= "00000000";
         rs1 <= "00001";
         rs2 <= "00001";
         imm <= X"0000_0000";
