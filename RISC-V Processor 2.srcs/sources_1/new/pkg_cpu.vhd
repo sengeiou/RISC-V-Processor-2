@@ -53,15 +53,14 @@ package pkg_cpu is
     
     -- CDB Configuration
     constant RESERVATION_STATION_ENTRIES : integer range 1 to 1024 := 4;
-    constant OPCODE_BITS : integer := 8;
+    constant OPERATION_TYPE_BITS : integer := 3;
+    constant OPERATION_SELECT_BITS : integer := 4;
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
     
     type cdb_type is record
-        opcode : std_logic_vector(OPCODE_BITS - 1 downto 0);
-        res_stat_1 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
-        res_stat_2 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
-        operand_1 : std_logic_vector(OPERAND_BITS - 1 downto 0);
-        operand_2 : std_logic_vector(OPERAND_BITS - 1 downto 0);
+        rf_write_reg_addr : std_logic_vector(4 downto 0);
+        rs_update_index : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) downto 0);
+        data : std_logic_vector(OPERAND_BITS - 1 downto 0);
     end record;
 end pkg_cpu;
 

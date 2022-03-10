@@ -21,7 +21,7 @@ architecture rtl of barrel_shifter_2 is
     
     signal intermediate_results : intermediate_results_type;
 begin
-    process(all)
+    process(shift_amount, shift_direction, shift_arith, data_in, intermediate_results)
     begin
         if (shift_amount(0) = '1') then
             if (shift_direction = '0') then
