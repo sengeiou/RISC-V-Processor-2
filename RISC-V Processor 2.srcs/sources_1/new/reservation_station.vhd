@@ -56,9 +56,9 @@ entity reservation_station is
 end reservation_station;
 
 architecture rtl of reservation_station is
-    -- Reservation station format [OP. TYPE | OP. SEL | RES_STAT_1 | RES_STAT_2 | OPERAND_1 | OPERAND_2 | IMMEDIATE | BUSY]
+    -- Reservation station format [OP. TYPE | OP. SEL | RES_STAT_1 | RES_STAT_2 | OPERAND_1 | OPERAND_2 | IMMEDIATE | DISPATCHED | BUSY]
     constant ENTRY_TAG_BITS : integer := integer(ceil(log2(real(NUM_ENTRIES))));
-    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 2 * ENTRY_TAG_BITS + 3 * OPERAND_BITS + 1;
+    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 2 * ENTRY_TAG_BITS + 3 * OPERAND_BITS + 2;
     constant RS_SEL_ZERO : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0) := (others => '0');
     constant REG_ADDR_ZERO : std_logic_vector(REG_ADDR_BITS - 1 downto 0) := (others => '0');
     
@@ -72,6 +72,11 @@ architecture rtl of reservation_station is
     
     signal rs_sel_write_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
     signal rs_sel_read_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
+    
+    signal rs1_src_tag_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0); 
+    signal rs1_src_tag_2 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0); 
+    signal rs1_operand_1 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
+    signal rs1_operand_2 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
 begin
     rs_full_proc : process(rs_entries)
         variable res : std_logic := '1';
@@ -96,7 +101,7 @@ begin
         for i in 0 to NUM_ENTRIES - 1 loop
             if (rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS) = RS_SEL_ZERO and
                 rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1 - ENTRY_TAG_BITS downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS) = RS_SEL_ZERO and
-                rs_entries(i)(0) = '1') then
+                rs_entries(i)(0) = '1' and rs_entries(i)(1) = '0') then
                 rs_ready_bits(i) <= '1';
             else
                 rs_ready_bits(i) <= '0';
@@ -114,6 +119,25 @@ begin
                       port map(d => rs_ready_bits,
                                q => rs_sel_read_1);
                                
+    reservation_station_operand_select_proc : process(cdb.rs_entry_tag, cdb.data, i1_src_tag_1, i1_operand_1, i1_src_tag_2, i1_operand_2)
+    begin
+        if (i1_src_tag_1 /= cdb.rs_entry_tag) then
+            rs1_src_tag_1 <= i1_src_tag_1;
+            rs1_operand_1 <= i1_operand_1;
+        else
+            rs1_src_tag_1 <= (others => '0');
+            rs1_operand_1 <= cdb.data;
+        end if;
+        
+        if (i1_src_tag_2 /= cdb.rs_entry_tag) then
+            rs1_src_tag_2 <= i1_src_tag_2;
+            rs1_operand_2 <= i1_operand_2;
+        else
+            rs1_src_tag_2 <= (others => '0');
+            rs1_operand_2 <= cdb.data;
+        end if;
+    end process;
+                               
     reservation_station_write_proc : process(clk)
     begin
         if (rising_edge(clk)) then
@@ -123,12 +147,17 @@ begin
                 end loop;
             else
                 if (write_en = '1') then
-                    rs_entries(to_integer(unsigned(rs_sel_write_1))) <= i1_operation_type & i1_operation_sel & i1_src_tag_1 & i1_src_tag_2 & i1_operand_1 & i1_operand_2 & i1_immediate & '1';
+                    rs_entries(to_integer(unsigned(rs_sel_write_1))) <= i1_operation_type & i1_operation_sel & rs1_src_tag_1 & rs1_src_tag_2 & rs1_operand_1 & rs1_operand_2 & i1_immediate & '0' & '1';
                 end if;
 
                 for i in 0 to NUM_ENTRIES - 1 loop
                     if (cdb.rs_entry_tag = std_logic_vector(to_unsigned(i, ENTRY_TAG_BITS)) and rs_entries(i)(0) = '1') then
-                        rs_entries(to_integer(unsigned(rs_sel_read_1)))(0) <= '0';
+                        rs_entries(i)(1) <= '0';
+                        rs_entries(i)(0) <= '0';
+                    end if;
+                    
+                    if (rs_dispatch_1_en = '1') then
+                        rs_entries(to_integer(unsigned(rs_sel_read_1)))(1) <= '1';
                     end if;
                 
                     if (rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS) /= "000" and

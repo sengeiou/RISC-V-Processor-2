@@ -44,6 +44,7 @@ begin
         
         wait for T * 10;
         
+        -- ADDI x1, x0, 1
         opcode <= "00010000";
         rs1 <= "00000";
         rs2 <= "00000";
@@ -53,6 +54,17 @@ begin
         
         wait for T;
         
+        -- ADD x7, x1, x1
+        opcode <= "00000000";
+        rs1 <= "00001";
+        rs2 <= "00001";
+        imm <= X"0000_0000";
+        rd <= "00111";
+        instr_rdy <= '1';
+        
+        wait for T;
+        
+        -- ADDI x2, x0, 1
         opcode <= "00010000";
         rs1 <= "00000";
         rs2 <= "00000";
@@ -62,11 +74,22 @@ begin
         
         wait for T;
         
+        -- ADD x5, x1, x2
         opcode <= "00000000";
         rs1 <= "00001";
         rs2 <= "00010";
         imm <= X"0000_0000";
         rd <= "00101";
+        instr_rdy <= '1';
+        
+        wait for T;
+        
+        -- ADDI x6, x5, 127
+        opcode <= "00010000";
+        rs1 <= "00101";
+        rs2 <= "00000";
+        imm <= X"0000_007F";
+        rd <= "00110";
         instr_rdy <= '1';
         
         wait for T;
