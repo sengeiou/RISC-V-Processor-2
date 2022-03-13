@@ -89,6 +89,7 @@ begin
         full <= res;
     end process;
 
+    -- Generates a vector containing all busy bits of the reservation station
     rs_busy_bits_proc : process(rs_entries)
     begin
         for i in 0 to NUM_ENTRIES - 1 loop
@@ -96,6 +97,8 @@ begin
         end loop;
     end process;
     
+    -- Generates a vector of ready bits for the reservation station. Ready bits indicate to the allocators that the reservation station entry
+    -- is ready to be dispatched. That means that the entry has all operands (both entry tags are 0), is busy and has not yet been dispatched
     rs_ready_bits_proc : process(rs_entries)
     begin
         for i in 0 to NUM_ENTRIES - 1 loop
@@ -109,16 +112,20 @@ begin
         end loop;
     end process;
 
+    -- Priority encoder that takes busy bits as its input and selects one free entry to be written into 
     prio_enc_write_1 : entity work.priority_encoder(rtl)
                        generic map(NUM_INPUTS => NUM_ENTRIES)
                        port map(d => rs_busy_bits,
                                 q => rs_sel_write_1);
                                 
+    -- Priority encoder that takes ready bits as its input and selects one entry to be dispatched
     prio_enc_read_1 : entity work.priority_encoder(rtl)
                       generic map(NUM_INPUTS => NUM_ENTRIES)
                       port map(d => rs_ready_bits,
                                q => rs_sel_read_1);
                                
+    -- This is a check for whether current instruction's operands are being broadcast on the CDB. If they are then that will immediately be taken
+    -- into consideration. Without this part the instruction in an entry could keep waiting for a result of an instruction that has already finished execution.  
     reservation_station_operand_select_proc : process(cdb.rs_entry_tag, cdb.data, i1_src_tag_1, i1_operand_1, i1_src_tag_2, i1_operand_2)
     begin
         if (i1_src_tag_1 /= cdb.rs_entry_tag) then
@@ -138,6 +145,7 @@ begin
         end if;
     end process;
                                
+    -- Controls writing into an entry of the reservation station. Appropriately sets 'dispatched' and 'busy' bits by listening to the CDB.
     reservation_station_write_proc : process(clk)
     begin
         if (rising_edge(clk)) then
@@ -178,6 +186,7 @@ begin
         end if;
     end process;
     
+    -- Puts the selected entry onto one exit port of the reservation station
     reservation_station_dispatch_proc : process(rs_dispatch_1_en, rs_entries, rs_sel_read_1)
     begin
         if (rs_dispatch_1_en = '1') then

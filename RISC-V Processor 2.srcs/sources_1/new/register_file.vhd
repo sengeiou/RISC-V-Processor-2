@@ -78,6 +78,7 @@ architecture rtl of register_file is
 );
 END COMPONENT  ;
 begin
+    -- Puts the tag of the corresponding registers onto the outputs.
     rf_src_tag_1 <= rf_status_reg(to_integer(unsigned(rd_1_addr)));
     rf_src_tag_2 <= rf_status_reg(to_integer(unsigned(rd_2_addr)));
 
@@ -87,10 +88,14 @@ begin
             if (reset = '1') then
                 rf_status_reg <= (others => (others => '0'));
             else
+                -- Sets a new tag for a register designated by the write address. This ensures that the result of the corresponding instruction
+                -- will be put into this register at the end of its execution.
                 if (wr_addr /= REG_ADDR_ZERO and en = '1') then
                     rf_status_reg(to_integer(unsigned(wr_addr))) <= rs_alloc_dest_tag;
                 end if;
                 
+                -- Generates a comparator for each register status entry in the register file that compares its corresponding tag with the tag that is currently
+                -- broadcast on the CDB. On match the corresponding entry will be set to 0 to indicate that the result has been written.
                 for i in 0 to 2 ** REGFILE_SIZE - 1 loop
                     if (rf_status_reg(i) /= REG_STATUS_TAG_ZERO and
                         rf_status_reg(i) = cdb.rs_entry_tag) then
@@ -112,6 +117,8 @@ begin
             if (reset = '1') then
                 reg_file <= (others => (others => '0'));
             else
+                -- Generates a comparator for each register in the register file that compares its corresponding tag with the tag that is currently
+                -- broadcast on the CDB. On match the data on the CDB will be written into the corresponding register.
                 for i in 0 to 2 ** REGFILE_SIZE - 1 loop
                     if (rf_status_reg(i) /= REG_STATUS_TAG_ZERO and
                         rf_status_reg(i) = cdb.rs_entry_tag) then

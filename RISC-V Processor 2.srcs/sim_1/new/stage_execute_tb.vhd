@@ -94,6 +94,16 @@ begin
         
         wait for T;
         
+        -- SUB x8, x5, x5
+        opcode <= "00001000";
+        rs1 <= "00110";
+        rs2 <= "00110";
+        imm <= X"0000_0000";
+        rd <= "00110";
+        instr_rdy <= '1';
+        
+        wait for T;
+        
         opcode <= "00000000";
         rs1 <= "00001";
         rs2 <= "00001";
