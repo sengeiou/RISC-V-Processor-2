@@ -112,6 +112,7 @@ begin
                              
                              rs_alloc_dest_tag => rs_alloc_dest_tag,
                              
+                             en => next_instr_ready,
                              reset => reset,
                              clk => clk,
                              clk_dbg => '0');
@@ -122,7 +123,9 @@ begin
                                       OPERATION_TYPE_BITS => 3,
                                       OPERATION_SELECT_BITS => 5,
                                       OPERAND_BITS => CPU_DATA_WIDTH_BITS)
-                          port map(i1_operation_type => next_instruction(54 downto 52),
+                          port map(cdb => cdb_1,
+                                    
+                                   i1_operation_type => next_instruction(54 downto 52),
                                    i1_operation_sel => next_instruction(51 downto 47),
                                    i1_src_tag_1 => rf_src_tag_1,
                                    i1_src_tag_2 => rf_src_tag_2,

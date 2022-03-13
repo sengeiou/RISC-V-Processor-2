@@ -13,13 +13,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="833334fs"></ZoomStartTime>
-      <ZoomEndTime time="5833334fs"></ZoomEndTime>
-      <Cursor1Time time="5000000fs"></Cursor1Time>
+      <ZoomStartTime time="129411fs"></ZoomStartTime>
+      <ZoomEndTime time="588235fs"></ZoomEndTime>
+      <Cursor1Time time="178352fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="229"></NameColumnWidth>
-      <ValueColumnWidth column_width="87"></ValueColumnWidth>
+      <NameColumnWidth column_width="264"></NameColumnWidth>
+      <ValueColumnWidth column_width="129"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="17" />
    <wvobject fp_name="/stage_execute_tb/clk" type="logic">
@@ -98,6 +98,7 @@
    <wvobject fp_name="group742" type="group">
       <obj_property name="label">RESERVATION STATION</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="divider" fp_name="divider752">
          <obj_property name="label">INS</obj_property>
          <obj_property name="DisplayName">label</obj_property>
@@ -113,6 +114,14 @@
       <wvobject fp_name="/stage_execute_tb/uut/reservation_station/i1_dest_reg" type="array">
          <obj_property name="ElementShortName">i1_dest_reg[4:0]</obj_property>
          <obj_property name="ObjectShortName">i1_dest_reg[4:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/stage_execute_tb/uut/reservation_station/i1_src_tag_1" type="array">
+         <obj_property name="ElementShortName">i1_src_tag_1[2:0]</obj_property>
+         <obj_property name="ObjectShortName">i1_src_tag_1[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/stage_execute_tb/uut/reservation_station/i1_src_tag_2" type="array">
+         <obj_property name="ElementShortName">i1_src_tag_2[2:0]</obj_property>
+         <obj_property name="ObjectShortName">i1_src_tag_2[2:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/stage_execute_tb/uut/reservation_station/write_en" type="logic">
          <obj_property name="ElementShortName">write_en</obj_property>
@@ -159,11 +168,11 @@
       <wvobject fp_name="/stage_execute_tb/uut/register_file/reg_file" type="array">
          <obj_property name="ElementShortName">reg_file[31:0][31:0]</obj_property>
          <obj_property name="ObjectShortName">reg_file[31:0][31:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject fp_name="/stage_execute_tb/uut/register_file/rf_status_reg" type="array">
          <obj_property name="ElementShortName">rf_status_reg[31:0][2:0]</obj_property>
          <obj_property name="ObjectShortName">rf_status_reg[31:0][2:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject fp_name="/stage_execute_tb/uut/register_file/rd_1_addr" type="array">
          <obj_property name="ElementShortName">rd_1_addr[4:0]</obj_property>

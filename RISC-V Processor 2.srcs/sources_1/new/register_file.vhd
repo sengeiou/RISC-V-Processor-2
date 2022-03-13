@@ -37,6 +37,7 @@ entity register_file is
         
         rs_alloc_dest_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
     
+        en : in std_logic;
         reset : in std_logic;                                                           -- Sets all registers to 0 when high (synchronous)
         clk : in std_logic;                                                             -- Clock signal input
         clk_dbg : in std_logic                                                           
@@ -45,6 +46,7 @@ end register_file;
 
 architecture rtl of register_file is
     -- ========== CONSTANTS ==========
+    constant REG_STATUS_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0) := (others => '0');
     constant REG_ADDR_ZERO : std_logic_vector(REGFILE_SIZE - 1 downto 0) := (others => '0'); 
     -- ===============================
 
@@ -85,9 +87,16 @@ begin
             if (reset = '1') then
                 rf_status_reg <= (others => (others => '0'));
             else
-                if (wr_addr /= REG_ADDR_ZERO) then
+                if (wr_addr /= REG_ADDR_ZERO and en = '1') then
                     rf_status_reg(to_integer(unsigned(wr_addr))) <= rs_alloc_dest_tag;
                 end if;
+                
+                for i in 0 to 2 ** REGFILE_SIZE - 1 loop
+                    if (rf_status_reg(i) /= REG_STATUS_TAG_ZERO and
+                        rf_status_reg(i) = cdb.rs_entry_tag) then
+                        rf_status_reg(i) <= (others => '0');
+                    end if;
+                end loop;
             end if;
         end if;
     end process;
@@ -104,7 +113,8 @@ begin
                 reg_file <= (others => (others => '0'));
             else
                 for i in 0 to 2 ** REGFILE_SIZE - 1 loop
-                    if (rf_status_reg(i) = cdb.rs_entry_tag) then
+                    if (rf_status_reg(i) /= REG_STATUS_TAG_ZERO and
+                        rf_status_reg(i) = cdb.rs_entry_tag) then
                         reg_file(i) <= cdb.data;
                     end if;
                 end loop;

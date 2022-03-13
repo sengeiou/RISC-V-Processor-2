@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
+use WORK.PKG_CPU.ALL;
 
 -- ================ NOTES ================ 
 -- Possible optimization (?): Do reads on falling edge and writes on rising edge (or vise versa)
@@ -19,6 +20,9 @@ entity reservation_station is
         OPERAND_BITS : integer range 1 to 64
     );
     port(
+        -- COMMON DATA BUS
+        cdb : in cdb_type;
+    
         -- INPUTS
         i1_operation_type : in std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         i1_operation_sel : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
@@ -121,10 +125,26 @@ begin
                 if (write_en = '1') then
                     rs_entries(to_integer(unsigned(rs_sel_write_1))) <= i1_operation_type & i1_operation_sel & i1_src_tag_1 & i1_src_tag_2 & i1_operand_1 & i1_operand_2 & i1_immediate & '1';
                 end if;
+
+                for i in 0 to NUM_ENTRIES - 1 loop
+                    if (cdb.rs_entry_tag = std_logic_vector(to_unsigned(i, ENTRY_TAG_BITS)) and rs_entries(i)(0) = '1') then
+                        rs_entries(to_integer(unsigned(rs_sel_read_1)))(0) <= '0';
+                    end if;
                 
-                if (rs_dispatch_1_en = '1') then
-                    rs_entries(to_integer(unsigned(rs_sel_read_1)))(0) <= '0';
-                end if;
+                    if (rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS) /= "000" and
+                        rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS) = cdb.rs_entry_tag) then
+                        rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS) <= (others => '0');
+                        rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - 1 
+                                      downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - OPERAND_BITS) <= cdb.data;
+                    end if;
+                    
+                    if (rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS) /= "000" and
+                        rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS) = cdb.rs_entry_tag) then
+                        rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS - 1 downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS) <= (others => '0');
+                        rs_entries(i)(ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - OPERAND_BITS - 1 
+                                      downto ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - 2 * OPERAND_BITS) <= cdb.data;
+                    end if;
+                end loop;
             end if;
         end if;
     end process;
