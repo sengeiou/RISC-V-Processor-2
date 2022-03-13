@@ -15,12 +15,9 @@ entity integer_branch_fu is
         operand_2 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         immediate : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         operation_sel : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rf_write_reg_addr : in std_logic_vector(4 downto 0);
         rs_entry_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) downto 0);
         
-        cdb_data : out std_logic_vector(OPERAND_BITS - 1 downto 0);
-        cdb_rf_write_reg_addr : out std_logic_vector(4 downto 0);
-        cdb_rs_update_index : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) downto 0);
+        cdb : out cdb_type;
         
         reset : in std_logic;
         clk : in std_logic
@@ -44,7 +41,6 @@ begin
                 pipeline_reg_1.operand_2 <= operand_2;
                 pipeline_reg_1.immediate <= immediate;
                 pipeline_reg_1.operation_sel <= operation_sel;
-                pipeline_reg_1.rf_write_reg_addr <= rf_write_reg_addr;
                 pipeline_reg_1.rs_entry_tag <= rs_entry_tag;
             end if;
         end if;
@@ -57,7 +53,6 @@ begin
                 pipeline_reg_2 <= (others => (others => '0'));
             else
                 pipeline_reg_2.alu_result <= alu_result;
-                pipeline_reg_2.rf_write_reg_addr <= pipeline_reg_1.rf_write_reg_addr;
                 pipeline_reg_2.rs_entry_tag <= pipeline_reg_1.rs_entry_tag;
             end if;
         end if;
@@ -73,8 +68,7 @@ begin
                    result => alu_result,
                    alu_op_sel => pipeline_reg_1.operation_sel(3 downto 0));
                    
-    cdb_data <= pipeline_reg_2.alu_result;
-    cdb_rf_write_reg_addr <= pipeline_reg_2.rf_write_reg_addr;
-    cdb_rs_update_index <= pipeline_reg_2.rs_entry_tag;
+    cdb.data <= pipeline_reg_2.alu_result;
+    cdb.rs_entry_tag <= pipeline_reg_2.rs_entry_tag;
 
 end structural;

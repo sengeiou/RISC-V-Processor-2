@@ -7,26 +7,36 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use IEEE.MATH_REAL.ALL;
+use WORK.PKG_CPU.ALL;
 
 use work.pkg_cpu.all;
 
 entity register_file is
     generic(
+        RESERVATION_STATION_ENTRY_NUM : integer;                                              -- Number of entries in the associated reservation station
         REG_DATA_WIDTH_BITS : integer;                                                        -- Number of bits in the registers (XLEN)
         REGFILE_SIZE : integer                                                                -- Number of registers in the register file (2 ** REGFILE_SIZE)
     );
     port(
+        -- Common Data Bus
+        cdb : in cdb_type;
+    
         -- Address busses
         rd_1_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);
         rd_2_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);                           -- Register selection address (read)
-        wr_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);                             -- Register selection address (write)
+        wr_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);
         
         -- Data busses
-        wr_data : in std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);                      -- Data input port
         rd_1_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
         rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);             -- Data output ports
         
         -- Control busses
+        rf_src_tag_1 : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+        rf_src_tag_2 : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+        
+        rs_alloc_dest_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+    
         reset : in std_logic;                                                           -- Sets all registers to 0 when high (synchronous)
         clk : in std_logic;                                                             -- Clock signal input
         clk_dbg : in std_logic                                                           
@@ -34,9 +44,19 @@ entity register_file is
 end register_file;
 
 architecture rtl of register_file is
+    -- ========== CONSTANTS ==========
+    constant REG_ADDR_ZERO : std_logic_vector(REGFILE_SIZE - 1 downto 0) := (others => '0'); 
+    -- ===============================
+
+    -- ========== RF STATUS REGISTER ==========
+    type rf_status_reg_type is array (31 downto 0) of std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+    signal rf_status_reg : rf_status_reg_type;
+    -- ========================================
+
+    -- ========== RF REGISTERS ==========
     type reg_file_type is array (2 ** REGFILE_SIZE - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
-    
     signal reg_file : reg_file_type;
+    -- ==================================
     
     COMPONENT ila_reg_file
 
@@ -56,7 +76,23 @@ architecture rtl of register_file is
 );
 END COMPONENT  ;
 begin
-    reg_file_access : process(rd_1_addr, rd_2_addr, clk)
+    rf_src_tag_1 <= rf_status_reg(to_integer(unsigned(rd_1_addr)));
+    rf_src_tag_2 <= rf_status_reg(to_integer(unsigned(rd_2_addr)));
+
+    rf_tag_register_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                rf_status_reg <= (others => (others => '0'));
+            else
+                if (wr_addr /= REG_ADDR_ZERO) then
+                    rf_status_reg(to_integer(unsigned(wr_addr))) <= rs_alloc_dest_tag;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    rf_access_proc : process(rd_1_addr, rd_2_addr, clk)
     begin
         -- Read from registers
         rd_1_data <= reg_file(to_integer(unsigned(rd_1_addr)));
@@ -66,8 +102,12 @@ begin
         if (falling_edge(clk)) then
             if (reset = '1') then
                 reg_file <= (others => (others => '0'));
-            elsif (reset = '0' and unsigned(wr_addr) /= 0) then
-                reg_file(to_integer(unsigned(wr_addr))) <= wr_data;
+            else
+                for i in 0 to 2 ** REGFILE_SIZE - 1 loop
+                    if (rf_status_reg(i) = cdb.rs_entry_tag) then
+                        reg_file(i) <= cdb.data;
+                    end if;
+                end loop;
             end if;
         end if;
     end process;

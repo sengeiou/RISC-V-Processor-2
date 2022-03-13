@@ -7,6 +7,9 @@ use WORK.PKG_CPU.ALL;
 -- in the future
 
 entity execution_unit is
+    generic(
+        INT_RESERVATION_STATION_ENTRY_NUM : integer := 7
+    );
     port(
         decoded_instruction : in std_logic_vector(54 downto 0);     -- OPERATION SELECT (4) | OPERATION TYPE (3) | REG_S1 (5) | REG_S2 (5) | REG_DST (5) | IMMEDIATE (32)
                                                                     -- OPERATION TYPE tells us which type of functional units can execute this instruction. This data is used
@@ -44,13 +47,17 @@ architecture structural of execution_unit is
     -- ========== SCHEDULER CONTROL SIGNALS ==========
     signal sched_full : std_logic;
     
+    signal rf_src_tag_1 : std_logic_vector(integer(ceil(log2(real(INT_RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+    signal rf_src_tag_2 : std_logic_vector(integer(ceil(log2(real(INT_RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+    
+    signal rs_alloc_dest_tag : std_logic_vector(integer(ceil(log2(real(INT_RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+    
     -- ========== RESERVATION STATION PORT 0 ==========
     signal p0_operand_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     signal p0_operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     signal p0_immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-    signal p0_operation_type : std_logic_vector(OPERATION_TYPE_BITS downto 0);
-    signal p0_operation_sel : std_logic_vector(OPERATION_SELECT_BITS downto 0);
-    signal p0_dest_reg_addr : std_logic_vector(4 downto 0);
+    signal p0_operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
+    signal p0_operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
     signal p0_rs_producer : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_CNT)))) - 1 downto 0);
     -- ================================================
     
@@ -83,33 +90,42 @@ begin
       next_instr_ready <= not (iq_empty or sched_full);
       
     register_file : entity work.register_file(rtl)
-                    generic map(REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
+                    generic map(RESERVATION_STATION_ENTRY_NUM => INT_RESERVATION_STATION_ENTRY_NUM,
+                                REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
                                 REGFILE_SIZE => 4 + ENABLE_BIG_REGFILE)
-                    port map(-- ADDRESSES
+                    port map(
+                             -- COMMON DATA BUS
+                             cdb => cdb_1,
+                             
+                             -- ADDRESSES
                              rd_1_addr => next_instruction(46 downto 42),
                              rd_2_addr => next_instruction(41 downto 37),
-                             wr_addr => cdb_1.rf_write_reg_addr,
+                             wr_addr => next_instruction(36 downto 32),
                              
                              -- DATA
-                             wr_data => cdb_1.data,
                              rd_1_data => rf_rd_data_1,
                              rd_2_data => rf_rd_data_2,
                              
                              -- CONTROL
+                             rf_src_tag_1 => rf_src_tag_1,
+                             rf_src_tag_2 => rf_src_tag_2,
+                             
+                             rs_alloc_dest_tag => rs_alloc_dest_tag,
+                             
                              reset => reset,
                              clk => clk,
                              clk_dbg => '0');
       
     reservation_station : entity work.reservation_station(rtl)
-                          generic map(NUM_ENTRIES => RESERVATION_STATION_ENTRY_CNT,
+                          generic map(NUM_ENTRIES => INT_RESERVATION_STATION_ENTRY_NUM,
                                       REG_ADDR_BITS => integer(ceil(log2(real(REGFILE_SIZE)))),
                                       OPERATION_TYPE_BITS => 3,
                                       OPERATION_SELECT_BITS => 5,
                                       OPERAND_BITS => CPU_DATA_WIDTH_BITS)
                           port map(i1_operation_type => next_instruction(54 downto 52),
                                    i1_operation_sel => next_instruction(51 downto 47),
-                                   i1_reg_src_1 => next_instruction(46 downto 42),
-                                   i1_reg_src_2 => next_instruction(41 downto 37),
+                                   i1_src_tag_1 => rf_src_tag_1,
+                                   i1_src_tag_2 => rf_src_tag_2,
                                    i1_operand_1 => rf_rd_data_1,
                                    i1_operand_2 => rf_rd_data_2,
                                    i1_immediate => next_instruction(31 downto 0),
@@ -120,8 +136,9 @@ begin
                                    o1_immediate => p0_immediate,
                                    o1_operation_type => p0_operation_type,
                                    o1_operation_sel => p0_operation_sel,
-                                   o1_dest_reg => p0_dest_reg_addr,
                                    o1_rs_entry_tag => p0_rs_producer,
+                                   
+                                   rs_alloc_dest_tag => rs_alloc_dest_tag,
                                    
                                    write_en => next_instr_ready,
                                    rs_dispatch_1_en => '1',
@@ -136,12 +153,9 @@ begin
                                         operand_2 => p0_operand_2,
                                         immediate => p0_immediate,
                                         operation_sel => p0_operation_sel, 
-                                        rf_write_reg_addr => p0_dest_reg_addr,
                                         rs_entry_tag => p0_rs_producer,
                                         
-                                        cdb_data => cdb_1.data,
-                                        cdb_rf_write_reg_addr => cdb_1.rf_write_reg_addr,
-                                        cdb_rs_update_index => cdb_1.rs_update_index,
+                                        cdb => cdb_1,
                                         
                                         reset => reset,
                                         clk => clk);

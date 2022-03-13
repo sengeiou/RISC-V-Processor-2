@@ -58,8 +58,7 @@ package pkg_cpu is
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
     
     type cdb_type is record
-        rf_write_reg_addr : std_logic_vector(4 downto 0);
-        rs_update_index : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) downto 0);
         data : std_logic_vector(OPERAND_BITS - 1 downto 0);
     end record;
 end pkg_cpu;
