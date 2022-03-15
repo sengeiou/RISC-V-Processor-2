@@ -7,7 +7,7 @@ use WORK.PKG_SCHED.ALL;
 -- Implements the Tomasulo algorithm with unified reservation station. Might get broken up into multiple modules
 -- in the future
 
-entity execution_unit is
+entity execution_engine is
     port(
         decoded_instruction : in decoded_instruction_type;
         
@@ -16,9 +16,9 @@ entity execution_unit is
         reset : in std_logic;
         clk : in std_logic
     );
-end execution_unit;
+end execution_engine;
 
-architecture structural of execution_unit is
+architecture Structural of execution_engine is
     COMPONENT fifo_generator_1
         PORT (
           clk : IN STD_LOGIC;

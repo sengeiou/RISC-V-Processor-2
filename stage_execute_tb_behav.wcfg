@@ -8,20 +8,21 @@
             <top_module name="glbl" />
             <top_module name="pkg_cpu" />
             <top_module name="pkg_fu" />
+            <top_module name="pkg_sched" />
             <top_module name="stage_execute_tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="204400fs"></ZoomStartTime>
-      <ZoomEndTime time="438575fs"></ZoomEndTime>
-      <Cursor1Time time="282946fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="5000001fs"></ZoomEndTime>
+      <Cursor1Time time="5000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="264"></NameColumnWidth>
-      <ValueColumnWidth column_width="125"></ValueColumnWidth>
+      <ValueColumnWidth column_width="121"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="17" />
+   <WVObjectSize size="16" />
    <wvobject fp_name="/stage_execute_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -35,8 +36,8 @@
       <obj_property name="ObjectShortName">instr_rdy</obj_property>
    </wvobject>
    <wvobject fp_name="/stage_execute_tb/instr_in" type="array">
-      <obj_property name="ElementShortName">instr_in[54:0]</obj_property>
-      <obj_property name="ObjectShortName">instr_in[54:0]</obj_property>
+      <obj_property name="ElementShortName">instr_in</obj_property>
+      <obj_property name="ObjectShortName">instr_in</obj_property>
    </wvobject>
    <wvobject fp_name="/stage_execute_tb/T" type="other">
       <obj_property name="ElementShortName">T</obj_property>
@@ -55,8 +56,8 @@
       <obj_property name="ObjectShortName">next_instr_ready</obj_property>
    </wvobject>
    <wvobject fp_name="/stage_execute_tb/uut/next_instruction" type="array">
-      <obj_property name="ElementShortName">next_instruction[54:0]</obj_property>
-      <obj_property name="ObjectShortName">next_instruction[54:0]</obj_property>
+      <obj_property name="ElementShortName">next_instruction</obj_property>
+      <obj_property name="ObjectShortName">next_instruction</obj_property>
    </wvobject>
    <wvobject fp_name="/stage_execute_tb/uut/rf_src_tag_1" type="array">
       <obj_property name="ElementShortName">rf_src_tag_1[3:0]</obj_property>
@@ -65,35 +66,6 @@
    <wvobject fp_name="/stage_execute_tb/uut/rf_src_tag_2" type="array">
       <obj_property name="ElementShortName">rf_src_tag_2[3:0]</obj_property>
       <obj_property name="ObjectShortName">rf_src_tag_2[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="group90" type="group">
-      <obj_property name="label">PORT 0</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/stage_execute_tb/uut/p0_operand_1" type="array">
-         <obj_property name="ElementShortName">p0_operand_1[31:0]</obj_property>
-         <obj_property name="ObjectShortName">p0_operand_1[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/stage_execute_tb/uut/p0_operand_2" type="array">
-         <obj_property name="ElementShortName">p0_operand_2[31:0]</obj_property>
-         <obj_property name="ObjectShortName">p0_operand_2[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/stage_execute_tb/uut/p0_immediate" type="array">
-         <obj_property name="ElementShortName">p0_immediate[31:0]</obj_property>
-         <obj_property name="ObjectShortName">p0_immediate[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/stage_execute_tb/uut/p0_operation_type" type="array">
-         <obj_property name="ElementShortName">p0_operation_type[2:0]</obj_property>
-         <obj_property name="ObjectShortName">p0_operation_type[2:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/stage_execute_tb/uut/p0_operation_sel" type="array">
-         <obj_property name="ElementShortName">p0_operation_sel[4:0]</obj_property>
-         <obj_property name="ObjectShortName">p0_operation_sel[4:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/stage_execute_tb/uut/p0_rs_producer" type="array">
-         <obj_property name="ElementShortName">p0_rs_producer[3:0]</obj_property>
-         <obj_property name="ObjectShortName">p0_rs_producer[3:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="group742" type="group">
       <obj_property name="label">RESERVATION STATION</obj_property>

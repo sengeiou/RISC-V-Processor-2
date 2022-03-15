@@ -26,7 +26,7 @@ begin
         wait for T / 2;
     end process;
     
-    uut : entity work.execution_unit(structural)
+    uut : entity work.execution_engine(Structural)
           port map(decoded_instruction => instr_in,
                    instr_ready => instr_rdy,
                    clk => clk,
