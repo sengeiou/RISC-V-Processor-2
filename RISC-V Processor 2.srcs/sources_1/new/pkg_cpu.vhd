@@ -12,14 +12,35 @@ package pkg_cpu is
     constant CPU_DATA_WIDTH_BITS : integer := 32;
     constant CPU_ADDR_WIDTH_BITS : integer := 32;
     constant ENABLE_BIG_REGFILE : integer range 0 to 1 := 1;        -- Selects between 16 entry register file and the 32 entry one (RV32E and RV32I)
-    constant REGFILE_SIZE : integer range 1 to 1024 := 32;
-    constant RESERVATION_STATION_ENTRY_CNT : integer range 1 to 1023 := 7;
+    constant RESERVATION_STATION_ENTRIES : integer range 1 to 1023 := 15;
+    constant OPERATION_TYPE_BITS : integer := 3;
+    constant OPERATION_SELECT_BITS : integer := 5;
+    constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
+    
+    -- Constants
+    constant REG_ADDR_ZERO : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0) := (others => '0');
     
     -- Debugging Configuration
     constant ENABLE_REGFILE_ILA : boolean := true;
     
     -- Logic Vector Constants
     constant NUM_4 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0) := X"00000004";
+    
+    -- CPU Data Types
+    type decoded_instruction_type is record
+        -- Determines what kinds of functional units can execute this type of instruction. Used to select one or multiple functional units.
+        operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
+        
+        -- Selects the operation to be performed once the instruction has been passed to the functional unit. Ex: ALU operation selection
+        operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
+        
+        -- Source register addresses
+        reg_src_1 : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+        reg_src_2 : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+        reg_dest : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+        
+        immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    end record;
     
     -- ALU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";
@@ -51,14 +72,20 @@ package pkg_cpu is
     constant PROG_FLOW_JAL : std_logic_vector(1 downto 0) := "10";
     constant PROG_FLOW_JALR : std_logic_vector(1 downto 0) := "11";
     
+    -- Scheduler Data Types And Constants
+    type port_type is record
+        operand_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
+        operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+    end record;
+    
     -- CDB Configuration
-    constant RESERVATION_STATION_ENTRIES : integer range 1 to 1024 := 4;
-    constant OPERATION_TYPE_BITS : integer := 3;
-    constant OPERATION_SELECT_BITS : integer := 5;
-    constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
     
     type cdb_type is record
-        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
         data : std_logic_vector(OPERAND_BITS - 1 downto 0);
     end record;
 end pkg_cpu;

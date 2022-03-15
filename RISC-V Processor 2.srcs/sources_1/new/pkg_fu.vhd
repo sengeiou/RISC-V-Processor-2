@@ -9,11 +9,11 @@ package pkg_fu is
         operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rs_entry_tag : std_logic_vector(2 downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
     end record;
     
     type int_br_pipeline_reg_2_type is record
         alu_result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-        rs_entry_tag : std_logic_vector(2 downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
     end record;
 end package;

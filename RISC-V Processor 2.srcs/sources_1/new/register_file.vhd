@@ -14,7 +14,7 @@ use work.pkg_cpu.all;
 
 entity register_file is
     generic(
-        RESERVATION_STATION_ENTRY_NUM : integer;                                              -- Number of entries in the associated reservation station
+        RESERVATION_STATION_TAG_BITS : integer;                                              -- Number of entries in the associated reservation station
         REG_DATA_WIDTH_BITS : integer;                                                        -- Number of bits in the registers (XLEN)
         REGFILE_SIZE : integer                                                                -- Number of registers in the register file (2 ** REGFILE_SIZE)
     );
@@ -32,10 +32,10 @@ entity register_file is
         rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);             -- Data output ports
         
         -- Control busses
-        rf_src_tag_1 : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
-        rf_src_tag_2 : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+        rf_src_tag_1 : out std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
+        rf_src_tag_2 : out std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
         
-        rs_alloc_dest_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+        rs_alloc_dest_tag : in std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
     
         en : in std_logic;
         reset : in std_logic;                                                           -- Sets all registers to 0 when high (synchronous)
@@ -46,12 +46,12 @@ end register_file;
 
 architecture rtl of register_file is
     -- ========== CONSTANTS ==========
-    constant REG_STATUS_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0) := (others => '0');
+    constant REG_STATUS_TAG_ZERO : std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0) := (others => '0');
     constant REG_ADDR_ZERO : std_logic_vector(REGFILE_SIZE - 1 downto 0) := (others => '0'); 
     -- ===============================
 
     -- ========== RF STATUS REGISTER ==========
-    type rf_status_reg_type is array (31 downto 0) of std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRY_NUM)))) - 1 downto 0);
+    type rf_status_reg_type is array (31 downto 0) of std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
     signal rf_status_reg : rf_status_reg_type;
     -- ========================================
 

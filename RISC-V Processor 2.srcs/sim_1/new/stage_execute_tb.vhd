@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use WORK.PKG_CPU.ALL;
 
 entity stage_execute_tb is
 
@@ -11,7 +12,7 @@ architecture Behavioral of stage_execute_tb is
     signal opcode : std_logic_vector(7 downto 0);
     signal rs1, rs2, rd : std_logic_vector(4 downto 0);
     signal imm : std_logic_vector(31 downto 0);
-    signal instr_in : std_logic_vector(54 downto 0);
+    signal instr_in : decoded_instruction_type;
     
     constant T : time := 20ns;
 begin
@@ -31,7 +32,12 @@ begin
                    clk => clk,
                    reset => rst);
     
-    instr_in <= opcode & rs1 & rs2 & rd & imm;
+    instr_in.operation_type <= opcode(7 downto 5);
+    instr_in.operation_select <= opcode(4 downto 0);
+    instr_in.reg_src_1 <= rs1;
+    instr_in.reg_src_2 <= rs2;
+    instr_in.reg_dest <= rd;
+    instr_in.immediate <= imm;
     
     process
     begin
@@ -94,7 +100,7 @@ begin
         
         wait for T;
         
-        -- SUB x8, x5, x5
+        -- SUB x6, x6, x6
         opcode <= "00001000";
         rs1 <= "00110";
         rs2 <= "00110";

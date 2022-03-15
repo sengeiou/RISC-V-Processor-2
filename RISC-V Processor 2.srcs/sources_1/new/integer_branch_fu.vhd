@@ -15,7 +15,7 @@ entity integer_branch_fu is
         operand_2 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         immediate : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         operation_sel : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rs_entry_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) downto 0);
+        rs_entry_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
         
         cdb : out cdb_type;
         
