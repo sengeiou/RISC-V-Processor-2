@@ -42,7 +42,10 @@ package pkg_cpu is
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     end record;
     
-    -- ALU Operation Definitions
+    -- Operation Type Definitions
+    constant OP_TYPE_INTEGER : std_logic_vector(2 downto 0) := "000";
+    
+    -- Integer EU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";
     constant ALU_OP_SUB : std_logic_vector(3 downto 0) := "1000";
     constant ALU_OP_EQ : std_logic_vector(3 downto 0) := "1100";

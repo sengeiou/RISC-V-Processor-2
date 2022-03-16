@@ -86,13 +86,13 @@ begin
     -- AXI Masters
     core_1 : entity work.core(structural)
              port map(
-                      from_master => from_master_1,
-                      to_master => to_master_1,
+                      --from_master => from_master_1,
+                      --to_master => to_master_1,
              
-                      clk_cpu => clk_cpu,
-                      clk_dbg => clk_dbg,
+                      clk => clk_cpu,
+                      --clk_dbg => clk_dbg,
                       
-                      reset_cpu => reset_cpu);
+                      reset => reset_cpu);
 
     -- AXI Slaves
     led_device : entity work.led_interface(rtl)
