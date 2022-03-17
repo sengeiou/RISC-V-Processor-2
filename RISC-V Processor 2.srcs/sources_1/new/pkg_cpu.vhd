@@ -44,6 +44,7 @@ package pkg_cpu is
     
     -- Operation Type Definitions
     constant OP_TYPE_INTEGER : std_logic_vector(2 downto 0) := "000";
+    constant OP_TYPE_STORE : std_logic_vector(2 downto 0) := "001";
     
     -- Integer EU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";

@@ -16,7 +16,10 @@ entity reservation_station is
         OPERATION_SELECT_BITS : integer;
         
         OPERAND_BITS : integer;
-        REG_ADDR_BITS : integer
+        REG_ADDR_BITS : integer;
+        
+        PORT_0_OPTYPE : std_logic_vector(2 downto 0);
+        PORT_1_OPTYPE : std_logic_vector(2 downto 0)
     );
     port(
         -- COMMON DATA BUS
@@ -43,11 +46,21 @@ entity reservation_station is
         o1_rs_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
         -- ==================
         
+        -- ===== PORT 1 =====
+        o2_operation_type : out std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
+        o2_operation_sel : out std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
+        o2_operand_1 : out std_logic_vector(OPERAND_BITS - 1 downto 0);
+        o2_operand_2 : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
+        o2_immediate : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
+        o2_rs_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        -- ==================
+        
         -- CONTROL
         next_alloc_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
         
         write_en : in std_logic;
-        rs_dispatch_1_en : in std_logic;
+        port_0_dispatch_en : in std_logic;
+        port_1_dispatch_en : in std_logic;
         full : out std_logic;
         
         clk : in std_logic;
@@ -82,13 +95,16 @@ architecture rtl of reservation_station is
     type reservation_station_entries_type is array(RESERVATION_STATION_ENTRIES - 1 downto 0) of std_logic_vector(ENTRY_BITS - 1 downto 0);  -- Number of bits in one entry of the reservation station
     
     signal rs_entries : reservation_station_entries_type;
-    signal rs_entry_tag_1 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
-    signal rs_entry_tag_2 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
     signal rs_busy_bits : std_logic_vector(RESERVATION_STATION_ENTRIES - 1 downto 0);
-    signal rs_ready_bits : std_logic_vector(RESERVATION_STATION_ENTRIES - 1 downto 0);
+    signal rs_operands_ready_bits : std_logic_vector(RESERVATION_STATION_ENTRIES - 1 downto 0);
+    signal rs_port_0_optype_bits : std_logic_vector(RESERVATION_STATION_ENTRIES - 1 downto 0);
+    signal rs_port_1_optype_bits : std_logic_vector(RESERVATION_STATION_ENTRIES - 1 downto 0);
+    signal rs_port_0_dispatch_ready_bits : std_logic_vector(RESERVATION_STATION_ENTRIES - 1 downto 0);
+    signal rs_port_1_dispatch_ready_bits : std_logic_vector(RESERVATION_STATION_ENTRIES - 1 downto 0);
     
     signal rs_sel_write_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
     signal rs_sel_read_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
+    signal rs_sel_read_2 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
     
     signal rs1_src_tag_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0); 
     signal rs1_src_tag_2 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0); 
@@ -116,18 +132,45 @@ begin
     
     -- Generates a vector of ready bits for the reservation station. Ready bits indicate to the allocators that the reservation station entry
     -- is ready to be dispatched. That means that the entry has all operands (both entry tags are 0), is busy and has not yet been dispatched
-    rs_ready_bits_proc : process(rs_entries)
+    rs_operands_ready_bits_proc : process(rs_entries)
     begin
         for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
             if (rs_entries(i)(ENTRY_TAG_1_START downto ENTRY_TAG_1_END) = ENTRY_TAG_ZERO and
                 rs_entries(i)(ENTRY_TAG_2_START downto ENTRY_TAG_2_END) = ENTRY_TAG_ZERO and
                 rs_entries(i)(0) = '1' and rs_entries(i)(1) = '0') then
-                rs_ready_bits(i) <= '1';
+                rs_operands_ready_bits(i) <= '1';
             else
-                rs_ready_bits(i) <= '0';
+                rs_operands_ready_bits(i) <= '0';
             end if;
         end loop;
     end process;
+    
+    -- Generates a vector of bits which indicate that the corresponding reservation station entry should output to port 0.
+    rs_port_0_optype_bits_proc : process(rs_entries)
+    begin
+        for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
+            if (rs_entries(i)(OPERATION_TYPE_START downto OPERATION_TYPE_END) = PORT_0_OPTYPE) then
+                rs_port_0_optype_bits(i) <= '1';
+            else
+                rs_port_0_optype_bits(i) <= '0';
+            end if;
+        end loop;
+    end process;
+
+    -- Generates a vector of bits which indicate that the corresponding reservation station entry should output to port 1.
+    rs_port_1_optype_bits_proc : process(rs_entries)
+    begin
+        for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
+            if (rs_entries(i)(OPERATION_TYPE_START downto OPERATION_TYPE_END) = PORT_1_OPTYPE) then
+                rs_port_1_optype_bits(i) <= '1';
+            else
+                rs_port_1_optype_bits(i) <= '0';
+            end if;
+        end loop;
+    end process;
+    
+    rs_port_0_dispatch_ready_bits <= rs_operands_ready_bits and rs_port_0_optype_bits;
+    rs_port_1_dispatch_ready_bits <= rs_operands_ready_bits and rs_port_1_optype_bits;
 
     -- Priority encoder that takes busy bits as its input and selects one free entry to be written into 
     prio_enc_write_1 : entity work.priority_encoder(rtl)
@@ -135,11 +178,17 @@ begin
                        port map(d => rs_busy_bits,
                                 q => rs_sel_write_1);
                                 
-    -- Priority encoder that takes ready bits as its input and selects one entry to be dispatched
+    -- Priority encoder that takes ready bits as its input and selects one entry to be dispatched to port 0. 
     prio_enc_read_1 : entity work.priority_encoder(rtl)
                       generic map(NUM_INPUTS => RESERVATION_STATION_ENTRIES)
-                      port map(d => rs_ready_bits,
+                      port map(d => rs_port_0_dispatch_ready_bits,
                                q => rs_sel_read_1);
+                               
+    -- Priority encoder that takes ready bits as its input and selects one entry to be dispatched to port 1. 
+    prio_enc_read_2 : entity work.priority_encoder(rtl)
+                      generic map(NUM_INPUTS => RESERVATION_STATION_ENTRIES)
+                      port map(d => rs_port_1_dispatch_ready_bits,
+                               q => rs_sel_read_2);
                                
     -- This is a check for whether current instruction's operands are being broadcast on the CDB. If they are then that will immediately be taken
     -- into consideration. Without this part the instruction in an entry could keep waiting for a result of an instruction that has already finished execution.  
@@ -181,8 +230,12 @@ begin
                         rs_entries(i)(0) <= '0';
                     end if;
                     
-                    if (rs_dispatch_1_en = '1') then
+                    if (port_0_dispatch_en = '1') then
                         rs_entries(to_integer(unsigned(rs_sel_read_1)))(1) <= '1';
+                    end if;
+                    
+                    if (port_1_dispatch_en = '1') then
+                        rs_entries(to_integer(unsigned(rs_sel_read_2)))(1) <= '1';
                     end if;
                 
                     if (rs_entries(i)(ENTRY_TAG_1_START downto ENTRY_TAG_1_END) /= ENTRY_TAG_ZERO and
@@ -202,9 +255,9 @@ begin
     end process;
     
     -- Puts the selected entry onto one exit port of the reservation station
-    reservation_station_dispatch_proc : process(rs_dispatch_1_en, rs_entries, rs_sel_read_1)
+    reservation_station_dispatch_proc : process(port_0_dispatch_en, port_1_dispatch_en, rs_entries, rs_sel_read_1, rs_sel_read_2)
     begin
-        if (rs_dispatch_1_en = '1') then
+        if (port_0_dispatch_en = '1') then
             o1_operation_type <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERATION_TYPE_START downto OPERATION_TYPE_END);
             o1_operation_sel <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERATION_SELECT_START downto OPERATION_SELECT_END);
             o1_operand_1 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_1_START downto OPERAND_1_END);
@@ -218,6 +271,22 @@ begin
             o1_operand_2 <= (others => '0');
             o1_immediate <= (others => '0');
             o1_rs_entry_tag <= (others => '0');
+        end if;
+        
+        if (port_1_dispatch_en = '1') then
+            o2_operation_type <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERATION_TYPE_START downto OPERATION_TYPE_END);
+            o2_operation_sel <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERATION_SELECT_START downto OPERATION_SELECT_END);
+            o2_operand_1 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_1_START downto OPERAND_1_END);
+            o2_operand_2 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_2_START downto OPERAND_2_END);
+            o2_immediate <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(IMMEDIATE_START downto IMMEDIATE_END);
+            o2_rs_entry_tag <= rs_sel_read_2;
+        else
+            o2_operation_type <= (others => '0');
+            o2_operation_sel <= (others => '0');
+            o2_operand_1 <= (others => '0');
+            o2_operand_2 <= (others => '0');
+            o2_immediate <= (others => '0');
+            o2_rs_entry_tag <= (others => '0');
         end if;
     end process;
     

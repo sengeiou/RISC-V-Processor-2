@@ -38,6 +38,13 @@ begin
             decoded_instruction.operation_select <= '0' & instruction(30) & instruction(14 downto 12);
             
             instruction_ready <= '1';
+        elsif (instruction(6 downto 0) = "0100011") then
+            decoded_instruction.operation_type <= OP_TYPE_STORE;
+            decoded_instruction.operation_select <= "00" & instruction(14 downto 12);
+            
+            decoded_instruction.immediate <= X"00000" & instruction(31 downto 25) & instruction(11 downto 7);
+            
+            instruction_ready <= '1';
         end if;
     end process;
 

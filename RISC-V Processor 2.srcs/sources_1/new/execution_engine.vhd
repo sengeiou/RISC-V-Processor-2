@@ -120,7 +120,9 @@ begin
                                       REG_ADDR_BITS => 4 + ENABLE_BIG_REGFILE,
                                       OPERATION_TYPE_BITS => OPERATION_TYPE_BITS,
                                       OPERATION_SELECT_BITS => OPERATION_SELECT_BITS,
-                                      OPERAND_BITS => CPU_DATA_WIDTH_BITS)
+                                      OPERAND_BITS => CPU_DATA_WIDTH_BITS,
+                                      PORT_0_OPTYPE => "000",
+                                      PORT_1_OPTYPE => "001")
                           port map(cdb_data => cdb_1.data,
                                    cdb_rs_entry_tag => cdb_1.rs_entry_tag,
                                     
@@ -143,7 +145,8 @@ begin
                                    next_alloc_entry_tag => next_alloc_entry_tag,
                                    
                                    write_en => next_instr_ready,
-                                   rs_dispatch_1_en => '1',
+                                   port_0_dispatch_en => '1',
+                                   port_1_dispatch_en => '1',
                                    full => sched_full,
                                    
                                    clk => clk,
