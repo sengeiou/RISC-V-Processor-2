@@ -112,6 +112,8 @@ begin
             else
                 arbiter_state_reg_next <= BUS_GRANTED;
             end if;
+        else
+            arbiter_state_reg_next <= IDLE;
         end if;
     end process;
     

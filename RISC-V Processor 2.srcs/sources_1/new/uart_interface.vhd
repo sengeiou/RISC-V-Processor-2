@@ -352,6 +352,8 @@ begin
             when IDLE =>
                 tx <= '1';
             when INIT_TRANSMISSION => 
+                tx <= '1';
+            
                 rts <= '0';
             when START_BIT => 
                 tx <= '0';

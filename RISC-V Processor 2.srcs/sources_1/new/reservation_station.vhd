@@ -111,15 +111,24 @@ architecture rtl of reservation_station is
     signal rs1_operand_1 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
     signal rs1_operand_2 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
 begin
+--    rs_full_proc : process(rs_entries)
+--    begin
+--        full <= '1';
+--        for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
+--            if (rs_entries(i)(0) = '0') then
+--                full <= '0';
+--            end if;
+--        end loop;
+--    end process;
+    
     rs_full_proc : process(rs_entries)
-        variable res : std_logic := '1';
+        variable temp : std_logic;
     begin
+        temp := '1';
         for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
-            if (rs_entries(i)(0) = '0') then
-                res := '0';
-            end if;
+            temp := temp and rs_entries(i)(0);
         end loop;
-        full <= res;
+        full <= temp;
     end process;
 
     -- Generates a vector containing all busy bits of the reservation station
