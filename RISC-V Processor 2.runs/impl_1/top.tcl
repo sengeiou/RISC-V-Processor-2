@@ -17,7 +17,7 @@ proc create_report { reportName command } {
   }
 }
 namespace eval ::optrace {
-  variable script "E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/impl_1/top.tcl"
+  variable script "E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.runs/impl_1/top.tcl"
   variable category "vivado_impl"
 }
 
@@ -122,9 +122,7 @@ start_step init_design
 set ACTIVE_STEP init_design
 set rc [catch {
   create_msg_db init_design.pb
-  set_param tcl.collectionResultDisplayLimit 0
   set_param chipscope.maxJobs 1
-  set_param xicom.use_bs_reader 1
 OPTRACE "create in-memory project" START { }
   create_project -in_memory -part xc7a100tcsg324-1
   set_property board_part digilentinc.com:nexys-a7-100t:part0:1.0 [current_project]
@@ -132,22 +130,20 @@ OPTRACE "create in-memory project" START { }
   set_param project.singleFileAddWarning.threshold 0
 OPTRACE "create in-memory project" END { }
 OPTRACE "set parameters" START { }
-  set_property webtalk.parent_dir {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.cache/wt} [current_project]
-  set_property parent.project_path {E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.xpr} [current_project]
-  set_property ip_output_repo {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.cache/ip}} [current_project]
+  set_property webtalk.parent_dir {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.cache/wt} [current_project]
+  set_property parent.project_path {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.xpr} [current_project]
+  set_property ip_output_repo {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.cache/ip}} [current_project]
   set_property ip_cache_permissions {read write} [current_project]
   set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY} [current_project]
 OPTRACE "set parameters" END { }
 OPTRACE "add files" START { }
-  add_files -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.runs/synth_1/top.dcp}}
-  read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
-  read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/block_rom_memory.xci}}
-  read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
-  read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/axi_led_ila/axi_led_ila.xci}}
-  read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/ila_0/ila_0.xci}}
-  read_ip -quiet {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/sources_1/ip/fifo_generator_0/fifo_generator_0.xci}}
+  add_files -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.runs/synth_1/top.dcp}}
+  read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
+  read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/block_rom_memory.xci}}
+  read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
+  read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/fifo_generator_1/fifo_generator_1.xci}}
 OPTRACE "read constraints: implementation" START { }
-  read_xdc {{E:/Vivado Projects/RISC-V Processor 2/RISC-V Processor 2.srcs/constrs_1/new/nexys_a7_constr.xdc}}
+  read_xdc {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/constrs_1/new/nexys_a7_constr.xdc}}
 OPTRACE "read constraints: implementation" END { }
 OPTRACE "add files" END { }
 OPTRACE "link_design" START { }

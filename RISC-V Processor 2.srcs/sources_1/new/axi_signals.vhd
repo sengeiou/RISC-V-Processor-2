@@ -2,15 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package axi_interface_signal_groups is
---    generic(
---        AXI_DATA_BUS_WIDTH : integer range 3 to 10 := 5
---    );
-    
     constant AXI_DATA_BUS_WIDTH : integer range 3 to 10 := 5;
     constant AXI_ADDR_BUS_WIDTH : integer range 3 to 10 := 5;
-    
-    type integer_bus_width is range 3 to 10;
-    
+
     type WriteAddressChannel is record
         addr : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         len : std_logic_vector(7 downto 0);     -- Burst length

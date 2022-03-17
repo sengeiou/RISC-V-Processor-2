@@ -16,4 +16,24 @@ package pkg_fu is
         alu_result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
     end record;
+    
+    type lsu_pipeline_reg_1_type is record
+        operand_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+    end record;
+    
+    type lsu_pipeline_reg_2_type is record
+        store_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        store_addr : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+    end record;
+    
+    type lsu_pipeline_reg_3_type is record
+        load_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+    end record;
 end package;

@@ -86,8 +86,8 @@ begin
     -- AXI Masters
     core_1 : entity work.core(structural)
              port map(
-                      --from_master => from_master_1,
-                      --to_master => to_master_1,
+                      from_master_1 => from_master_1,
+                      to_master_1 => to_master_1,
              
                       clk => clk_cpu,
                       --clk_dbg => clk_dbg,

@@ -3,12 +3,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.MATH_REAL.ALL;
 use WORK.PKG_CPU.ALL;
 use WORK.PKG_SCHED.ALL;
+use WORK.AXI_INTERFACE_SIGNAL_GROUPS.ALL;
 
 -- Implements the Tomasulo algorithm with unified reservation station. Might get broken up into multiple modules
 -- in the future
 
 entity execution_engine is
     port(
+        from_master_1 : out FromMaster; 
+        to_master_1 : in ToMaster; 
+    
         decoded_instruction : in decoded_instruction_type;
         
         instr_ready : in std_logic;
@@ -48,6 +52,7 @@ architecture Structural of execution_engine is
     
     -- ========== RESERVATION STATION PORTS ==========
     signal port_0 : port_type;
+    signal port_1 : port_type;
     -- ================================================
     
     signal next_instruction : decoded_instruction_type;
@@ -142,6 +147,13 @@ begin
                                    o1_operation_sel => port_0.operation_sel,
                                    o1_rs_entry_tag => port_0.rs_entry_tag,
                                    
+                                   o2_operand_1 => port_1.operand_1,
+                                   o2_operand_2 => port_1.operand_2,
+                                   o2_immediate => port_1.immediate,
+                                   o2_operation_type => port_1.operation_type,
+                                   o2_operation_sel => port_1.operation_sel,
+                                   o2_rs_entry_tag => port_1.rs_entry_tag,
+                                   
                                    next_alloc_entry_tag => next_alloc_entry_tag,
                                    
                                    write_en => next_instr_ready,
@@ -152,7 +164,7 @@ begin
                                    clk => clk,
                                    reset => reset);
       
-    integer_branch_exec_unit : entity work.integer_eu(structural)
+    integer_unit : entity work.integer_eu(structural)
                                generic map(OPERAND_BITS => CPU_DATA_WIDTH_BITS)
                                port map(operand_1 => port_0.operand_1,
                                         operand_2 => port_0.operand_2,
@@ -164,5 +176,20 @@ begin
                                         
                                         reset => reset,
                                         clk => clk);
+                                        
+    load_store_unit : entity work.load_store_eu(rtl)
+                      port map(to_master => to_master_1,
+                               from_master => from_master_1,
+                      
+                               operand_1 => port_1.operand_1,
+                               operand_2 => port_1.operand_2,
+                               immediate => port_1.immediate,
+                               operation_sel => port_1.operation_sel, 
+                               rs_entry_tag => port_1.rs_entry_tag,
+                                        
+                               --cdb => cdb_1,
+                                        
+                               reset => reset,
+                               clk => clk);
 
 end structural;

@@ -70,7 +70,7 @@ begin
         elsif (bus_address(31 downto 12) = X"0000_3") then           -- Slave 3 at addresses 0000_3000 - 0000_3FFF
             slave_sel_next <= "0010";
         else
-            slave_sel_next <= "0010";
+            slave_sel_next <= "0001";
         end if;
     end process;
 

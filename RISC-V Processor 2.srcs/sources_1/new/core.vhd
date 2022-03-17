@@ -1,9 +1,13 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use WORK.PKG_CPU.ALL;
+use WORK.AXI_INTERFACE_SIGNAL_GROUPS.ALL;
 
 entity core is
     port(
+        from_master_1 : out FromMaster; 
+        to_master_1 : in ToMaster; 
+    
         clk : in std_logic;
         reset : in std_logic
     );
@@ -20,7 +24,10 @@ begin
                          reset => reset);
 
     execution_engine : entity work.execution_engine(structural)
-                       port map(decoded_instruction => decoded_instruction,
+                       port map(from_master_1 => from_master_1,
+                                to_master_1 => to_master_1,
+                                
+                                decoded_instruction => decoded_instruction,
                                 instr_ready => instruction_ready,
                                 clk => clk,
                                 reset => reset);
