@@ -90,7 +90,7 @@ begin
                       to_master_1 => to_master_1,
              
                       clk => clk_cpu,
-                      --clk_dbg => clk_dbg,
+                      clk_dbg => clk_dbg,
                       
                       reset => reset_cpu);
 

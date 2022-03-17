@@ -9,6 +9,7 @@ entity core is
         to_master_1 : in ToMaster; 
     
         clk : in std_logic;
+        clk_dbg : in std_logic;
         reset : in std_logic
     );
 end core;
@@ -30,6 +31,7 @@ begin
                                 decoded_instruction => decoded_instruction,
                                 instr_ready => instruction_ready,
                                 clk => clk,
+                                clk_dbg => clk_dbg,
                                 reset => reset);
 
 end structural;

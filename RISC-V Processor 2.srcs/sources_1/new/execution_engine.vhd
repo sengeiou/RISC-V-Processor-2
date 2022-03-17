@@ -18,7 +18,8 @@ entity execution_engine is
         instr_ready : in std_logic;
         
         reset : in std_logic;
-        clk : in std_logic
+        clk : in std_logic;
+        clk_dbg : in std_logic
     );
 end execution_engine;
 
@@ -118,7 +119,7 @@ begin
                              en => next_instr_ready,
                              reset => reset,
                              clk => clk,
-                             clk_dbg => '0');
+                             clk_dbg => clk_dbg);
       
     reservation_station : entity work.reservation_station(rtl)
                           generic map(RESERVATION_STATION_ENTRIES => RESERVATION_STATION_ENTRIES,

@@ -38,7 +38,7 @@ architecture strucutral of top is
     port
      (-- Clock in ports
       -- Clock out ports
-      clk_cpu          : out    std_logic;
+      clk_out1          : out    std_logic;
       clk_out2          : out    std_logic;
       -- Status and control signals
       reset             : in     std_logic;
@@ -65,7 +65,7 @@ begin
     your_instance_name : clk_wiz_0
         port map ( 
        -- Clock out ports  
-        clk_cpu => clk_cpu,
+        clk_out1 => clk_cpu,
         clk_out2 => clk_dbg,
        -- Status and control signals                
         reset => '0',
