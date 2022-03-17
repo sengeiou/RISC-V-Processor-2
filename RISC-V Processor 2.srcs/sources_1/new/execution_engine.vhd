@@ -149,7 +149,7 @@ begin
                                    clk => clk,
                                    reset => reset);
       
-    integer_branch_func_unit : entity work.integer_branch_fu(structural)
+    integer_branch_exec_unit : entity work.integer_eu(structural)
                                generic map(OPERAND_BITS => CPU_DATA_WIDTH_BITS)
                                port map(operand_1 => port_0.operand_1,
                                         operand_2 => port_0.operand_2,

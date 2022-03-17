@@ -6,7 +6,7 @@ use IEEE.MATH_REAL.ALL;
 use WORK.PKG_CPU.ALL;
 use WORK.PKG_FU.ALL;
 
-entity integer_branch_fu is
+entity integer_eu is
     generic(
         OPERAND_BITS : integer range 1 to 128
     );
@@ -22,9 +22,9 @@ entity integer_branch_fu is
         reset : in std_logic;
         clk : in std_logic
     );
-end integer_branch_fu;
+end integer_eu;
 
-architecture structural of integer_branch_fu is
+architecture structural of integer_eu is
     signal pipeline_reg_1 : int_br_pipeline_reg_1_type;
     signal pipeline_reg_2 : int_br_pipeline_reg_2_type;
     
