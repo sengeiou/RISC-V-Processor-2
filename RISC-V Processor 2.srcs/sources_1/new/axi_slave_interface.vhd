@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-use work.axi_interface_signal_groups.all;
+use work.pkg_axi.all;
 
 entity axi_slave_interface is
     port(

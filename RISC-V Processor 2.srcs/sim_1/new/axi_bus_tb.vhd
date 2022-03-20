@@ -2,23 +2,23 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 
-use work.axi_interface_signal_groups.all;
+use work.pkg_axi.all;
 
 entity axi_bus_tb is
     
 end axi_bus_tb;
 
 architecture Behavioral of axi_bus_tb is
-    signal read_channels : work.axi_interface_signal_groups.ToMaster;
-    signal write_channels : work.axi_interface_signal_groups.FromMaster;
-    signal handshake_master_src : work.axi_interface_signal_groups.HandshakeMasterSrc;
-    signal handshake_slave_src : work.axi_interface_signal_groups.HandshakeSlaveSrc;
+    signal read_channels : work.pkg_axi.ToMaster;
+    signal write_channels : work.pkg_axi.FromMaster;
+    signal handshake_master_src : work.pkg_axi.HandshakeMasterSrc;
+    signal handshake_slave_src : work.pkg_axi.HandshakeSlaveSrc;
     
     signal addr_write, addr_read, data_write : std_logic_vector(31 downto 0);
     signal data_in_slave : std_logic_vector(31 downto 0);
     
-    signal master_interface_out : work.axi_interface_signal_groups.ToMaster;
-    signal slave_interface_out : work.axi_interface_signal_groups.ToSlave;
+    signal master_interface_out : work.pkg_axi.ToMaster;
+    signal slave_interface_out : work.pkg_axi.ToSlave;
     
     signal burst_len : std_logic_vector(7 downto 0);
     signal burst_size : std_logic_vector(2 downto 0);

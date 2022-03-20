@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.MATH_REAL.ALL;
 use WORK.PKG_CPU.ALL;
 use WORK.PKG_SCHED.ALL;
-use WORK.AXI_INTERFACE_SIGNAL_GROUPS.ALL;
+use WORK.PKG_AXI.ALL;
 
 -- Implements the Tomasulo algorithm with unified reservation station. Might get broken up into multiple modules
 -- in the future

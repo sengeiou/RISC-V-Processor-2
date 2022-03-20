@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
 use WORK.PKG_CPU.ALL;
 use WORK.PKG_FU.ALL;
-use WORK.AXI_INTERFACE_SIGNAL_GROUPS.ALL;
+use WORK.PKG_AXI.ALL;
 
 entity load_store_eu is
     port(

@@ -70,9 +70,6 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
-set_param tcl.collectionResultDisplayLimit 0
-set_param chipscope.maxJobs 1
-set_param xicom.use_bs_reader 1
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a100tcsg324-1
 
@@ -120,7 +117,7 @@ read_vhdl -vhdl2008 -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/uart_interface.vhd}
 }
-read_ip -quiet {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
+read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc}}]
 set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_ooc.xdc}}]

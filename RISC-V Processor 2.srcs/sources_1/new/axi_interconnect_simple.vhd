@@ -1,4 +1,4 @@
-use work.axi_interface_signal_groups.all;
+use work.pkg_axi.all;
 
 package test is
     type to_master_array is array(3 downto 0) of ToMaster;
@@ -11,7 +11,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
-use work.axi_interface_signal_groups.all;
+use work.pkg_axi.all;
 use work.test.all;
 
 entity axi_interconnect_simple is
@@ -121,8 +121,8 @@ begin
                                        reset => reset); 
  
  
-    master_read_bus_reqs(3 downto 2) <= "00";
-    master_write_bus_reqs(3 downto 1) <= "000";
+    --master_read_bus_reqs(3 downto 2) <= "00";
+    --master_write_bus_reqs(3 downto 1) <= "000";
     
     GEN_MASTER_CONTROLLERS : for i in 0 to NUM_MASTERS - 1 generate
         master_controller : entity work.axi_master_interface(rtl)

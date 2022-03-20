@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-use work.axi_interface_signal_groups.all;
+use WORK.PKG_AXI.ALL;
 
 entity cpu is
     port(
