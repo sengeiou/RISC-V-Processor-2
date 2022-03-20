@@ -34,23 +34,23 @@ architecture structural of cpu is
     );
     END COMPONENT  ;
 
-    type test1 is array (2 downto 0) of ToMaster;
-    type test2 is array (2 downto 0) of ToSlave;
+    type test1 is array (2 downto 0) of FromMasterInterface;
+    type test2 is array (2 downto 0) of FromSlaveInterface;
 
     signal test1S : test1;
     signal test2S : test2;
 
-    signal from_master_1 : FromMaster; 
-    signal to_master_1 : ToMaster; 
+    signal from_master_1 : ToMasterInterface; 
+    signal to_master_1 : FromMasterInterface; 
     
-    signal from_slave_1 : FromSlave;
-    signal to_slave_1 : ToSlave;
+    signal from_slave_1 : ToSlaveInterface;
+    signal to_slave_1 : FromSlaveInterface;
     
-    signal from_slave_2 : FromSlave;
-    signal to_slave_2 : ToSlave;
+    signal from_slave_2 : ToSlaveInterface;
+    signal to_slave_2 : FromSlaveInterface;
     
-    signal from_slave_3 : FromSlave;
-    signal to_slave_3 : ToSlave;
+    signal from_slave_3 : ToSlaveInterface;
+    signal to_slave_3 : FromSlaveInterface;
     
     signal reset_inv : std_logic;
     

@@ -46,7 +46,7 @@ entity reservation_station is
         o1_rs_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
         -- ==================
         
-        -- ===== PORT 1 =====
+        -- ===== PORT 2 =====
         o2_operation_type : out std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         o2_operation_sel : out std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         o2_operand_1 : out std_logic_vector(OPERAND_BITS - 1 downto 0);

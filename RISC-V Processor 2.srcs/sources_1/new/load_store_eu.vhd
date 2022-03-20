@@ -8,8 +8,8 @@ use WORK.PKG_AXI.ALL;
 
 entity load_store_eu is
     port(
-        from_master : out FromMaster; 
-        to_master : in ToMaster; 
+        from_master : out ToMasterInterface; 
+        to_master : in FromMasterInterface; 
     
         operand_1 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         operand_2 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
@@ -28,7 +28,7 @@ architecture rtl of load_store_eu is
     type load_store_unit_state_type is (IDLE,
                                         BUSY);
                                         
-    signal op_sel_delay_temp : std_logic;
+    signal op_sel_delay : std_logic;
                                         
     signal load_store_unit_state_reg : load_store_unit_state_type;
     signal load_store_unit_state_next : load_store_unit_state_type;
@@ -120,13 +120,13 @@ begin
         end if;
     end process;
     
-    op_sel_delay_temp_proc : process(clk)
+    op_sel_delay_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                op_sel_delay_temp <= '0';
+                op_sel_delay <= '0';
             else
-                op_sel_delay_temp <= pipeline_reg_2.operation_sel(3);
+                op_sel_delay <= pipeline_reg_2.operation_sel(3);
             end if;
         end if;
     end process;
@@ -138,7 +138,7 @@ begin
     from_master.burst_size <= (others => '0');
     from_master.burst_type <= (others => '0');
     from_master.execute_read <= '0';
-    from_master.execute_write <= pipeline_reg_2.operation_sel(3) and (not op_sel_delay_temp);
+    from_master.execute_write <= pipeline_reg_2.operation_sel(3) and (not op_sel_delay);
     
     calculated_address <= std_logic_vector(unsigned(pipeline_reg_1.operand_1) + unsigned(pipeline_reg_1.immediate));
     

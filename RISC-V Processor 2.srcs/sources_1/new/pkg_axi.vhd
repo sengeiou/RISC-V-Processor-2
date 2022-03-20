@@ -63,7 +63,7 @@ package pkg_axi is
         rvalid : std_logic;
     end record HandshakeReadSlave;
     
-    type FromMaster is record
+    type ToMasterInterface is record
         -- Data signals
         data_write : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
         
@@ -78,18 +78,18 @@ package pkg_axi is
         
         execute_read : std_logic;
         execute_write : std_logic;
-    end record FromMaster;
+    end record ToMasterInterface;
     
-    type ToMaster is record
+    type FromMasterInterface is record
         -- Data signals
         data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
         
         -- Control signals
         done_read : std_logic;
         done_write : std_logic;
-    end record ToMaster;
+    end record FromMasterInterface;
     
-    type FromSlave is record
+    type ToSlaveInterface is record
         -- Data signals
         data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
         
@@ -97,16 +97,16 @@ package pkg_axi is
         
         -- Control signals
         data_ready : std_logic;
-    end record FromSlave;
+    end record ToSlaveInterface;
 
-    type ToSlave is record
+    type FromSlaveInterface is record
         -- Data signals
         data_write : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
         
         -- Address signals
         addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         addr_write : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
-    end record ToSlave;
+    end record FromSlaveInterface;
     
     -- ========== CONSTANTS ==========
     constant BURST_FIXED : std_logic_vector(1 downto 0) := "00";
@@ -119,7 +119,7 @@ package pkg_axi is
     constant RESP_DECERR : std_logic_vector(1 downto 0) := "11";
     
     -- ========== CLEAR VALUES ==========
-    constant FROM_MASTER_CLEAR : FromMaster := (data_write => (others => '0'),
+    constant FROM_MASTER_CLEAR : ToMasterInterface := (data_write => (others => '0'),
                                                 addr_write => (others => '0'),
                                                 addr_read => (others => '0'),
                                                 burst_len => (others => '0'),
@@ -128,7 +128,7 @@ package pkg_axi is
                                                 execute_read => '0',
                                                 execute_write => '0');
                                                 
-    constant FROM_SLAVE_CLEAR : FromSlave := (data_read => (others => '0'),
+    constant FROM_SLAVE_CLEAR : ToSlaveInterface := (data_read => (others => '0'),
                                               data_ready => '0');
     
     constant WRITE_ADDRESS_CH_CLEAR : WriteAddressChannel := (addr => (others => '0'),

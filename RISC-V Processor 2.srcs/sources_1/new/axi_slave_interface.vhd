@@ -22,8 +22,8 @@ entity axi_slave_interface is
         slave_read_handshake : out HandshakeReadSlave;
         
         -- OTHER DATA SIGNALS
-        from_slave : in FromSlave;
-        to_slave : out ToSlave;
+        from_slave : in ToSlaveInterface;
+        to_slave : out FromSlaveInterface;
         
         -- OTHER CONTROL SIGNALS
         clk : in std_logic;

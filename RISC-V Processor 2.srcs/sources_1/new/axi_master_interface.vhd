@@ -26,8 +26,8 @@ entity axi_master_interface is
         slave_read_handshake : in HandshakeReadSlave;
 
         -- OTHER CONTROL SIGNALS
-        interface_to_master : out ToMaster;
-        master_to_interface : in FromMaster;
+        interface_to_master : out FromMasterInterface;
+        master_to_interface : in ToMasterInterface;
         
         bus_request_read : out std_logic;
         bus_request_write : out std_logic;

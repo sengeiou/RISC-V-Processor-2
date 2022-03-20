@@ -1,10 +1,10 @@
 use work.pkg_axi.all;
 
 package test is
-    type to_master_array is array(3 downto 0) of ToMaster;
-    type from_master_array is array(3 downto 0) of FromMaster;
-    type to_slave_array is array(3 downto 0) of ToSlave;
-    type from_slave_array is array(3 downto 0) of FromSlave;
+    type to_master_array is array(3 downto 0) of FromMasterInterface;
+    type from_master_array is array(3 downto 0) of ToMasterInterface;
+    type to_slave_array is array(3 downto 0) of FromSlaveInterface;
+    type from_slave_array is array(3 downto 0) of ToSlaveInterface;
 end package test;
 
 library IEEE;

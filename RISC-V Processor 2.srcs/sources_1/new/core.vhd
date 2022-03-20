@@ -5,8 +5,8 @@ use WORK.PKG_AXI.ALL;
 
 entity core is
     port(
-        from_master_1 : out FromMaster; 
-        to_master_1 : in ToMaster; 
+        from_master_1 : out ToMasterInterface; 
+        to_master_1 : in FromMasterInterface; 
     
         clk : in std_logic;
         clk_dbg : in std_logic;

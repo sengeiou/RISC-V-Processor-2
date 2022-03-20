@@ -10,8 +10,8 @@ use WORK.PKG_AXI.ALL;
 
 entity execution_engine is
     port(
-        from_master_1 : out FromMaster; 
-        to_master_1 : in ToMaster; 
+        from_master_1 : out ToMasterInterface; 
+        to_master_1 : in FromMasterInterface; 
     
         decoded_instruction : in decoded_instruction_type;
         
