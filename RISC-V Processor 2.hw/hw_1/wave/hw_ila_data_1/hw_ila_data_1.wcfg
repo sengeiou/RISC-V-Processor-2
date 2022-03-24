@@ -10,76 +10,76 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1025fs"></ZoomEndTime>
-      <Cursor1Time time="0fs"></Cursor1Time>
+      <ZoomEndTime time="1024fs"></ZoomEndTime>
+      <Cursor1Time time="314fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="209"></NameColumnWidth>
-      <ValueColumnWidth column_width="89"></ValueColumnWidth>
+      <ValueColumnWidth column_width="85"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="8" />
    <wave_markers>
    </wave_markers>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[1]_58" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[1]_48" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[1]_58[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[1]_58[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[1]_48[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[1]_48[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[2]_57" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[2]_47" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[2]_57[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[2]_57[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[2]_47[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[2]_47[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[3]_56" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[3]_46" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[3]_56[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[3]_56[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[3]_46[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[3]_46[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[4]_55" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[4]_45" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[4]_55[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[4]_55[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[4]_45[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[4]_45[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[5]_54" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[5]_44" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[5]_54[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[5]_54[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[5]_44[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[5]_44[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[6]_53" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[6]_43" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[6]_53[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[6]_53[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[6]_43[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[6]_43[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[7]_52" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[7]_42" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[7]_52[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[7]_52[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[7]_42[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[7]_42[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[8]_51" type="array">
+   <wvobject fp_name="cpu/core_1/execution_engine/register_file/reg_file[8]_41" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[8]_51[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_file[8]_51[31:0]</obj_property>
+      <obj_property name="ElementShortName">cpu/core_1/execution_engine/register_file/reg_file[8]_41[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_file[8]_41[31:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>

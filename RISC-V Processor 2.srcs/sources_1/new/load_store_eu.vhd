@@ -25,7 +25,7 @@ entity load_store_eu is
         cdb_request : out std_logic;
         cdb_granted : in std_logic;
         
-        eu_busy : out std_logic;
+        busy : out std_logic;
         reset : in std_logic;
         clk : in std_logic
     );
@@ -33,7 +33,7 @@ end load_store_eu;
 
 architecture rtl of load_store_eu is
     type load_store_unit_state_type is (IDLE,
-                                        BUSY);
+                                        LDST_BUSY);
                                         
     signal write_op_sel_delay : std_logic;
     signal read_op_sel_delay : std_logic;
@@ -64,15 +64,15 @@ begin
         case load_store_unit_state_reg is
             when IDLE => 
                 if (pipeline_reg_1.operation_sel(3) = '1' or pipeline_reg_2.operation_sel(4) = '1') then
-                    load_store_unit_state_next <= BUSY;
+                    load_store_unit_state_next <= LDST_BUSY;
                 else
                     load_store_unit_state_next <= IDLE;
                 end if;
-            when BUSY => 
+            when LDST_BUSY => 
                 if (from_master_interface.done_write = '1' or from_master_interface.done_read = '1') then
                     load_store_unit_state_next <= IDLE;
                 else
-                    load_store_unit_state_next <= BUSY;
+                    load_store_unit_state_next <= LDST_BUSY;
                 end if;
         end case;
     end process;
@@ -82,7 +82,7 @@ begin
         case load_store_unit_state_reg is
             when IDLE => 
                 pipeline_enable <= ((not pipeline_reg_3.valid) or cdb_granted) and (not pipeline_reg_2.valid);
-            when BUSY =>
+            when LDST_BUSY =>
                 pipeline_enable <= from_master_interface.done_read;
         end case;
     end process;

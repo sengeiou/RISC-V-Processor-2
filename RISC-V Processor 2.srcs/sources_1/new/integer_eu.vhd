@@ -88,6 +88,6 @@ begin
     cdb.data <= pipeline_reg_2.alu_result;
     cdb.rs_entry_tag <= pipeline_reg_2.rs_entry_tag;
     
-    busy <= '0';
+    busy <= not pipeline_enable;
 
 end structural;

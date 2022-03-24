@@ -461,6 +461,55 @@
         <Option Id="WAVEFORM_STYLE" value="Digital"/>
       </probeOptions>
       <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_48[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe0[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_58[31]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_58[30]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[1]_58[29]"/>
@@ -496,6 +545,55 @@
       </nets>
     </probe>
     <probe type="ila_data" busType="bus" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe1[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[2]_47[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
       <probeOptions Id="DebugProbeParams">
         <Option Id="DISPLAY_AS_ENUM" value="1"/>
         <Option Id="DISPLAY_HINT" value=""/>
@@ -559,6 +657,55 @@
         <Option Id="WAVEFORM_STYLE" value="Digital"/>
       </probeOptions>
       <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_46[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe2[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_56[31]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_56[30]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[3]_56[29]"/>
@@ -594,6 +741,55 @@
       </nets>
     </probe>
     <probe type="ila_data" busType="bus" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe3[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[4]_45[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
       <probeOptions Id="DebugProbeParams">
         <Option Id="DISPLAY_AS_ENUM" value="1"/>
         <Option Id="DISPLAY_HINT" value=""/>
@@ -657,6 +853,55 @@
         <Option Id="WAVEFORM_STYLE" value="Digital"/>
       </probeOptions>
       <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_44[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe4[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_54[31]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_54[30]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[5]_54[29]"/>
@@ -692,6 +937,55 @@
       </nets>
     </probe>
     <probe type="ila_data" busType="bus" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe5[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[6]_43[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
       <probeOptions Id="DebugProbeParams">
         <Option Id="DISPLAY_AS_ENUM" value="1"/>
         <Option Id="DISPLAY_HINT" value=""/>
@@ -755,6 +1049,55 @@
         <Option Id="WAVEFORM_STYLE" value="Digital"/>
       </probeOptions>
       <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_42[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe6[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_52[31]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_52[30]"/>
         <net name="cpu/core_1/execution_engine/register_file/reg_file[7]_52[29]"/>
@@ -790,6 +1133,55 @@
       </nets>
     </probe>
     <probe type="ila_data" busType="bus" source="netlist" spec="ILA_DATA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_1"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe7[31:0]"/>
+        <Option Id="NAME.CUSTOM" value=""/>
+        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[31]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[30]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[29]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[28]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[27]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[26]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[25]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[24]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[23]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[22]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[21]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[20]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[19]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[18]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[17]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[16]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[15]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[14]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[13]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[12]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[11]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[10]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[9]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[8]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[7]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[6]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[5]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[4]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[3]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[2]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[1]"/>
+        <net name="cpu/core_1/execution_engine/register_file/reg_file[8]_41[0]"/>
+      </nets>
+    </probe>
+    <probe type="ila_data" busType="net" source="netlist" spec="ILA_DATA_V2_RT">
       <probeOptions Id="DebugProbeParams">
         <Option Id="DISPLAY_AS_ENUM" value="1"/>
         <Option Id="DISPLAY_HINT" value=""/>

@@ -7,6 +7,7 @@ use WORK.PKG_AXI.ALL;
 
 -- Implements the Tomasulo algorithm with unified reservation station. Might get broken up into multiple modules
 -- in the future
+-- Allow the hardware to stop execution with some signal
 
 entity execution_engine is
     port(
@@ -217,7 +218,7 @@ begin
                                cdb_request => cdb_req_2,
                                cdb_granted => cdb_grant_2,
                                         
-                               eu_busy => ls_eu_busy,
+                               busy => ls_eu_busy,
                                         
                                reset => reset,
                                clk => clk);
