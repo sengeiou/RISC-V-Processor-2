@@ -28,7 +28,7 @@ begin
         
         if (instruction(6 downto 0) = "0010011") then
             decoded_instruction.operation_type <= OP_TYPE_INTEGER;      
-            decoded_instruction.operation_select <= '1' & instruction(30) & instruction(14 downto 12);
+            decoded_instruction.operation_select <= "10" & instruction(14 downto 12);
             
             decoded_instruction.immediate <= X"00000" & instruction(31 downto 20);
             

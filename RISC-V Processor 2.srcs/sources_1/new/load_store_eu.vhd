@@ -25,6 +25,7 @@ entity load_store_eu is
         cdb_request : out std_logic;
         cdb_granted : in std_logic;
         
+        eu_busy : out std_logic;
         reset : in std_logic;
         clk : in std_logic
     );
@@ -158,4 +159,6 @@ begin
     
     cdb.data <= pipeline_reg_3.load_data;
     cdb.rs_entry_tag <= pipeline_reg_3.rs_entry_tag;
+    
+    eu_busy <= not pipeline_enable;
 end rtl;

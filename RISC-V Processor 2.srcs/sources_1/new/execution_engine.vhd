@@ -61,6 +61,14 @@ architecture Structural of execution_engine is
     signal iq_full : std_logic;
     signal iq_empty : std_logic;
     
+    -- ========== EXECUTION UNITS BUSY SIGNALS ==========
+    signal int_eu_busy : std_logic;
+    signal ls_eu_busy : std_logic;
+    
+    signal n_int_eu_busy : std_logic;
+    signal n_ls_eu_busy : std_logic;
+    -- ==================================================
+    
     -- ========== COMMON DATA BUS ==========
     signal cdb : cdb_type;
     
@@ -169,8 +177,8 @@ begin
                                    next_alloc_entry_tag => next_alloc_entry_tag,
                                    
                                    write_en => next_instr_ready,
-                                   port_0_ready => '1',
-                                   port_1_ready => '1',
+                                   port_0_ready => n_int_eu_busy,
+                                   port_1_ready => n_ls_eu_busy,
                                    full => sched_full,
                                    
                                    clk => clk,
@@ -188,6 +196,8 @@ begin
                                         cdb => cdb_int_eu,
                                         cdb_request => cdb_req_1,
                                         cdb_granted => cdb_grant_1,
+                                        
+                                        busy => int_eu_busy,
                                         
                                         reset => reset,
                                         clk => clk);
@@ -207,6 +217,8 @@ begin
                                cdb_request => cdb_req_2,
                                cdb_granted => cdb_grant_2,
                                         
+                               eu_busy => ls_eu_busy,
+                                        
                                reset => reset,
                                clk => clk);
 
@@ -215,5 +227,8 @@ begin
 
     cdb_grant_1 <= cdb_req_1 and (not cdb_req_2);
     cdb_grant_2 <= cdb_req_2;
+    
+    n_int_eu_busy <= not int_eu_busy;
+    n_ls_eu_busy <= not ls_eu_busy;
 
 end structural;

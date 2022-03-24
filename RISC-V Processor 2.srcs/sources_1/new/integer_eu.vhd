@@ -25,6 +25,7 @@ entity integer_eu is
         cdb_request : out std_logic;
         cdb_granted : in std_logic;
         
+        busy : out std_logic;
         reset : in std_logic;
         clk : in std_logic
     );
@@ -86,5 +87,7 @@ begin
     
     cdb.data <= pipeline_reg_2.alu_result;
     cdb.rs_entry_tag <= pipeline_reg_2.rs_entry_tag;
+    
+    busy <= '0';
 
 end structural;
