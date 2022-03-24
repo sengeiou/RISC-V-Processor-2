@@ -6,18 +6,24 @@ use WORK.PKG_CPU.ALL;
 use WORK.PKG_FU.ALL;
 use WORK.PKG_AXI.ALL;
 
+-- Potential problem: When pipeline registers 2 and 3 have valid data in them and this unit is stalled due to a read or write operation
+-- pipeline register 3 could cause the execution to stall (or worse) due to requesting the CDB.
+
 entity load_store_eu is
     port(
-        from_master : out ToMasterInterface; 
-        to_master : in FromMasterInterface; 
+        to_master_interface : out ToMasterInterface; 
+        from_master_interface : in FromMasterInterface; 
     
         operand_1 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         operand_2 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         immediate : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         operation_sel : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         rs_entry_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        dispatch_ready : in std_logic;
         
         cdb : out cdb_type;
+        cdb_request : out std_logic;
+        cdb_granted : in std_logic;
         
         reset : in std_logic;
         clk : in std_logic
@@ -28,7 +34,8 @@ architecture rtl of load_store_eu is
     type load_store_unit_state_type is (IDLE,
                                         BUSY);
                                         
-    signal op_sel_delay : std_logic;
+    signal write_op_sel_delay : std_logic;
+    signal read_op_sel_delay : std_logic;
                                         
     signal load_store_unit_state_reg : load_store_unit_state_type;
     signal load_store_unit_state_next : load_store_unit_state_type;
@@ -51,17 +58,17 @@ begin
         end if;
     end process;
 
-    lsu_next_state_proc : process(pipeline_reg_1, to_master)
+    lsu_next_state_proc : process(pipeline_reg_1, from_master_interface)
     begin
         case load_store_unit_state_reg is
             when IDLE => 
-                if (pipeline_reg_1.operation_sel(3) = '1') then
+                if (pipeline_reg_1.operation_sel(3) = '1' or pipeline_reg_2.operation_sel(4) = '1') then
                     load_store_unit_state_next <= BUSY;
                 else
                     load_store_unit_state_next <= IDLE;
                 end if;
             when BUSY => 
-                if (to_master.done_write = '1') then
+                if (from_master_interface.done_write = '1' or from_master_interface.done_read = '1') then
                     load_store_unit_state_next <= IDLE;
                 else
                     load_store_unit_state_next <= BUSY;
@@ -69,13 +76,13 @@ begin
         end case;
     end process;
     
-    lsu_state_machine_outputs : process(load_store_unit_state_reg)
+    lsu_state_machine_outputs : process(load_store_unit_state_reg, pipeline_reg_2, pipeline_reg_3, cdb_granted, from_master_interface)
     begin
         case load_store_unit_state_reg is
             when IDLE => 
-                pipeline_enable <= '1';
+                pipeline_enable <= ((not pipeline_reg_3.valid) or cdb_granted) and (not pipeline_reg_2.valid);
             when BUSY =>
-                pipeline_enable <= '0';
+                pipeline_enable <= from_master_interface.done_read;
         end case;
     end process;
 
@@ -83,13 +90,14 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                pipeline_reg_1 <= (others => (others => '0'));
+                pipeline_reg_1 <= LS_PIPELINE_REG_1_ZERO;
             elsif (pipeline_enable = '1') then
                 pipeline_reg_1.operand_1 <= operand_1;
                 pipeline_reg_1.operand_2 <= operand_2;
                 pipeline_reg_1.immediate <= immediate;
                 pipeline_reg_1.operation_sel <= operation_sel;
                 pipeline_reg_1.rs_entry_tag <= rs_entry_tag;
+                pipeline_reg_1.valid <= dispatch_ready;
             end if;
         end if;
     end process;
@@ -98,12 +106,13 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                pipeline_reg_2 <= (others => (others => '0'));
+                pipeline_reg_2 <= LS_PIPELINE_REG_2_ZERO;
             elsif (pipeline_enable = '1') then
                 pipeline_reg_2.store_data <= pipeline_reg_1.operand_2;
-                pipeline_reg_2.store_addr <= calculated_address;
+                pipeline_reg_2.address <= calculated_address;
                 pipeline_reg_2.operation_sel <= pipeline_reg_1.operation_sel;
                 pipeline_reg_2.rs_entry_tag <= pipeline_reg_1.rs_entry_tag; 
+                pipeline_reg_2.valid <= pipeline_reg_1.valid; 
             end if;
         end if;
     end process;
@@ -112,10 +121,11 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                pipeline_reg_3 <= (others => (others => '0'));
+                pipeline_reg_3 <= LS_PIPELINE_REG_3_ZERO;
             elsif (pipeline_enable = '1') then
-                pipeline_reg_3.load_data <= (others => '0');
+                pipeline_reg_3.load_data <= from_master_interface.data_read;
                 pipeline_reg_3.rs_entry_tag <= pipeline_reg_2.rs_entry_tag; 
+                pipeline_reg_3.valid <= pipeline_reg_2.valid; 
             end if;
         end if;
     end process;
@@ -124,25 +134,28 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                op_sel_delay <= '0';
+                write_op_sel_delay <= '0';
+                read_op_sel_delay <= '0';
             else
-                op_sel_delay <= pipeline_reg_2.operation_sel(3);
+                write_op_sel_delay <= pipeline_reg_2.operation_sel(3);
+                read_op_sel_delay <= pipeline_reg_2.operation_sel(4);
             end if;
         end if;
     end process;
     
-    from_master.data_write <= pipeline_reg_2.store_data;
-    from_master.addr_write <= pipeline_reg_2.store_addr;
-    from_master.addr_read <= (others => '0');
-    from_master.burst_len <= (others => '0');
-    from_master.burst_size <= (others => '0');
-    from_master.burst_type <= (others => '0');
-    from_master.execute_read <= '0';
-    from_master.execute_write <= pipeline_reg_2.operation_sel(3) and (not op_sel_delay);
+    to_master_interface.data_write <= pipeline_reg_2.store_data;
+    to_master_interface.addr_write <= pipeline_reg_2.address;
+    to_master_interface.addr_read <= pipeline_reg_2.address;
+    to_master_interface.burst_len <= (others => '0');
+    to_master_interface.burst_size <= (others => '0');
+    to_master_interface.burst_type <= (others => '0');
+    to_master_interface.execute_read <= pipeline_reg_2.operation_sel(4) and (not read_op_sel_delay);
+    to_master_interface.execute_write <= pipeline_reg_2.operation_sel(3) and (not write_op_sel_delay);
     
     calculated_address <= std_logic_vector(unsigned(pipeline_reg_1.operand_1) + unsigned(pipeline_reg_1.immediate));
     
-    --cdb.data <= pipeline_reg_3.load_data;
-    --cdb.rs_entry_tag <= pipeline_reg_3.rs_entry_tag;
-
+    cdb_request <= pipeline_reg_3.valid;
+    
+    cdb.data <= pipeline_reg_3.load_data;
+    cdb.rs_entry_tag <= pipeline_reg_3.rs_entry_tag;
 end rtl;

@@ -44,6 +44,7 @@ entity reservation_station is
         o1_operand_2 : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o1_immediate : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o1_rs_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        o1_dispatch_ready : out std_logic;
         -- ==================
         
         -- ===== PORT 2 =====
@@ -53,14 +54,15 @@ entity reservation_station is
         o2_operand_2 : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o2_immediate : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o2_rs_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        o2_dispatch_ready : out std_logic;
         -- ==================
         
         -- CONTROL
         next_alloc_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
         
         write_en : in std_logic;
-        port_0_dispatch_en : in std_logic;
-        port_1_dispatch_en : in std_logic;
+        port_0_ready : in std_logic;
+        port_1_ready : in std_logic;
         full : out std_logic;
         
         clk : in std_logic;
@@ -110,6 +112,9 @@ architecture rtl of reservation_station is
     signal rs1_src_tag_2 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0); 
     signal rs1_operand_1 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
     signal rs1_operand_2 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
+    
+    signal port_0_dispatch_en : std_logic;
+    signal port_1_dispatch_en : std_logic;
 begin
     rs_full_proc : process(rs_entries)
         variable temp : std_logic;
@@ -229,11 +234,11 @@ begin
                         rs_entries(i)(0) <= '0';
                     end if;
                     
-                    if (port_0_dispatch_en = '1') then
+                    if (port_0_ready = '1') then
                         rs_entries(to_integer(unsigned(rs_sel_read_1)))(1) <= '1';
                     end if;
                     
-                    if (port_1_dispatch_en = '1') then
+                    if (port_1_ready = '1') then
                         rs_entries(to_integer(unsigned(rs_sel_read_2)))(1) <= '1';
                     end if;
                 
@@ -263,6 +268,7 @@ begin
             o1_operand_2 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_2_START downto OPERAND_2_END);
             o1_immediate <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(IMMEDIATE_START downto IMMEDIATE_END);
             o1_rs_entry_tag <= rs_sel_read_1;
+            o1_dispatch_ready <= '1';
         else
             o1_operation_type <= (others => '0');
             o1_operation_sel <= (others => '0');
@@ -270,6 +276,7 @@ begin
             o1_operand_2 <= (others => '0');
             o1_immediate <= (others => '0');
             o1_rs_entry_tag <= (others => '0');
+            o1_dispatch_ready <= '0';
         end if;
         
         if (port_1_dispatch_en = '1') then
@@ -279,6 +286,7 @@ begin
             o2_operand_2 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_2_START downto OPERAND_2_END);
             o2_immediate <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(IMMEDIATE_START downto IMMEDIATE_END);
             o2_rs_entry_tag <= rs_sel_read_2;
+            o2_dispatch_ready <= '1';
         else
             o2_operation_type <= (others => '0');
             o2_operation_sel <= (others => '0');
@@ -286,8 +294,12 @@ begin
             o2_operand_2 <= (others => '0');
             o2_immediate <= (others => '0');
             o2_rs_entry_tag <= (others => '0');
+            o2_dispatch_ready <= '0';
         end if;
     end process;
+    
+    port_0_dispatch_en <= '1' when port_0_ready = '1' and (rs_sel_read_1 /= ENTRY_TAG_ZERO) else '0'; 
+    port_1_dispatch_en <= '1' when port_1_ready = '1' and (rs_sel_read_2 /= ENTRY_TAG_ZERO) else '0'; 
     
     next_alloc_entry_tag <= rs_sel_write_1;
 

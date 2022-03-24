@@ -62,7 +62,16 @@ architecture Structural of execution_engine is
     signal iq_empty : std_logic;
     
     -- ========== COMMON DATA BUS ==========
-    signal cdb_1 : cdb_type;
+    signal cdb : cdb_type;
+    
+    signal cdb_req_1 : std_logic;
+    signal cdb_req_2 : std_logic;
+    
+    signal cdb_grant_1 : std_logic;
+    signal cdb_grant_2 : std_logic;
+    
+    signal cdb_int_eu : cdb_type;
+    signal cdb_ls_eu : cdb_type;
     -- =====================================
 begin
     instruction_queue : fifo_generator_1
@@ -99,7 +108,7 @@ begin
                                 REGFILE_SIZE => 4 + ENABLE_BIG_REGFILE)
                     port map(
                              -- COMMON DATA BUS
-                             cdb => cdb_1,
+                             cdb => cdb,
                              
                              -- ADDRESSES
                              rd_1_addr => next_instruction.reg_src_1,
@@ -129,8 +138,8 @@ begin
                                       OPERAND_BITS => CPU_DATA_WIDTH_BITS,
                                       PORT_0_OPTYPE => "000",
                                       PORT_1_OPTYPE => "001")
-                          port map(cdb_data => cdb_1.data,
-                                   cdb_rs_entry_tag => cdb_1.rs_entry_tag,
+                          port map(cdb_data => cdb.data,
+                                   cdb_rs_entry_tag => cdb.rs_entry_tag,
                                     
                                    i1_operation_type => next_instruction.operation_type,
                                    i1_operation_sel => next_instruction.operation_select,
@@ -147,6 +156,7 @@ begin
                                    o1_operation_type => port_0.operation_type,
                                    o1_operation_sel => port_0.operation_sel,
                                    o1_rs_entry_tag => port_0.rs_entry_tag,
+                                   o1_dispatch_ready => port_0.dispatch_ready,
                                    
                                    o2_operand_1 => port_1.operand_1,
                                    o2_operand_2 => port_1.operand_2,
@@ -154,12 +164,13 @@ begin
                                    o2_operation_type => port_1.operation_type,
                                    o2_operation_sel => port_1.operation_sel,
                                    o2_rs_entry_tag => port_1.rs_entry_tag,
+                                   o2_dispatch_ready => port_1.dispatch_ready,
                                    
                                    next_alloc_entry_tag => next_alloc_entry_tag,
                                    
                                    write_en => next_instr_ready,
-                                   port_0_dispatch_en => '1',
-                                   port_1_dispatch_en => '1',
+                                   port_0_ready => '1',
+                                   port_1_ready => '1',
                                    full => sched_full,
                                    
                                    clk => clk,
@@ -172,25 +183,37 @@ begin
                                         immediate => port_0.immediate,
                                         operation_sel => port_0.operation_sel, 
                                         rs_entry_tag => port_0.rs_entry_tag,
+                                        dispatch_ready => port_0.dispatch_ready,
                                         
-                                        cdb => cdb_1,
+                                        cdb => cdb_int_eu,
+                                        cdb_request => cdb_req_1,
+                                        cdb_granted => cdb_grant_1,
                                         
                                         reset => reset,
                                         clk => clk);
                                         
     load_store_unit : entity work.load_store_eu(rtl)
-                      port map(to_master => to_master_1,
-                               from_master => from_master_1,
+                      port map(from_master_interface => to_master_1,
+                               to_master_interface => from_master_1,
                       
                                operand_1 => port_1.operand_1,
                                operand_2 => port_1.operand_2,
                                immediate => port_1.immediate,
                                operation_sel => port_1.operation_sel, 
                                rs_entry_tag => port_1.rs_entry_tag,
+                               dispatch_ready => port_1.dispatch_ready,
                                         
-                               --cdb => cdb_1,
+                               cdb => cdb_ls_eu,
+                               cdb_request => cdb_req_2,
+                               cdb_granted => cdb_grant_2,
                                         
                                reset => reset,
                                clk => clk);
+
+    cdb <= cdb_ls_eu when cdb_grant_2 = '1' else
+           cdb_int_eu;
+
+    cdb_grant_1 <= cdb_req_1 and (not cdb_req_2);
+    cdb_grant_2 <= cdb_req_2;
 
 end structural;

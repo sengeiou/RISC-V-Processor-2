@@ -63,14 +63,14 @@ begin
     
     address_decoder : process(bus_address)
     begin
-        if (bus_address(31 downto 12) = X"0000_1")  then             -- Slave 1 at addresses 0000_1000 - 0000_1FFF
+        if (bus_address(31 downto 12) = X"0000_0")  then             -- Slave 1 at addresses 0000_1000 - 0000_1FFF
             slave_sel_next <= "0000";
-        elsif (bus_address(31 downto 12) = X"0000_2") then           -- Slave 2 at addresses 0000_2000 - 0000_2FFF
+        elsif (bus_address(31 downto 12) = X"0000_1") then           -- Slave 2 at addresses 0000_2000 - 0000_2FFF
             slave_sel_next <= "0001";
-        elsif (bus_address(31 downto 12) = X"0000_3") then           -- Slave 3 at addresses 0000_3000 - 0000_3FFF
+        elsif (bus_address(31 downto 12) = X"0000_2") then           -- Slave 3 at addresses 0000_3000 - 0000_3FFF
             slave_sel_next <= "0010";
         else
-            slave_sel_next <= "0001";
+            slave_sel_next <= "1111";
         end if;
     end process;
 

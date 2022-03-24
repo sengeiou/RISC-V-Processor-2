@@ -39,10 +39,17 @@ begin
             
             instruction_ready <= '1';
         elsif (instruction(6 downto 0) = "0100011") then
-            decoded_instruction.operation_type <= OP_TYPE_STORE;
+            decoded_instruction.operation_type <= OP_TYPE_LOAD_STORE;
             decoded_instruction.operation_select <= "01" & instruction(14 downto 12);
             
             decoded_instruction.immediate <= X"00000" & instruction(31 downto 25) & instruction(11 downto 7);
+            
+            instruction_ready <= '1';
+        elsif (instruction(6 downto 0) = "0000011") then
+            decoded_instruction.operation_type <= OP_TYPE_LOAD_STORE;
+            decoded_instruction.operation_select <= "10" & instruction(14 downto 12);
+            
+            decoded_instruction.immediate <= X"00000" & instruction(31 downto 20);
             
             instruction_ready <= '1';
         end if;

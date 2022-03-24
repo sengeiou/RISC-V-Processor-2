@@ -44,7 +44,7 @@ package pkg_cpu is
     
     -- Operation Type Definitions
     constant OP_TYPE_INTEGER : std_logic_vector(2 downto 0) := "000";
-    constant OP_TYPE_STORE : std_logic_vector(2 downto 0) := "001";
+    constant OP_TYPE_LOAD_STORE : std_logic_vector(2 downto 0) := "001";
     
     -- Integer EU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";
@@ -84,6 +84,7 @@ package pkg_cpu is
         operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         rs_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        dispatch_ready : std_logic;
     end record;
     
     -- CDB Configuration
