@@ -134,7 +134,7 @@ begin
                              wr_data => rob_head_result,
                              
                              -- CONTROL
-                             en => next_instr_ready,
+                             en => '1',
                              reset => reset,
                              clk => clk,
                              clk_dbg => clk_dbg);

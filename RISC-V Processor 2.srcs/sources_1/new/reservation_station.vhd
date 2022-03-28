@@ -99,6 +99,7 @@ architecture rtl of reservation_station is
     -- ================================================================================
     
     constant ROB_ENTRY_TAG_ZERO : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := (others => '0');
+    constant RS_ENTRY_TAG_ZERO : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0) := (others => '0');
     constant RF_TAG_ZERO : std_logic_vector(RF_TAG_BITS - 1 downto 0) := (others => '0');
     
     -- ========== RF REGISTER STATUS ==========
@@ -140,8 +141,14 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 rf_register_status <= (others => (others => '0'));
-            elsif (i1_dest_reg /= RF_TAG_ZERO) then
-                rf_register_status(to_integer(unsigned(i1_dest_reg))) <= i1_rob_alloc_dest_tag;
+            else
+                for i in 0 to REGISTER_FILE_ENTRIES - 1 loop
+                    if (i = to_integer(unsigned(i1_dest_reg)) and write_en = '1') then
+                        rf_register_status(i) <= i1_rob_alloc_dest_tag;
+                    elsif (cdb_rs_entry_tag = rf_register_status(i)) then
+                        rf_register_status(i) <= (others => '0'); 
+                    end if;
+                end loop;
             end if;
         end if;
     end process;
@@ -172,7 +179,7 @@ begin
         for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
             if (rs_entries(i)(ROB_TAG_1_START downto ROB_TAG_1_END) = ROB_ENTRY_TAG_ZERO and
                 rs_entries(i)(ROB_TAG_2_START downto ROB_TAG_2_END) = ROB_ENTRY_TAG_ZERO and
-                rs_entries(i)(0) = '1' and rs_entries(i)(1) = '0') then
+                rs_entries(i)(0) = '1') then
                 rs_operands_ready_bits(i) <= '1';
             else
                 rs_operands_ready_bits(i) <= '0';
@@ -227,7 +234,7 @@ begin
                                
     -- This is a check for whether current instruction's operands are being broadcast on the CDB. If they are then that will immediately be taken
     -- into consideration. Without this part the instruction in an entry could keep waiting for a result of an instruction that has already finished execution.  
-    reservation_station_operand_select_proc : process(cdb_rs_entry_tag, cdb_data, rs1_src_tag_1, i1_operand_1, rs1_src_tag_2, i1_operand_2)
+    reservation_station_operand_select_proc : process(cdb_rs_entry_tag, cdb_data, register_status_src_tag_1, i1_operand_1, register_status_src_tag_2, i1_operand_2)
     begin
         if (register_status_src_tag_1 /= cdb_rs_entry_tag) then
             rs1_src_tag_1 <= register_status_src_tag_1;
@@ -324,8 +331,8 @@ begin
         end if;
     end process;
     
-    port_0_dispatch_en <= '1' when port_0_ready = '1' and (rs_sel_read_1 /= ROB_ENTRY_TAG_ZERO) else '0'; 
-    port_1_dispatch_en <= '1' when port_1_ready = '1' and (rs_sel_read_2 /= ROB_ENTRY_TAG_ZERO) else '0'; 
+    port_0_dispatch_en <= '1' when port_0_ready = '1' and (rs_sel_read_1 /= RS_ENTRY_TAG_ZERO) else '0'; 
+    port_1_dispatch_en <= '1' when port_1_ready = '1' and (rs_sel_read_2 /= RS_ENTRY_TAG_ZERO) else '0'; 
 end rtl;
 
 

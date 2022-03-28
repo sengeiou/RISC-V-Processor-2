@@ -71,7 +71,7 @@ architecture rtl of reorder_buffer is
     -- ===========================
     
     -- ===== CONTROL SIGNALS =====
-    signal commit_en : std_logic;
+
     -- ===========================
 begin
     next_alloc_entry_tag <= tail_counter_reg;
