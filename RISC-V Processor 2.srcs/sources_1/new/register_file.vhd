@@ -14,14 +14,11 @@ use work.pkg_cpu.all;
 
 entity register_file is
     generic(
-        RESERVATION_STATION_TAG_BITS : integer;                                              -- Number of entries in the associated reservation station
+        REORDER_BUFFER_TAG_BITS : integer;                                              -- Number of entries in the associated reservation station
         REG_DATA_WIDTH_BITS : integer;                                                        -- Number of bits in the registers (XLEN)
         REGFILE_SIZE : integer                                                                -- Number of registers in the register file (2 ** REGFILE_SIZE)
     );
     port(
-        -- Common Data Bus
-        cdb : in cdb_type;
-    
         -- Address busses
         rd_1_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);
         rd_2_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);                           -- Register selection address (read)
@@ -30,12 +27,9 @@ entity register_file is
         -- Data busses
         rd_1_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
         rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);             -- Data output ports
+        wr_data : in std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
         
         -- Control busses
-        rf_src_tag_1 : out std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
-        rf_src_tag_2 : out std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
-        
-        rs_alloc_dest_tag : in std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
     
         en : in std_logic;
         reset : in std_logic;                                                           -- Sets all registers to 0 when high (synchronous)
@@ -46,14 +40,9 @@ end register_file;
 
 architecture rtl of register_file is
     -- ========== CONSTANTS ==========
-    constant REG_STATUS_TAG_ZERO : std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0) := (others => '0');
+    constant REG_STATUS_TAG_ZERO : std_logic_vector(REORDER_BUFFER_TAG_BITS - 1 downto 0) := (others => '0');
     constant REG_ADDR_ZERO : std_logic_vector(REGFILE_SIZE - 1 downto 0) := (others => '0'); 
     -- ===============================
-
-    -- ========== RF STATUS REGISTER ==========
-    type rf_status_reg_type is array (31 downto 0) of std_logic_vector(RESERVATION_STATION_TAG_BITS - 1 downto 0);
-    signal rf_status_reg : rf_status_reg_type;
-    -- ========================================
 
     -- ========== RF REGISTERS ==========
     type reg_file_type is array (2 ** REGFILE_SIZE - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
@@ -78,34 +67,6 @@ architecture rtl of register_file is
 );
 END COMPONENT  ;
 begin
-    -- Puts the tag of the corresponding registers onto the outputs.
-    rf_src_tag_1 <= rf_status_reg(to_integer(unsigned(rd_1_addr)));
-    rf_src_tag_2 <= rf_status_reg(to_integer(unsigned(rd_2_addr)));
-
-    rf_tag_register_proc : process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                rf_status_reg <= (others => (others => '0'));
-            else
-                -- Sets a new tag for a register designated by the write address. This ensures that the result of the corresponding instruction
-                -- will be put into this register at the end of its execution.
-                if (wr_addr /= REG_ADDR_ZERO and en = '1') then
-                    rf_status_reg(to_integer(unsigned(wr_addr))) <= rs_alloc_dest_tag;
-                end if;
-                
-                -- Generates a comparator for each register status entry in the register file that compares its corresponding tag with the tag that is currently
-                -- broadcast on the CDB. On match the corresponding entry will be set to 0 to indicate that the result has been written.
-                for i in 0 to 2 ** REGFILE_SIZE - 1 loop
-                    if (rf_status_reg(i) /= REG_STATUS_TAG_ZERO and
-                        rf_status_reg(i) = cdb.rs_entry_tag) then
-                        rf_status_reg(i) <= (others => '0');
-                    end if;
-                end loop;
-            end if;
-        end if;
-    end process;
-
     rf_access_proc : process(rd_1_addr, rd_2_addr, clk)
     begin
         -- Read from registers
@@ -117,14 +78,7 @@ begin
             if (reset = '1') then
                 reg_file <= (others => (others => '0'));
             else
-                -- Generates a comparator for each register in the register file that compares its corresponding tag with the tag that is currently
-                -- broadcast on the CDB. On match the data on the CDB will be written into the corresponding register.
-                for i in 0 to 2 ** REGFILE_SIZE - 1 loop
-                    if (rf_status_reg(i) /= REG_STATUS_TAG_ZERO and
-                        rf_status_reg(i) = cdb.rs_entry_tag) then
-                        reg_file(i) <= cdb.data;
-                    end if;
-                end loop;
+                reg_file(to_integer(unsigned(wr_addr))) <= wr_data;
             end if;
         end if;
     end process;
@@ -132,8 +86,6 @@ begin
     your_instance_name : ila_reg_file
     PORT MAP (
 	clk => clk_dbg,
-
-
 
 	probe0 => reg_file(1), 
 	probe1 => reg_file(2), 

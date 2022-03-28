@@ -41,15 +41,14 @@ architecture Structural of execution_engine is
     -- ========== REGISTER FILE SIGNALS ==========
     signal rf_rd_data_1 : std_logic_vector(31 downto 0);
     signal rf_rd_data_2 : std_logic_vector(31 downto 0);
-    signal rf_src_tag_1 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
-    signal rf_src_tag_2 : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+    signal rf_src_tag_1 : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+    signal rf_src_tag_2 : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
     -- ===========================================
     
     signal next_instr_ready : std_logic; 
     
     -- ========== SCHEDULER CONTROL SIGNALS ==========
     signal sched_full : std_logic;
-    signal next_alloc_entry_tag : std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
     -- ===============================================
     
     -- ========== RESERVATION STATION PORTS ==========
@@ -57,11 +56,19 @@ architecture Structural of execution_engine is
     signal port_1 : port_type;
     -- ================================================
     
+    -- ========== REORDER BUFFER SIGNALS ==========
+    signal rob_head_result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    signal rob_head_dest_reg : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+    signal rob_next_alloc_entry : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+    
+    signal rob_full : std_logic;
+    signal rob_empty : std_logic;
+    -- ============================================
+    
     signal next_instruction : decoded_instruction_type;
     
     signal iq_full : std_logic;
     signal iq_empty : std_logic;
-    
     -- ========== EXECUTION UNITS BUSY SIGNALS ==========
     signal int_eu_busy : std_logic;
     signal ls_eu_busy : std_logic;
@@ -112,35 +119,54 @@ begin
     next_instr_ready <= not (iq_empty or sched_full);
       
     register_file : entity work.register_file(rtl)
-                    generic map(RESERVATION_STATION_TAG_BITS => integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))),
+                    generic map(REORDER_BUFFER_TAG_BITS => integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))),
                                 REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
                                 REGFILE_SIZE => 4 + ENABLE_BIG_REGFILE)
                     port map(
-                             -- COMMON DATA BUS
-                             cdb => cdb,
-                             
                              -- ADDRESSES
                              rd_1_addr => next_instruction.reg_src_1,
                              rd_2_addr => next_instruction.reg_src_2,
-                             wr_addr => next_instruction.reg_dest,
+                             wr_addr => rob_head_dest_reg,
                              
                              -- DATA
                              rd_1_data => rf_rd_data_1,
                              rd_2_data => rf_rd_data_2,
+                             wr_data => rob_head_result,
                              
                              -- CONTROL
-                             rf_src_tag_1 => rf_src_tag_1,
-                             rf_src_tag_2 => rf_src_tag_2,
-                             
-                             rs_alloc_dest_tag => next_alloc_entry_tag,
-                             
                              en => next_instr_ready,
                              reset => reset,
                              clk => clk,
                              clk_dbg => clk_dbg);
+                             
+    reorder_buffer : entity work.reorder_buffer(rtl)
+                     generic map(ENTRIES => REORDER_BUFFER_ENTRIES,
+                                 REGFILE_ENTRIES => 2 ** (4 + ENABLE_BIG_REGFILE),
+                                 OPERAND_BITS => CPU_DATA_WIDTH_BITS,
+                                 OPERATION_TYPE_BITS => OPERATION_TYPE_BITS)
+                     port map(cdb_data => cdb.data,
+                              cdb_tag => cdb.tag,
+                              
+                              head_result => rob_head_result,
+                              head_dest_reg => rob_head_dest_reg,
+                              
+                              operation_1_type => next_instruction.operation_type,
+                              dest_reg_1 => next_instruction.reg_dest,
+                              write_1_en => next_instr_ready,
+                              commit_1_en => '1',
+                              
+                              next_alloc_entry_tag => rob_next_alloc_entry,
+                              
+                              full => rob_full,
+                              empty => rob_empty,
+                              
+                              clk => clk,
+                              reset => reset);
       
     reservation_station : entity work.reservation_station(rtl)
                           generic map(RESERVATION_STATION_ENTRIES => RESERVATION_STATION_ENTRIES,
+                                      REORDER_BUFFER_ENTRIES => REORDER_BUFFER_ENTRIES,
+                                      REGISTER_FILE_ENTRIES => 2 ** (4 + ENABLE_BIG_REGFILE),
                                       REG_ADDR_BITS => 4 + ENABLE_BIG_REGFILE,
                                       OPERATION_TYPE_BITS => OPERATION_TYPE_BITS,
                                       OPERATION_SELECT_BITS => OPERATION_SELECT_BITS,
@@ -148,12 +174,13 @@ begin
                                       PORT_0_OPTYPE => "000",
                                       PORT_1_OPTYPE => "001")
                           port map(cdb_data => cdb.data,
-                                   cdb_rs_entry_tag => cdb.rs_entry_tag,
+                                   cdb_rs_entry_tag => cdb.tag,
                                     
                                    i1_operation_type => next_instruction.operation_type,
                                    i1_operation_sel => next_instruction.operation_select,
-                                   i1_src_tag_1 => rf_src_tag_1,
-                                   i1_src_tag_2 => rf_src_tag_2,
+                                   i1_src_reg_1 => next_instruction.reg_src_1,
+                                   i1_src_reg_2 => next_instruction.reg_src_2,
+                                   i1_rob_alloc_dest_tag => rob_next_alloc_entry,
                                    i1_operand_1 => rf_rd_data_1,
                                    i1_operand_2 => rf_rd_data_2,
                                    i1_immediate => next_instruction.immediate,
@@ -164,7 +191,7 @@ begin
                                    o1_immediate => port_0.immediate,
                                    o1_operation_type => port_0.operation_type,
                                    o1_operation_sel => port_0.operation_sel,
-                                   o1_rs_entry_tag => port_0.rs_entry_tag,
+                                   o1_rob_tag => port_0.rob_entry_tag,
                                    o1_dispatch_ready => port_0.dispatch_ready,
                                    
                                    o2_operand_1 => port_1.operand_1,
@@ -172,11 +199,9 @@ begin
                                    o2_immediate => port_1.immediate,
                                    o2_operation_type => port_1.operation_type,
                                    o2_operation_sel => port_1.operation_sel,
-                                   o2_rs_entry_tag => port_1.rs_entry_tag,
+                                   o2_rob_tag => port_1.rob_entry_tag,
                                    o2_dispatch_ready => port_1.dispatch_ready,
-                                   
-                                   next_alloc_entry_tag => next_alloc_entry_tag,
-                                   
+
                                    write_en => next_instr_ready,
                                    port_0_ready => n_int_eu_busy,
                                    port_1_ready => n_ls_eu_busy,
@@ -191,7 +216,7 @@ begin
                                         operand_2 => port_0.operand_2,
                                         immediate => port_0.immediate,
                                         operation_sel => port_0.operation_sel, 
-                                        rs_entry_tag => port_0.rs_entry_tag,
+                                        rob_entry_tag => port_0.rob_entry_tag,
                                         dispatch_ready => port_0.dispatch_ready,
                                         
                                         cdb => cdb_int_eu,
@@ -211,7 +236,7 @@ begin
                                operand_2 => port_1.operand_2,
                                immediate => port_1.immediate,
                                operation_sel => port_1.operation_sel, 
-                               rs_entry_tag => port_1.rs_entry_tag,
+                               rob_entry_tag => port_1.rob_entry_tag,
                                dispatch_ready => port_1.dispatch_ready,
                                         
                                cdb => cdb_ls_eu,

@@ -11,6 +11,8 @@ use IEEE.MATH_REAL.ALL;
 entity reservation_station is
     generic(
         RESERVATION_STATION_ENTRIES : integer;
+        REORDER_BUFFER_ENTRIES : integer;
+        REGISTER_FILE_ENTRIES : integer;
         
         OPERATION_TYPE_BITS : integer;
         OPERATION_SELECT_BITS : integer;
@@ -24,13 +26,14 @@ entity reservation_station is
     port(
         -- COMMON DATA BUS
         cdb_data : in std_logic_vector(OPERAND_BITS - 1 downto 0);
-        cdb_rs_entry_tag : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        cdb_rs_entry_tag : in std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
     
         -- INPUTS
         i1_operation_type : in std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         i1_operation_sel : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        i1_src_tag_1 : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0); 
-        i1_src_tag_2 : in std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0); 
+        i1_rob_alloc_dest_tag : in std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0); 
+        i1_src_reg_1 : in std_logic_vector(integer(ceil(log2(real(REGISTER_FILE_ENTRIES)))) - 1 downto 0); 
+        i1_src_reg_2 : in std_logic_vector(integer(ceil(log2(real(REGISTER_FILE_ENTRIES)))) - 1 downto 0); 
         i1_operand_1 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         i1_operand_2 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         i1_immediate : in std_logic_vector(OPERAND_BITS - 1 downto 0);
@@ -43,7 +46,7 @@ entity reservation_station is
         o1_operand_1 : out std_logic_vector(OPERAND_BITS - 1 downto 0);
         o1_operand_2 : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o1_immediate : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
-        o1_rs_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        o1_rob_tag : out std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
         o1_dispatch_ready : out std_logic;
         -- ==================
         
@@ -53,13 +56,12 @@ entity reservation_station is
         o2_operand_1 : out std_logic_vector(OPERAND_BITS - 1 downto 0);
         o2_operand_2 : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o2_immediate : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
-        o2_rs_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
+        o2_rob_tag : out std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
         o2_dispatch_ready : out std_logic;
         -- ==================
         
         -- CONTROL
-        next_alloc_entry_tag : out std_logic_vector(integer(ceil(log2(real(RESERVATION_STATION_ENTRIES)))) - 1 downto 0);
-        
+
         write_en : in std_logic;
         port_0_ready : in std_logic;
         port_1_ready : in std_logic;
@@ -71,28 +73,38 @@ entity reservation_station is
 end reservation_station;
 
 architecture rtl of reservation_station is
-    -- Reservation station format [OP. TYPE | OP. SEL | RES_STAT_1 | RES_STAT_2 | OPERAND_1 | OPERAND_2 | IMMEDIATE | DISPATCHED | BUSY]
+    -- Reservation station format [OP. TYPE | OP. SEL | ROB_PRODUCER_TAG_1 | ROB_PRODUCER_TAG_2 | ROB_RESULT_TAG | DEST_REG | OPERAND_1 | OPERAND_2 | IMMEDIATE | BUSY]
     constant ENTRY_TAG_BITS : integer := integer(ceil(log2(real(RESERVATION_STATION_ENTRIES))));
-    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 2 * ENTRY_TAG_BITS + 3 * OPERAND_BITS + 2;
+    constant RF_TAG_BITS : integer := integer(ceil(log2(real(REGISTER_FILE_ENTRIES))));
+    constant ROB_TAG_BITS : integer := integer(ceil(log2(real(REORDER_BUFFER_ENTRIES))));
+    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * ROB_TAG_BITS + 3 * OPERAND_BITS + 1;
     
     -- ========== STARTING AND ENDING INDEXES OF RESERVATION STATION ENTRIES ==========
     constant OPERATION_TYPE_START : integer := ENTRY_BITS - 1;
     constant OPERATION_TYPE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS;
     constant OPERATION_SELECT_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - 1;
     constant OPERATION_SELECT_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS;
-    constant ENTRY_TAG_1_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1;
-    constant ENTRY_TAG_1_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS;
-    constant ENTRY_TAG_2_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ENTRY_TAG_BITS - 1;
-    constant ENTRY_TAG_2_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS;
-    constant OPERAND_1_START: integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - 1;
-    constant OPERAND_1_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - OPERAND_BITS;
-    constant OPERAND_2_START: integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - OPERAND_BITS - 1;
-    constant OPERAND_2_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - 2 * OPERAND_BITS;
-    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - 2 * OPERAND_BITS - 1;
-    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ENTRY_TAG_BITS - 3 * OPERAND_BITS;
+    constant ROB_TAG_1_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1;
+    constant ROB_TAG_1_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ROB_TAG_BITS;
+    constant ROB_TAG_2_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - ROB_TAG_BITS - 1;
+    constant ROB_TAG_2_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ROB_TAG_BITS;
+    constant ROB_RESULT_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * ROB_TAG_BITS - 1;
+    constant ROB_RESULT_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * ROB_TAG_BITS;
+    constant OPERAND_1_START: integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * ROB_TAG_BITS - 1;
+    constant OPERAND_1_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * ROB_TAG_BITS - OPERAND_BITS;
+    constant OPERAND_2_START: integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * ROB_TAG_BITS - OPERAND_BITS - 1;
+    constant OPERAND_2_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * ROB_TAG_BITS - 2 * OPERAND_BITS;
+    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * ROB_TAG_BITS - 2 * OPERAND_BITS - 1;
+    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * ROB_TAG_BITS - 3 * OPERAND_BITS;
     -- ================================================================================
     
-    constant ENTRY_TAG_ZERO : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0) := (others => '0');
+    constant ROB_ENTRY_TAG_ZERO : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := (others => '0');
+    constant RF_TAG_ZERO : std_logic_vector(RF_TAG_BITS - 1 downto 0) := (others => '0');
+    
+    -- ========== RF REGISTER STATUS ==========
+    type rf_register_status_type is array(REGISTER_FILE_ENTRIES - 1 downto 0) of std_logic_vector(ROB_TAG_BITS - 1 downto 0); 
+    signal rf_register_status : rf_register_status_type;
+    -- ========================================
     
     type reservation_station_entries_type is array(RESERVATION_STATION_ENTRIES - 1 downto 0) of std_logic_vector(ENTRY_BITS - 1 downto 0);  -- Number of bits in one entry of the reservation station
     
@@ -108,14 +120,33 @@ architecture rtl of reservation_station is
     signal rs_sel_read_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
     signal rs_sel_read_2 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
     
-    signal rs1_src_tag_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0); 
-    signal rs1_src_tag_2 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0); 
+    signal register_status_src_tag_1 : std_logic_vector(ROB_TAG_BITS - 1 downto 0); 
+    signal register_status_src_tag_2 : std_logic_vector(ROB_TAG_BITS - 1 downto 0); 
+    
+    signal rs1_src_tag_1 : std_logic_vector(ROB_TAG_BITS - 1 downto 0); 
+    signal rs1_src_tag_2 : std_logic_vector(ROB_TAG_BITS - 1 downto 0); 
     signal rs1_operand_1 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
     signal rs1_operand_2 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
     
     signal port_0_dispatch_en : std_logic;
     signal port_1_dispatch_en : std_logic;
 begin
+    register_status_src_tag_1 <= rf_register_status(to_integer(unsigned(i1_src_reg_1)));
+    register_status_src_tag_2 <= rf_register_status(to_integer(unsigned(i1_src_reg_2)));
+    
+    -- ========== RF REGISTER STATUS CONTROL ==========
+    rf_register_status_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                rf_register_status <= (others => (others => '0'));
+            elsif (i1_dest_reg /= RF_TAG_ZERO) then
+                rf_register_status(to_integer(unsigned(i1_dest_reg))) <= i1_rob_alloc_dest_tag;
+            end if;
+        end if;
+    end process;
+    -- ================================================
+
     rs_full_proc : process(rs_entries)
         variable temp : std_logic;
     begin
@@ -139,8 +170,8 @@ begin
     rs_operands_ready_bits_proc : process(rs_entries)
     begin
         for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
-            if (rs_entries(i)(ENTRY_TAG_1_START downto ENTRY_TAG_1_END) = ENTRY_TAG_ZERO and
-                rs_entries(i)(ENTRY_TAG_2_START downto ENTRY_TAG_2_END) = ENTRY_TAG_ZERO and
+            if (rs_entries(i)(ROB_TAG_1_START downto ROB_TAG_1_END) = ROB_ENTRY_TAG_ZERO and
+                rs_entries(i)(ROB_TAG_2_START downto ROB_TAG_2_END) = ROB_ENTRY_TAG_ZERO and
                 rs_entries(i)(0) = '1' and rs_entries(i)(1) = '0') then
                 rs_operands_ready_bits(i) <= '1';
             else
@@ -196,18 +227,18 @@ begin
                                
     -- This is a check for whether current instruction's operands are being broadcast on the CDB. If they are then that will immediately be taken
     -- into consideration. Without this part the instruction in an entry could keep waiting for a result of an instruction that has already finished execution.  
-    reservation_station_operand_select_proc : process(cdb_rs_entry_tag, cdb_data, i1_src_tag_1, i1_operand_1, i1_src_tag_2, i1_operand_2)
+    reservation_station_operand_select_proc : process(cdb_rs_entry_tag, cdb_data, rs1_src_tag_1, i1_operand_1, rs1_src_tag_2, i1_operand_2)
     begin
-        if (i1_src_tag_1 /= cdb_rs_entry_tag) then
-            rs1_src_tag_1 <= i1_src_tag_1;
+        if (register_status_src_tag_1 /= cdb_rs_entry_tag) then
+            rs1_src_tag_1 <= register_status_src_tag_1;
             rs1_operand_1 <= i1_operand_1;
         else
             rs1_src_tag_1 <= (others => '0');
             rs1_operand_1 <= cdb_data;
         end if;
         
-        if (i1_src_tag_2 /= cdb_rs_entry_tag) then
-            rs1_src_tag_2 <= i1_src_tag_2;
+        if (register_status_src_tag_2 /= cdb_rs_entry_tag) then
+            rs1_src_tag_2 <= register_status_src_tag_2;
             rs1_operand_2 <= i1_operand_2;
         else
             rs1_src_tag_2 <= (others => '0');
@@ -225,32 +256,27 @@ begin
                 end loop;
             else
                 if (write_en = '1') then
-                    rs_entries(to_integer(unsigned(rs_sel_write_1))) <= i1_operation_type & i1_operation_sel & rs1_src_tag_1 & rs1_src_tag_2 & rs1_operand_1 & rs1_operand_2 & i1_immediate & '0' & '1';
+                    rs_entries(to_integer(unsigned(rs_sel_write_1))) <= i1_operation_type & i1_operation_sel & rs1_src_tag_1 & rs1_src_tag_2 & i1_rob_alloc_dest_tag & rs1_operand_1 & rs1_operand_2 & i1_immediate & '1';
+                end if;
+
+                if (port_0_ready = '1') then
+                    rs_entries(to_integer(unsigned(rs_sel_read_1)))(0) <= '0';
+                end if;
+                    
+                if (port_1_ready = '1') then
+                    rs_entries(to_integer(unsigned(rs_sel_read_2)))(0) <= '0';
                 end if;
 
                 for i in 0 to RESERVATION_STATION_ENTRIES - 1 loop
-                    if (cdb_rs_entry_tag = std_logic_vector(to_unsigned(i, ENTRY_TAG_BITS)) and rs_entries(i)(0) = '1') then
-                        rs_entries(i)(1) <= '0';
-                        rs_entries(i)(0) <= '0';
-                    end if;
-                    
-                    if (port_0_ready = '1') then
-                        rs_entries(to_integer(unsigned(rs_sel_read_1)))(1) <= '1';
-                    end if;
-                    
-                    if (port_1_ready = '1') then
-                        rs_entries(to_integer(unsigned(rs_sel_read_2)))(1) <= '1';
-                    end if;
-                
-                    if (rs_entries(i)(ENTRY_TAG_1_START downto ENTRY_TAG_1_END) /= ENTRY_TAG_ZERO and
-                        rs_entries(i)(ENTRY_TAG_1_START downto ENTRY_TAG_1_END) = cdb_rs_entry_tag) then
-                        rs_entries(i)(ENTRY_TAG_1_START downto ENTRY_TAG_1_END) <= (others => '0');
+                    if (rs_entries(i)(ROB_TAG_1_START downto ROB_TAG_1_END) /= ROB_ENTRY_TAG_ZERO and
+                        rs_entries(i)(ROB_TAG_1_START downto ROB_TAG_1_END) = cdb_rs_entry_tag) then
+                        rs_entries(i)(ROB_TAG_1_START downto ROB_TAG_1_END) <= (others => '0');
                         rs_entries(i)(OPERAND_1_START downto OPERAND_1_END) <= cdb_data;
                     end if;
                     
-                    if (rs_entries(i)(ENTRY_TAG_2_START downto ENTRY_TAG_2_END) /= ENTRY_TAG_ZERO and
-                        rs_entries(i)(ENTRY_TAG_2_START downto ENTRY_TAG_2_END) = cdb_rs_entry_tag) then
-                        rs_entries(i)(ENTRY_TAG_2_START downto ENTRY_TAG_2_END) <= (others => '0');
+                    if (rs_entries(i)(ROB_TAG_2_START downto ROB_TAG_2_END) /= ROB_ENTRY_TAG_ZERO and
+                        rs_entries(i)(ROB_TAG_2_START downto ROB_TAG_2_END) = cdb_rs_entry_tag) then
+                        rs_entries(i)(ROB_TAG_2_START downto ROB_TAG_2_END) <= (others => '0');
                         rs_entries(i)(OPERAND_2_START downto OPERAND_2_END) <= cdb_data;
                     end if;
                 end loop;
@@ -267,7 +293,7 @@ begin
             o1_operand_1 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_1_START downto OPERAND_1_END);
             o1_operand_2 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_2_START downto OPERAND_2_END);
             o1_immediate <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(IMMEDIATE_START downto IMMEDIATE_END);
-            o1_rs_entry_tag <= rs_sel_read_1;
+            o1_rob_tag <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(ROB_RESULT_TAG_START downto ROB_RESULT_TAG_END);
             o1_dispatch_ready <= '1';
         else
             o1_operation_type <= (others => '0');
@@ -275,7 +301,7 @@ begin
             o1_operand_1 <= (others => '0');
             o1_operand_2 <= (others => '0');
             o1_immediate <= (others => '0');
-            o1_rs_entry_tag <= (others => '0');
+            o1_rob_tag <= (others => '0');
             o1_dispatch_ready <= '0';
         end if;
         
@@ -285,7 +311,7 @@ begin
             o2_operand_1 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_1_START downto OPERAND_1_END);
             o2_operand_2 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_2_START downto OPERAND_2_END);
             o2_immediate <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(IMMEDIATE_START downto IMMEDIATE_END);
-            o2_rs_entry_tag <= rs_sel_read_2;
+            o2_rob_tag <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(ROB_RESULT_TAG_START downto ROB_RESULT_TAG_END);
             o2_dispatch_ready <= '1';
         else
             o2_operation_type <= (others => '0');
@@ -293,16 +319,13 @@ begin
             o2_operand_1 <= (others => '0');
             o2_operand_2 <= (others => '0');
             o2_immediate <= (others => '0');
-            o2_rs_entry_tag <= (others => '0');
+            o2_rob_tag <= (others => '0');
             o2_dispatch_ready <= '0';
         end if;
     end process;
     
-    port_0_dispatch_en <= '1' when port_0_ready = '1' and (rs_sel_read_1 /= ENTRY_TAG_ZERO) else '0'; 
-    port_1_dispatch_en <= '1' when port_1_ready = '1' and (rs_sel_read_2 /= ENTRY_TAG_ZERO) else '0'; 
-    
-    next_alloc_entry_tag <= rs_sel_write_1;
-
+    port_0_dispatch_en <= '1' when port_0_ready = '1' and (rs_sel_read_1 /= ROB_ENTRY_TAG_ZERO) else '0'; 
+    port_1_dispatch_en <= '1' when port_1_ready = '1' and (rs_sel_read_2 /= ROB_ENTRY_TAG_ZERO) else '0'; 
 end rtl;
 
 

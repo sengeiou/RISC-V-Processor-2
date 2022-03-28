@@ -23,6 +23,8 @@ entity reorder_buffer is
         dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
         write_1_en : in std_logic;
         commit_1_en : in std_logic;
+        
+        next_alloc_entry_tag : out std_logic_vector(integer(ceil(log2(real(ENTRIES)))) - 1 downto 0);
     
         full : out std_logic;
         empty : out std_logic;
@@ -40,6 +42,7 @@ architecture rtl of reorder_buffer is
     constant ROB_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(ENTRIES)))) - 1 downto 0) := (others => '0');
     constant REGFILE_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0) := (others => '0');
     constant OPERAND_ZERO : std_logic_vector(OPERAND_BITS - 1 downto 0) := (others => '0');
+    constant COUNTER_ONE : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := std_logic_vector(to_unsigned(1, ROB_TAG_BITS));
     
     -- ========== STARTING AND ENDING INDEXES OF ROB ENTRIES ==========
     constant OP_TYPE_START : integer := ROB_ENTRY_BITS - 1;
@@ -71,13 +74,14 @@ architecture rtl of reorder_buffer is
     signal commit_en : std_logic;
     -- ===========================
 begin
+    next_alloc_entry_tag <= tail_counter_reg;
 
     -- ========== HEAD & TAIL COUNTER PROCESSES ==========
     head_counter_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                tail_counter_reg <= (others => '0');
+                tail_counter_reg <= COUNTER_ONE;
             elsif (write_1_en = '1' and rob_full = '0') then
                 tail_counter_reg <= tail_counter_next;
             end if;
@@ -88,7 +92,7 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                head_counter_reg <= (others => '0');
+                head_counter_reg <= COUNTER_ONE;
             elsif (commit_1_en = '1' and reorder_buffer(to_integer(unsigned(head_counter_reg)))(0) = '1' and rob_empty = '0') then
                 head_counter_reg <= head_counter_next;
             end if;
@@ -98,13 +102,13 @@ begin
     counters_next_proc : process(head_counter_reg, tail_counter_reg)
     begin
         if (unsigned(head_counter_reg) = ENTRIES - 1) then
-            head_counter_next <= (others => '0');
+            head_counter_next <= COUNTER_ONE;
         else
             head_counter_next <= std_logic_vector(unsigned(head_counter_reg) + 1);
         end if;
         
         if (unsigned(tail_counter_reg) = ENTRIES - 1) then
-            tail_counter_next <= (others => '0');
+            tail_counter_next <= COUNTER_ONE;
         else
             tail_counter_next <= std_logic_vector(unsigned(tail_counter_reg) + 1);
         end if;
