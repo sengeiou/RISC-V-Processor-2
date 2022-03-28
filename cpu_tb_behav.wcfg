@@ -18,7 +18,7 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="5000001fs"></ZoomEndTime>
-      <Cursor1Time time="650000fs"></Cursor1Time>
+      <Cursor1Time time="1114481fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="264"></NameColumnWidth>
@@ -72,11 +72,14 @@
             <obj_property name="ObjectShortName">reg_file[31:0][31:0]</obj_property>
             <obj_property name="isExpanded"></obj_property>
          </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_file/en" type="logic">
+            <obj_property name="ElementShortName">en</obj_property>
+            <obj_property name="ObjectShortName">en</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject fp_name="group34" type="group">
          <obj_property name="label">RESERVATION_STATION</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reservation_station/cdb_data" type="array">
             <obj_property name="ElementShortName">cdb_data[31:0]</obj_property>
             <obj_property name="ObjectShortName">cdb_data[31:0]</obj_property>
@@ -367,9 +370,11 @@
       <wvobject fp_name="group870" type="group">
          <obj_property name="label">REORDER BUFFER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer" type="array">
             <obj_property name="ElementShortName">reorder_buffer[6:0][40:0]</obj_property>
             <obj_property name="ObjectShortName">reorder_buffer[6:0][40:0]</obj_property>
+            <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/head_counter_reg" type="array">
             <obj_property name="ElementShortName">head_counter_reg[2:0]</obj_property>

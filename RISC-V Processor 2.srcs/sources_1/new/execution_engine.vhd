@@ -61,6 +61,7 @@ architecture Structural of execution_engine is
     signal rob_head_dest_reg : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
     signal rob_next_alloc_entry : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
     
+    signal rob_commit_ready : std_logic;
     signal rob_full : std_logic;
     signal rob_empty : std_logic;
     -- ============================================
@@ -134,7 +135,7 @@ begin
                              wr_data => rob_head_result,
                              
                              -- CONTROL
-                             en => '1',
+                             en => rob_commit_ready,
                              reset => reset,
                              clk => clk,
                              clk_dbg => clk_dbg);
@@ -157,6 +158,7 @@ begin
                               
                               next_alloc_entry_tag => rob_next_alloc_entry,
                               
+                              commit_ready => rob_commit_ready,
                               full => rob_full,
                               empty => rob_empty,
                               

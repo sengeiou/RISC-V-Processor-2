@@ -67,17 +67,17 @@ architecture rtl of register_file is
 );
 END COMPONENT  ;
 begin
-    rf_access_proc : process(rd_1_addr, rd_2_addr, clk)
+    -- Read from registers
+    rd_1_data <= reg_file(to_integer(unsigned(rd_1_addr)));
+    rd_2_data <= reg_file(to_integer(unsigned(rd_2_addr)));
+
+    rf_access_proc : process(clk)
     begin
-        -- Read from registers
-        rd_1_data <= reg_file(to_integer(unsigned(rd_1_addr)));
-        rd_2_data <= reg_file(to_integer(unsigned(rd_2_addr)));
-         
         -- Writing to registers
         if (rising_edge(clk)) then
             if (reset = '1') then
                 reg_file <= (others => (others => '0'));
-            else
+            elsif (en = '1') then
                 reg_file(to_integer(unsigned(wr_addr))) <= wr_data;
             end if;
         end if;
