@@ -8,7 +8,7 @@ use IEEE.MATH_REAL.ALL;
 -- Remove register destination address and put reservation station tags to indentify where results of computation have to go
 -- =======================================
 
-entity reservation_station is
+entity unified_scheduler is
     generic(
         RESERVATION_STATION_ENTRIES : integer;
         REORDER_BUFFER_ENTRIES : integer;
@@ -70,9 +70,9 @@ entity reservation_station is
         clk : in std_logic;
         reset : in std_logic
     );
-end reservation_station;
+end unified_scheduler;
 
-architecture rtl of reservation_station is
+architecture rtl of unified_scheduler is
     -- Reservation station format [OP. TYPE | OP. SEL | ROB_PRODUCER_TAG_1 | ROB_PRODUCER_TAG_2 | ROB_RESULT_TAG | DEST_REG | OPERAND_1 | OPERAND_2 | IMMEDIATE | BUSY]
     constant ENTRY_TAG_BITS : integer := integer(ceil(log2(real(RESERVATION_STATION_ENTRIES))));
     constant RF_TAG_BITS : integer := integer(ceil(log2(real(REGISTER_FILE_ENTRIES))));

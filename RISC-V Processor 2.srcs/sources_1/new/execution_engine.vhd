@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.MATH_REAL.ALL;
+use WORK.PKG_EE.ALL;
 use WORK.PKG_CPU.ALL;
 use WORK.PKG_SCHED.ALL;
 use WORK.PKG_AXI.ALL;
@@ -38,6 +39,19 @@ architecture Structural of execution_engine is
         );
     END COMPONENT;
     
+    -- ========== PIPELINE REGISTERS ==========
+    signal pipeline_reg_1 : execution_engine_pipeline_register_1_type;
+    signal pipeline_reg_1_next : execution_engine_pipeline_register_1_type;
+    -- ========================================
+    
+    -- ========== REGISTER RENAMING SIGNALS ==========
+    signal renamed_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal renamed_src_reg_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal renamed_src_reg_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    
+    signal raa_empty : std_logic;
+    -- ===============================================
+    
     -- ========== REGISTER FILE SIGNALS ==========
     signal rf_rd_data_1 : std_logic_vector(31 downto 0);
     signal rf_rd_data_2 : std_logic_vector(31 downto 0);
@@ -70,6 +84,7 @@ architecture Structural of execution_engine is
     
     signal iq_full : std_logic;
     signal iq_empty : std_logic;
+    
     -- ========== EXECUTION UNITS BUSY SIGNALS ==========
     signal int_eu_busy : std_logic;
     signal ls_eu_busy : std_logic;
@@ -117,16 +132,69 @@ begin
       empty => iq_empty
     );
       
-    next_instr_ready <= not (iq_empty or sched_full);
+    pipeline_reg_1_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                pipeline_reg_1 <= EE_PIPELINE_REG_1_INIT;
+            else
+                pipeline_reg_1 <= pipeline_reg_1_next;
+            end if;
+        end if;
+    end process;
+    
+    pipeline_reg_1_next.operation_type <= next_instruction.operation_type;
+    pipeline_reg_1_next.operation_select <= next_instruction.operation_select;
+    pipeline_reg_1_next.renamed_src_reg_1 <= renamed_src_reg_1;
+    pipeline_reg_1_next.renamed_src_reg_2 <= renamed_src_reg_2;
+    pipeline_reg_1_next.renamed_dest_reg <= renamed_dest_reg;
+    pipeline_reg_1_next.immediate <= next_instruction.immediate;
+      
+    -- ==================================================================================================
+    --                                        REGISTER RENAMING
+    -- ==================================================================================================
+      
+    next_instr_ready <= not (iq_empty or sched_full or raa_empty);
+      
+    register_alias_allocator : entity work.register_alias_allocator(rtl)
+                               generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
+                                           ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
+                               port map(put_reg_alias => "000000",
+                                        get_reg_alias => renamed_dest_reg,
+                                        
+                                        put_en => '0',
+                                        get_en => next_instr_ready,
+                                        
+                                        empty => raa_empty,
+                                        clk => clk,
+                                        reset => reset);
+      
+    register_alias_table : entity work.register_alias_table(rtl)
+                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
+                                            ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
+                                port map(arch_reg_addr_read_1 => next_instruction.reg_src_1,
+                                         arch_reg_addr_read_2 => next_instruction.reg_src_2,
+                                         
+                                         phys_reg_addr_read_1 => renamed_src_reg_1,
+                                         phys_reg_addr_read_2 => renamed_src_reg_2,
+                                         
+                                         arch_reg_addr_write_1 => next_instruction.reg_dest,
+                                         phys_reg_addr_write_1 => renamed_dest_reg,
+                                         
+                                         clk => clk,
+                                         reset => reset);  
+                                         
+    -- ==================================================================================================
+    -- ==================================================================================================
+    -- ==================================================================================================
       
     register_file : entity work.register_file(rtl)
-                    generic map(REORDER_BUFFER_TAG_BITS => integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))),
-                                REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
-                                REGFILE_SIZE => 4 + ENABLE_BIG_REGFILE)
+                    generic map(REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
+                                REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES)
                     port map(
                              -- ADDRESSES
-                             rd_1_addr => next_instruction.reg_src_1,
-                             rd_2_addr => next_instruction.reg_src_2,
+                             rd_1_addr => pipeline_reg_1.renamed_src_reg_1,
+                             rd_2_addr => pipeline_reg_1.renamed_src_reg_2,
                              wr_addr => rob_head_dest_reg,
                              
                              -- DATA
@@ -151,8 +219,8 @@ begin
                               head_result => rob_head_result,
                               head_dest_reg => rob_head_dest_reg,
                               
-                              operation_1_type => next_instruction.operation_type,
-                              dest_reg_1 => next_instruction.reg_dest,
+                              operation_1_type => pipeline_reg_1.operation_type,
+                              dest_reg_1 => pipeline_reg_1.renamed_dest_reg,
                               write_1_en => next_instr_ready,
                               commit_1_en => '1',
                               
@@ -165,7 +233,7 @@ begin
                               clk => clk,
                               reset => reset);
       
-    reservation_station : entity work.reservation_station(rtl)
+    unified_scheduler : entity work.unified_scheduler(rtl)
                           generic map(RESERVATION_STATION_ENTRIES => RESERVATION_STATION_ENTRIES,
                                       REORDER_BUFFER_ENTRIES => REORDER_BUFFER_ENTRIES,
                                       REGISTER_FILE_ENTRIES => 2 ** (4 + ENABLE_BIG_REGFILE),
@@ -178,15 +246,15 @@ begin
                           port map(cdb_data => cdb.data,
                                    cdb_rs_entry_tag => cdb.tag,
                                     
-                                   i1_operation_type => next_instruction.operation_type,
-                                   i1_operation_sel => next_instruction.operation_select,
-                                   i1_src_reg_1 => next_instruction.reg_src_1,
-                                   i1_src_reg_2 => next_instruction.reg_src_2,
+                                   i1_operation_type => pipeline_reg_1.operation_type,
+                                   i1_operation_sel => pipeline_reg_1.operation_select,
+                                   i1_src_reg_1 => pipeline_reg_1.renamed_src_reg_1,
+                                   i1_src_reg_2 => pipeline_reg_1.renamed_src_reg_2,
                                    i1_rob_alloc_dest_tag => rob_next_alloc_entry,
                                    i1_operand_1 => rf_rd_data_1,
                                    i1_operand_2 => rf_rd_data_2,
-                                   i1_immediate => next_instruction.immediate,
-                                   i1_dest_reg => next_instruction.reg_dest,
+                                   i1_immediate => pipeline_reg_1.immediate,
+                                   i1_dest_reg => pipeline_reg_1.renamed_dest_reg,
                                    
                                    o1_operand_1 => port_0.operand_1,
                                    o1_operand_2 => port_0.operand_2,

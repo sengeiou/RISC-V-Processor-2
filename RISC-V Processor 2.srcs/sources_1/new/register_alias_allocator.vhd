@@ -27,8 +27,8 @@ architecture rtl of register_alias_allocator is
     constant PHYS_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))); 
     constant ARCH_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))); 
 
-    constant HEAD_COUNTER_MAXVAL : unsigned := to_unsigned(PHYS_REGFILE_ENTRIES - 1, PHYS_REGFILE_ADDR_BITS);
-    constant HEAD_COUNTER_ZERO : unsigned := (others => '0');
+    constant HEAD_COUNTER_MAXVAL : unsigned(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := to_unsigned(PHYS_REGFILE_ENTRIES - 1, PHYS_REGFILE_ADDR_BITS);
+    constant HEAD_COUNTER_ZERO : unsigned(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
 
     type raa_stack_type is array (PHYS_REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal raa_stack : raa_stack_type;

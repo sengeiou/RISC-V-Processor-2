@@ -11,7 +11,14 @@ package pkg_cpu is
     -- CPU Config Parameters
     constant CPU_DATA_WIDTH_BITS : integer := 32;
     constant CPU_ADDR_WIDTH_BITS : integer := 32;
-    constant ENABLE_BIG_REGFILE : integer range 0 to 1 := 1;        -- Selects between 16 entry register file and the 32 entry one (RV32E and RV32I)
+    constant ENABLE_BIG_REGFILE : integer range 0 to 1 := 1;        -- Selects between 16 entry register file and the 32 entry one (RV32E and RV32I) NOTE: DEPRECATE
+    
+    constant ARCH_REGFILE_ENTRIES : integer range 1 to 1024 := 32;
+    constant ARCH_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES))));
+    
+    constant PHYS_REGFILE_ENTRIES : integer range 1 to 1024 := 48;
+    constant PHYS_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
+    
     constant RESERVATION_STATION_ENTRIES : integer range 1 to 1023 := 7;
     constant OPERATION_TYPE_BITS : integer := 3;
     constant OPERATION_SELECT_BITS : integer := 5;

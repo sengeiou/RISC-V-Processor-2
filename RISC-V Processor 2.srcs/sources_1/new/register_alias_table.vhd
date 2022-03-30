@@ -15,12 +15,10 @@ entity register_alias_table is
         -- Inputs take the architectural register address for which we want the physical entry address
         arch_reg_addr_read_1 : in std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0);
         arch_reg_addr_read_2 : in std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0);
-        arch_reg_addr_read_3 : in std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0);
         
         -- Outputs give the physical entry address
         phys_reg_addr_read_1 : out std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         phys_reg_addr_read_2 : out std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
-        phys_reg_addr_read_3 : out std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         -- ===================================
         
         -- ========== WRITING PORTS ==========
@@ -56,6 +54,5 @@ begin
     
     phys_reg_addr_read_1 <= rat(to_integer(unsigned(arch_reg_addr_read_1)));
     phys_reg_addr_read_2 <= rat(to_integer(unsigned(arch_reg_addr_read_2)));
-    phys_reg_addr_read_3 <= rat(to_integer(unsigned(arch_reg_addr_read_3)));
 
 end rtl;
