@@ -158,7 +158,7 @@ begin
                               
                               next_alloc_entry_tag => rob_next_alloc_entry,
                               
-                              commit_ready => rob_commit_ready,
+                              head_valid => rob_commit_ready,
                               full => rob_full,
                               empty => rob_empty,
                               

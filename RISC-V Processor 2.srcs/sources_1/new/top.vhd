@@ -15,6 +15,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- x) Implement a DMA controller
 -- =============================================================== 
 
+-- ====================== POSSIBLE PROBLEMS ====================== 
+-- 1) What happenes when an instruction requires an operand which has been calculated but not commited
+-- (still in reorder buffer) ?
+-- =============================================================== 
+
 -- ========================= TO DO (AXI) =================================
 -- 1) Generate STROBE signal in the master
 -- 2) Make AXI bus data width configurable

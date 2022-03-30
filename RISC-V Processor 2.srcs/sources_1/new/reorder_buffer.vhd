@@ -23,7 +23,7 @@ entity reorder_buffer is
         dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
         write_1_en : in std_logic;
         commit_1_en : in std_logic;
-        commit_ready : out std_logic;
+        head_valid : out std_logic;
         
         next_alloc_entry_tag : out std_logic_vector(integer(ceil(log2(real(ENTRIES)))) - 1 downto 0);
     
@@ -69,6 +69,8 @@ architecture rtl of reorder_buffer is
     -- ===== STATUS SIGNALS =====
     signal rob_full : std_logic;
     signal rob_empty : std_logic;
+    
+    signal commit_ready : std_logic;
     -- ===========================
     
     -- ===== CONTROL SIGNALS =====
@@ -76,7 +78,8 @@ architecture rtl of reorder_buffer is
     -- ===========================
 begin
     next_alloc_entry_tag <= tail_counter_reg;
-    commit_ready <= '1' when commit_1_en = '1' and reorder_buffer(to_integer(unsigned(head_counter_reg)))(0) = '1' and rob_empty = '0' else '0';        -- DUPLICATE
+    commit_ready <= '1' when commit_1_en = '1' and reorder_buffer(to_integer(unsigned(head_counter_reg)))(0) = '1' and rob_empty = '0' else '0';
+    head_valid <= commit_ready;
 
     -- ========== HEAD & TAIL COUNTER PROCESSES ==========
     tail_counter_proc : process(clk)
@@ -95,7 +98,7 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 head_counter_reg <= COUNTER_ONE;
-            elsif (commit_1_en = '1' and reorder_buffer(to_integer(unsigned(head_counter_reg)))(0) = '1' and rob_empty = '0') then          -- DUPLICATE
+            elsif (commit_ready = '1') then
                 head_counter_reg <= head_counter_next;
             end if;
         end if;

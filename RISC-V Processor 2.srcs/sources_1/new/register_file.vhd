@@ -8,21 +8,19 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
-use WORK.PKG_CPU.ALL;
 
 use work.pkg_cpu.all;
 
 entity register_file is
     generic(
-        REORDER_BUFFER_TAG_BITS : integer;                                              -- Number of entries in the associated reservation station
         REG_DATA_WIDTH_BITS : integer;                                                        -- Number of bits in the registers (XLEN)
-        REGFILE_SIZE : integer                                                                -- Number of registers in the register file (2 ** REGFILE_SIZE)
+        REGFILE_ENTRIES : integer                                                                -- Number of registers in the register file (2 ** REGFILE_SIZE)
     );
     port(
         -- Address busses
-        rd_1_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);
-        rd_2_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);                           -- Register selection address (read)
-        wr_addr : in std_logic_vector(REGFILE_SIZE - 1 downto 0);
+        rd_1_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
+        rd_2_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);                           -- Register selection address (read)
+        wr_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
         
         -- Data busses
         rd_1_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
@@ -40,12 +38,11 @@ end register_file;
 
 architecture rtl of register_file is
     -- ========== CONSTANTS ==========
-    constant REG_STATUS_TAG_ZERO : std_logic_vector(REORDER_BUFFER_TAG_BITS - 1 downto 0) := (others => '0');
-    constant REG_ADDR_ZERO : std_logic_vector(REGFILE_SIZE - 1 downto 0) := (others => '0'); 
+    constant REG_ADDR_ZERO : std_logic_vector(REGFILE_ENTRIES - 1 downto 0) := (others => '0'); 
     -- ===============================
 
     -- ========== RF REGISTERS ==========
-    type reg_file_type is array (2 ** REGFILE_SIZE - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
+    type reg_file_type is array (2 ** REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
     signal reg_file : reg_file_type;
     -- ==================================
     
@@ -53,8 +50,6 @@ architecture rtl of register_file is
 
     PORT (
 	clk : IN STD_LOGIC;
-
-
 
 	probe0 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
 	probe1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 

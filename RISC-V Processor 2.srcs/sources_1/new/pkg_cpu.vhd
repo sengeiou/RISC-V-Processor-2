@@ -12,11 +12,11 @@ package pkg_cpu is
     constant CPU_DATA_WIDTH_BITS : integer := 32;
     constant CPU_ADDR_WIDTH_BITS : integer := 32;
     constant ENABLE_BIG_REGFILE : integer range 0 to 1 := 1;        -- Selects between 16 entry register file and the 32 entry one (RV32E and RV32I)
-    constant RESERVATION_STATION_ENTRIES : integer range 1 to 1023 := 15;
+    constant RESERVATION_STATION_ENTRIES : integer range 1 to 1023 := 7;
     constant OPERATION_TYPE_BITS : integer := 3;
     constant OPERATION_SELECT_BITS : integer := 5;
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
-    constant REORDER_BUFFER_ENTRIES : integer := 7;
+    constant REORDER_BUFFER_ENTRIES : integer := 24;
     
     -- Constants
     constant REG_ADDR_ZERO : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0) := (others => '0');
