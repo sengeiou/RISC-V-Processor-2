@@ -49,6 +49,9 @@ architecture Structural of execution_engine is
     signal renamed_src_reg_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal renamed_src_reg_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
+    signal raa_put_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal raa_put_en : std_logic;
+    
     signal raa_empty : std_logic;
     -- ===============================================
     
@@ -71,9 +74,8 @@ architecture Structural of execution_engine is
     -- ================================================
     
     -- ========== REORDER BUFFER SIGNALS ==========
-    signal rob_head_result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-    signal rob_head_dest_reg : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
-    signal rob_next_alloc_entry : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+    signal rob_head_dest_reg : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
+    signal rob_head_dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
     signal rob_commit_ready : std_logic;
     signal rob_full : std_logic;
@@ -148,7 +150,9 @@ begin
     pipeline_reg_1_next.renamed_src_reg_1 <= renamed_src_reg_1;
     pipeline_reg_1_next.renamed_src_reg_2 <= renamed_src_reg_2;
     pipeline_reg_1_next.renamed_dest_reg <= renamed_dest_reg;
+    pipeline_reg_1_next.dest_reg <= next_instruction.reg_dest;
     pipeline_reg_1_next.immediate <= next_instruction.immediate;
+    pipeline_reg_1_next.valid <= next_instr_ready;
       
     -- ==================================================================================================
     --                                        REGISTER RENAMING
@@ -159,20 +163,28 @@ begin
     register_alias_allocator : entity work.register_alias_allocator(rtl)
                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                            ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
-                               port map(put_reg_alias => "000000",
+                               port map(put_reg_alias => raa_put_tag,
                                         get_reg_alias => renamed_dest_reg,
                                         
-                                        put_en => '0',
+                                        put_en => raa_put_en,
                                         get_en => next_instr_ready,
                                         
                                         empty => raa_empty,
                                         clk => clk,
                                         reset => reset);
       
+    -- What happenes when there are no more registers to allocate...?
     register_alias_table : entity work.register_alias_table(rtl)
                                 generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                             ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
-                                port map(arch_reg_addr_read_1 => next_instruction.reg_src_1,
+                                port map(commited_dest_reg_arch_addr => rob_head_dest_reg,
+                                         commited_dest_reg_phys_addr => rob_head_dest_tag,
+                                         commit_ready => rob_commit_ready,
+                                         
+                                         freed_phys_reg_tag => raa_put_tag,
+                                         tag_freed => raa_put_en,
+                                
+                                         arch_reg_addr_read_1 => next_instruction.reg_src_1,
                                          arch_reg_addr_read_2 => next_instruction.reg_src_2,
                                          
                                          phys_reg_addr_read_1 => renamed_src_reg_1,
@@ -195,37 +207,35 @@ begin
                              -- ADDRESSES
                              rd_1_addr => pipeline_reg_1.renamed_src_reg_1,
                              rd_2_addr => pipeline_reg_1.renamed_src_reg_2,
-                             wr_addr => rob_head_dest_reg,
+                             wr_addr => cdb.tag,
                              
                              -- DATA
                              rd_1_data => rf_rd_data_1,
                              rd_2_data => rf_rd_data_2,
-                             wr_data => rob_head_result,
+                             wr_data => cdb.data,
                              
                              -- CONTROL
-                             en => rob_commit_ready,
+                             en => '1',
                              reset => reset,
                              clk => clk,
                              clk_dbg => clk_dbg);
                              
     reorder_buffer : entity work.reorder_buffer(rtl)
-                     generic map(ENTRIES => REORDER_BUFFER_ENTRIES,
+                     generic map(ROB_ENTRIES => REORDER_BUFFER_ENTRIES,
                                  REGFILE_ENTRIES => 2 ** (4 + ENABLE_BIG_REGFILE),
-                                 OPERAND_BITS => CPU_DATA_WIDTH_BITS,
+                                 TAG_BITS => PHYS_REGFILE_ADDR_BITS,
                                  OPERATION_TYPE_BITS => OPERATION_TYPE_BITS)
-                     port map(cdb_data => cdb.data,
-                              cdb_tag => cdb.tag,
-                              
-                              head_result => rob_head_result,
+                     port map(cdb_tag => cdb.tag,
+
+                              head_dest_tag => rob_head_dest_tag,
                               head_dest_reg => rob_head_dest_reg,
                               
                               operation_1_type => pipeline_reg_1.operation_type,
-                              dest_reg_1 => pipeline_reg_1.renamed_dest_reg,
-                              write_1_en => next_instr_ready,
+                              dest_reg_1 => pipeline_reg_1.dest_reg,
+                              dest_tag_1 => pipeline_reg_1.renamed_dest_reg,
+                              write_1_en => pipeline_reg_1.valid,
                               commit_1_en => '1',
-                              
-                              next_alloc_entry_tag => rob_next_alloc_entry,
-                              
+
                               head_valid => rob_commit_ready,
                               full => rob_full,
                               empty => rob_empty,
@@ -234,34 +244,31 @@ begin
                               reset => reset);
       
     unified_scheduler : entity work.unified_scheduler(rtl)
-                          generic map(RESERVATION_STATION_ENTRIES => RESERVATION_STATION_ENTRIES,
-                                      REORDER_BUFFER_ENTRIES => REORDER_BUFFER_ENTRIES,
-                                      REGISTER_FILE_ENTRIES => 2 ** (4 + ENABLE_BIG_REGFILE),
-                                      REG_ADDR_BITS => 4 + ENABLE_BIG_REGFILE,
+                          generic map(SCHEDULER_ENTRIES => SCHEDULER_ENTRIES,
+                                      TAG_BITS => PHYS_REGFILE_ADDR_BITS,
                                       OPERATION_TYPE_BITS => OPERATION_TYPE_BITS,
                                       OPERATION_SELECT_BITS => OPERATION_SELECT_BITS,
                                       OPERAND_BITS => CPU_DATA_WIDTH_BITS,
                                       PORT_0_OPTYPE => "000",
                                       PORT_1_OPTYPE => "001")
                           port map(cdb_data => cdb.data,
-                                   cdb_rs_entry_tag => cdb.tag,
+                                   cdb_tag => cdb.tag,
                                     
                                    i1_operation_type => pipeline_reg_1.operation_type,
                                    i1_operation_sel => pipeline_reg_1.operation_select,
-                                   i1_src_reg_1 => pipeline_reg_1.renamed_src_reg_1,
-                                   i1_src_reg_2 => pipeline_reg_1.renamed_src_reg_2,
-                                   i1_rob_alloc_dest_tag => rob_next_alloc_entry,
+                                   i1_src_tag_1 => pipeline_reg_1.renamed_src_reg_1,
+                                   i1_src_tag_2 => pipeline_reg_1.renamed_src_reg_2,
+                                   i1_dest_tag => pipeline_reg_1.renamed_dest_reg,
                                    i1_operand_1 => rf_rd_data_1,
                                    i1_operand_2 => rf_rd_data_2,
                                    i1_immediate => pipeline_reg_1.immediate,
-                                   i1_dest_reg => pipeline_reg_1.renamed_dest_reg,
                                    
                                    o1_operand_1 => port_0.operand_1,
                                    o1_operand_2 => port_0.operand_2,
                                    o1_immediate => port_0.immediate,
                                    o1_operation_type => port_0.operation_type,
                                    o1_operation_sel => port_0.operation_sel,
-                                   o1_rob_tag => port_0.rob_entry_tag,
+                                   o1_dest_tag => port_0.tag,
                                    o1_dispatch_ready => port_0.dispatch_ready,
                                    
                                    o2_operand_1 => port_1.operand_1,
@@ -269,7 +276,7 @@ begin
                                    o2_immediate => port_1.immediate,
                                    o2_operation_type => port_1.operation_type,
                                    o2_operation_sel => port_1.operation_sel,
-                                   o2_rob_tag => port_1.rob_entry_tag,
+                                   o2_dest_tag => port_1.tag,
                                    o2_dispatch_ready => port_1.dispatch_ready,
 
                                    write_en => next_instr_ready,
@@ -286,7 +293,7 @@ begin
                                         operand_2 => port_0.operand_2,
                                         immediate => port_0.immediate,
                                         operation_sel => port_0.operation_sel, 
-                                        rob_entry_tag => port_0.rob_entry_tag,
+                                        tag => port_0.tag,
                                         dispatch_ready => port_0.dispatch_ready,
                                         
                                         cdb => cdb_int_eu,
@@ -306,7 +313,7 @@ begin
                                operand_2 => port_1.operand_2,
                                immediate => port_1.immediate,
                                operation_sel => port_1.operation_sel, 
-                               rob_entry_tag => port_1.rob_entry_tag,
+                               tag => port_1.tag,
                                dispatch_ready => port_1.dispatch_ready,
                                         
                                cdb => cdb_ls_eu,

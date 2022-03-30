@@ -19,7 +19,7 @@ package pkg_cpu is
     constant PHYS_REGFILE_ENTRIES : integer range 1 to 1024 := 48;
     constant PHYS_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
     
-    constant RESERVATION_STATION_ENTRIES : integer range 1 to 1023 := 7;
+    constant SCHEDULER_ENTRIES : integer range 1 to 1023 := 7;
     constant OPERATION_TYPE_BITS : integer := 3;
     constant OPERATION_SELECT_BITS : integer := 5;
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
@@ -91,15 +91,16 @@ package pkg_cpu is
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rob_entry_tag : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         dispatch_ready : std_logic;
     end record;
     
     -- CDB Configuration
     
     type cdb_type is record
-        tag : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         data : std_logic_vector(OPERAND_BITS - 1 downto 0);
+        valid : std_logic;
     end record;
 end pkg_cpu;
 

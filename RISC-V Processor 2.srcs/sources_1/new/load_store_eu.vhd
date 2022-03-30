@@ -18,7 +18,7 @@ entity load_store_eu is
         operand_2 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         immediate : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         operation_sel : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rob_entry_tag : in std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         dispatch_ready : in std_logic;
         
         cdb : out cdb_type;
@@ -97,7 +97,7 @@ begin
                 pipeline_reg_1.operand_2 <= operand_2;
                 pipeline_reg_1.immediate <= immediate;
                 pipeline_reg_1.operation_sel <= operation_sel;
-                pipeline_reg_1.rob_entry_tag <= rob_entry_tag;
+                pipeline_reg_1.tag <= tag;
                 pipeline_reg_1.valid <= dispatch_ready;
             end if;
         end if;
@@ -112,7 +112,7 @@ begin
                 pipeline_reg_2.store_data <= pipeline_reg_1.operand_2;
                 pipeline_reg_2.address <= calculated_address;
                 pipeline_reg_2.operation_sel <= pipeline_reg_1.operation_sel;
-                pipeline_reg_2.rob_entry_tag <= pipeline_reg_1.rob_entry_tag; 
+                pipeline_reg_2.tag <= pipeline_reg_1.tag; 
                 pipeline_reg_2.valid <= pipeline_reg_1.valid; 
             end if;
         end if;
@@ -125,7 +125,7 @@ begin
                 pipeline_reg_3 <= LS_PIPELINE_REG_3_ZERO;
             elsif (pipeline_enable = '1') then
                 pipeline_reg_3.load_data <= from_master_interface.data_read;
-                pipeline_reg_3.rob_entry_tag <= pipeline_reg_2.rob_entry_tag; 
+                pipeline_reg_3.tag <= pipeline_reg_2.tag; 
                 pipeline_reg_3.valid <= pipeline_reg_2.valid; 
             end if;
         end if;
@@ -158,7 +158,8 @@ begin
     cdb_request <= pipeline_reg_3.valid;
     
     cdb.data <= pipeline_reg_3.load_data;
-    cdb.tag <= pipeline_reg_3.rob_entry_tag;
+    cdb.tag <= pipeline_reg_3.tag;
+    cdb.valid <= pipeline_reg_3.valid;
     
     busy <= not pipeline_enable;
 end rtl;

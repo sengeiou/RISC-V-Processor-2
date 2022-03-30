@@ -56,7 +56,7 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 head_counter_reg <= HEAD_COUNTER_MAXVAL;
-            elsif (raa_empty /= '0') then
+            elsif (raa_empty = '0') then         -- PROBLEM!!! SEPARATE EMPTY AND FULL CONDITIONS
                 if (get_en = '1' and put_en = '1') then
                     head_counter_reg <= head_counter_reg;
                 elsif (get_en = '1') then
@@ -72,5 +72,7 @@ begin
 
     raa_full <= '1' when head_counter_reg = HEAD_COUNTER_MAXVAL else '0';
     raa_empty <= '1' when head_counter_reg = HEAD_COUNTER_ZERO else '0';
+    
+    empty <= raa_empty;
 
 end rtl;

@@ -13,13 +13,13 @@ package pkg_fu is
         operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rob_entry_tag : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         valid : std_logic;
     end record;
     
     type int_br_pipeline_reg_2_type is record
         alu_result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-        rob_entry_tag : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         valid : std_logic;
     end record;
     
@@ -42,7 +42,7 @@ package pkg_fu is
         operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rob_entry_tag : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         valid : std_logic;
     end record;
     
@@ -50,13 +50,13 @@ package pkg_fu is
         store_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         address : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        rob_entry_tag : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         valid : std_logic;
     end record;
     
     type lsu_pipeline_reg_3_type is record
         load_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-        rob_entry_tag : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         valid : std_logic;
     end record;
     

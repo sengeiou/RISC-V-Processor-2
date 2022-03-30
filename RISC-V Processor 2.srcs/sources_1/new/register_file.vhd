@@ -38,11 +38,11 @@ end register_file;
 
 architecture rtl of register_file is
     -- ========== CONSTANTS ==========
-    constant REG_ADDR_ZERO : std_logic_vector(REGFILE_ENTRIES - 1 downto 0) := (others => '0'); 
+    constant REG_ADDR_ZERO : std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0) := (others => '0'); 
     -- ===============================
 
     -- ========== RF REGISTERS ==========
-    type reg_file_type is array (2 ** REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
+    type reg_file_type is array (REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
     signal reg_file : reg_file_type;
     -- ==================================
     
