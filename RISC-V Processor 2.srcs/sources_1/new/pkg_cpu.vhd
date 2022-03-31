@@ -16,7 +16,7 @@ package pkg_cpu is
     constant ARCH_REGFILE_ENTRIES : integer range 1 to 1024 := 32;
     constant ARCH_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES))));
     
-    constant PHYS_REGFILE_ENTRIES : integer range 1 to 1024 := 48;
+    constant PHYS_REGFILE_ENTRIES : integer range 1 to 1024 := 96;
     constant PHYS_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
     
     constant SCHEDULER_ENTRIES : integer range 1 to 1023 := 7;
@@ -27,6 +27,7 @@ package pkg_cpu is
     
     -- Constants
     constant REG_ADDR_ZERO : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0) := (others => '0');
+    constant PHYS_REG_TAG_ZERO : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
     
     -- Debugging Configuration
     constant ENABLE_REGFILE_ILA : boolean := true;
@@ -86,14 +87,22 @@ package pkg_cpu is
     
     -- Scheduler Data Types And Constants
     type port_type is record
-        operand_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-        operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        src_tag_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+        src_tag_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+        dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         dispatch_ready : std_logic;
     end record;
+    
+    constant PORT_INIT : port_type := ((others => '0'),
+                                       (others => '0'),
+                                       (others => '0'),
+                                       (others => '0'),
+                                       (others => '0'),
+                                       (others => '0'),
+                                       '0');
     
     -- CDB Configuration
     

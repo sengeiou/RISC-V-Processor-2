@@ -42,12 +42,22 @@ architecture Structural of execution_engine is
     -- ========== PIPELINE REGISTERS ==========
     signal pipeline_reg_1 : execution_engine_pipeline_register_1_type;
     signal pipeline_reg_1_next : execution_engine_pipeline_register_1_type;
+    
+    signal pipeline_reg_2 : execution_engine_pipeline_register_2_type;
+    signal pipeline_reg_2_next : execution_engine_pipeline_register_2_type;
+    
+    signal pipeline_reg_3 : execution_engine_pipeline_register_3_type;
+    signal pipeline_reg_3_next : execution_engine_pipeline_register_3_type;
     -- ========================================
     
     -- ========== REGISTER RENAMING SIGNALS ==========
     signal renamed_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal renamed_src_reg_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal renamed_src_reg_1_v : std_logic;
     signal renamed_src_reg_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal renamed_src_reg_2_v : std_logic;
+    
+    signal freed_reg_addr : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
     signal raa_put_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal raa_put_en : std_logic;
@@ -56,10 +66,8 @@ architecture Structural of execution_engine is
     -- ===============================================
     
     -- ========== REGISTER FILE SIGNALS ==========
-    signal rf_rd_data_1 : std_logic_vector(31 downto 0);
-    signal rf_rd_data_2 : std_logic_vector(31 downto 0);
-    signal rf_src_tag_1 : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
-    signal rf_src_tag_2 : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+    signal rf_rd_data_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    signal rf_rd_data_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     -- ===========================================
     
     signal next_instr_ready : std_logic; 
@@ -145,14 +153,49 @@ begin
         end if;
     end process;
     
+    pipeline_reg_2_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                pipeline_reg_2 <= EE_PIPELINE_REG_2_INIT;
+            else
+                pipeline_reg_2 <= pipeline_reg_2_next;
+            end if;
+        end if;
+    end process;
+    
+    pipeline_reg_3_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                pipeline_reg_3 <= EE_PIPELINE_REG_3_INIT;
+            else
+                pipeline_reg_3 <= pipeline_reg_3_next;
+            end if;
+        end if;
+    end process;
+    
     pipeline_reg_1_next.operation_type <= next_instruction.operation_type;
     pipeline_reg_1_next.operation_select <= next_instruction.operation_select;
     pipeline_reg_1_next.renamed_src_reg_1 <= renamed_src_reg_1;
+    pipeline_reg_1_next.renamed_src_reg_1_v <= '1' when cdb.tag = renamed_src_reg_1 or renamed_src_reg_1_v = '1' else '0';
     pipeline_reg_1_next.renamed_src_reg_2 <= renamed_src_reg_2;
+    pipeline_reg_1_next.renamed_src_reg_2_v <= '1' when cdb.tag = renamed_src_reg_2 or renamed_src_reg_2_v = '1' or next_instruction.operation_select(4) = '1' else '0';
     pipeline_reg_1_next.renamed_dest_reg <= renamed_dest_reg;
     pipeline_reg_1_next.dest_reg <= next_instruction.reg_dest;
     pipeline_reg_1_next.immediate <= next_instruction.immediate;
     pipeline_reg_1_next.valid <= next_instr_ready;
+    
+    pipeline_reg_2_next.port_0 <= port_0;
+    pipeline_reg_2_next.port_1 <= port_1;
+    pipeline_reg_2_next.valid <= port_0.dispatch_ready or port_1.dispatch_ready;
+    
+    pipeline_reg_3_next.operand_1 <= rf_rd_data_1;
+    pipeline_reg_3_next.operand_2 <= rf_rd_data_2;
+    pipeline_reg_3_next.immediate <= pipeline_reg_2.port_0.immediate;
+    pipeline_reg_3_next.dest_tag <= pipeline_reg_2.port_0.dest_tag;
+    pipeline_reg_3_next.operation_select <= pipeline_reg_2.port_0.operation_sel;
+    pipeline_reg_3_next.valid <= pipeline_reg_2.valid;
       
     -- ==================================================================================================
     --                                        REGISTER RENAMING
@@ -163,38 +206,55 @@ begin
     register_alias_allocator : entity work.register_alias_allocator(rtl)
                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                            ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
-                               port map(put_reg_alias => raa_put_tag,
+                               port map(put_reg_alias => freed_reg_addr,
                                         get_reg_alias => renamed_dest_reg,
                                         
-                                        put_en => raa_put_en,
+                                        put_en => rob_commit_ready,
                                         get_en => next_instr_ready,
                                         
                                         empty => raa_empty,
                                         clk => clk,
                                         reset => reset);
       
-    -- What happenes when there are no more registers to allocate...?
-    register_alias_table : entity work.register_alias_table(rtl)
-                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
-                                            ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
-                                port map(commited_dest_reg_arch_addr => rob_head_dest_reg,
-                                         commited_dest_reg_phys_addr => rob_head_dest_tag,
-                                         commit_ready => rob_commit_ready,
+    -- Holds mappings for in-flight instructions. Updates whenewer a new instruction issues
+    frontend_register_alias_table : entity work.register_alias_table(rtl)
+                                    generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
+                                                ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
+                                                VALID_BIT_INIT_VAL => '1',
+                                                ENABLE_VALID_BITS => true)
+                                    port map(cdb_tag => cdb.tag,
+                                            
+                                             arch_reg_addr_read_1 => next_instruction.reg_src_1,
+                                             arch_reg_addr_read_2 => next_instruction.reg_src_2,
+                                             
+                                             phys_reg_addr_read_1 => renamed_src_reg_1,
+                                             phys_reg_addr_read_1_v => renamed_src_reg_1_v,
+                                             phys_reg_addr_read_2 => renamed_src_reg_2,
+                                             phys_reg_addr_read_2_v => renamed_src_reg_2_v,
+                                             
+                                             arch_reg_addr_write_1 => next_instruction.reg_dest,
+                                             phys_reg_addr_write_1 => renamed_dest_reg,
+                                             
+                                             clk => clk,
+                                             reset => reset);  
                                          
-                                         freed_phys_reg_tag => raa_put_tag,
-                                         tag_freed => raa_put_en,
-                                
-                                         arch_reg_addr_read_1 => next_instruction.reg_src_1,
-                                         arch_reg_addr_read_2 => next_instruction.reg_src_2,
-                                         
-                                         phys_reg_addr_read_1 => renamed_src_reg_1,
-                                         phys_reg_addr_read_2 => renamed_src_reg_2,
-                                         
-                                         arch_reg_addr_write_1 => next_instruction.reg_dest,
-                                         phys_reg_addr_write_1 => renamed_dest_reg,
-                                         
-                                         clk => clk,
-                                         reset => reset);  
+    retirement_register_alias_table : entity work.register_alias_table(rtl)
+                                      generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
+                                                ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
+                                                VALID_BIT_INIT_VAL => '0',
+                                                ENABLE_VALID_BITS => false)
+                                      port map(cdb_tag => PHYS_REG_TAG_ZERO,
+                                      
+                                               arch_reg_addr_read_1 => rob_head_dest_reg,                   -- Architectural address of a register to be added onto the allocator's stack
+                                               arch_reg_addr_read_2 => REG_ADDR_ZERO,                       -- Currently unused
+                                               
+                                               phys_reg_addr_read_1 => freed_reg_addr,                      -- Address of a physical register to be added onto the allocator's stack
+                                                 
+                                               arch_reg_addr_write_1 => rob_head_dest_reg,
+                                               phys_reg_addr_write_1 => rob_head_dest_tag,
+                                                 
+                                               clk => clk,
+                                               reset => reset);  
                                          
     -- ==================================================================================================
     -- ==================================================================================================
@@ -205,8 +265,8 @@ begin
                                 REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES)
                     port map(
                              -- ADDRESSES
-                             rd_1_addr => pipeline_reg_1.renamed_src_reg_1,
-                             rd_2_addr => pipeline_reg_1.renamed_src_reg_2,
+                             rd_1_addr => pipeline_reg_2.port_0.src_tag_1,
+                             rd_2_addr => pipeline_reg_2.port_0.src_tag_2,
                              wr_addr => cdb.tag,
                              
                              -- DATA
@@ -257,29 +317,29 @@ begin
                                    i1_operation_type => pipeline_reg_1.operation_type,
                                    i1_operation_sel => pipeline_reg_1.operation_select,
                                    i1_src_tag_1 => pipeline_reg_1.renamed_src_reg_1,
+                                   i1_src_tag_1_v => pipeline_reg_1.renamed_src_reg_1_v,
                                    i1_src_tag_2 => pipeline_reg_1.renamed_src_reg_2,
+                                   i1_src_tag_2_v => pipeline_reg_1.renamed_src_reg_2_v,
                                    i1_dest_tag => pipeline_reg_1.renamed_dest_reg,
-                                   i1_operand_1 => rf_rd_data_1,
-                                   i1_operand_2 => rf_rd_data_2,
                                    i1_immediate => pipeline_reg_1.immediate,
                                    
-                                   o1_operand_1 => port_0.operand_1,
-                                   o1_operand_2 => port_0.operand_2,
+                                   o1_src_tag_1 => port_0.src_tag_1,
+                                   o1_src_tag_2 => port_0.src_tag_2,
                                    o1_immediate => port_0.immediate,
                                    o1_operation_type => port_0.operation_type,
                                    o1_operation_sel => port_0.operation_sel,
-                                   o1_dest_tag => port_0.tag,
+                                   o1_dest_tag => port_0.dest_tag,
                                    o1_dispatch_ready => port_0.dispatch_ready,
                                    
-                                   o2_operand_1 => port_1.operand_1,
-                                   o2_operand_2 => port_1.operand_2,
+                                   o2_src_tag_1 => port_1.src_tag_1,
+                                   o2_src_tag_2 => port_1.src_tag_2,
                                    o2_immediate => port_1.immediate,
                                    o2_operation_type => port_1.operation_type,
                                    o2_operation_sel => port_1.operation_sel,
-                                   o2_dest_tag => port_1.tag,
+                                   o2_dest_tag => port_1.dest_tag,
                                    o2_dispatch_ready => port_1.dispatch_ready,
 
-                                   write_en => next_instr_ready,
+                                   write_en => pipeline_reg_1.valid,
                                    port_0_ready => n_int_eu_busy,
                                    port_1_ready => n_ls_eu_busy,
                                    full => sched_full,
@@ -289,12 +349,12 @@ begin
       
     integer_unit : entity work.integer_eu(structural)
                                generic map(OPERAND_BITS => CPU_DATA_WIDTH_BITS)
-                               port map(operand_1 => port_0.operand_1,
-                                        operand_2 => port_0.operand_2,
-                                        immediate => port_0.immediate,
-                                        operation_sel => port_0.operation_sel, 
-                                        tag => port_0.tag,
-                                        dispatch_ready => port_0.dispatch_ready,
+                               port map(operand_1 => pipeline_reg_3.operand_1,
+                                        operand_2 => pipeline_reg_3.operand_2,
+                                        immediate => pipeline_reg_3.immediate,
+                                        operation_sel => pipeline_reg_3.operation_select, 
+                                        tag => pipeline_reg_3.dest_tag,
+                                        dispatch_ready => pipeline_reg_3.valid,
                                         
                                         cdb => cdb_int_eu,
                                         cdb_request => cdb_req_1,
@@ -305,33 +365,36 @@ begin
                                         reset => reset,
                                         clk => clk);
                                         
-    load_store_unit : entity work.load_store_eu(rtl)
-                      port map(from_master_interface => to_master_1,
-                               to_master_interface => from_master_1,
+--    load_store_unit : entity work.load_store_eu(rtl)
+--                      port map(from_master_interface => to_master_1,
+--                               to_master_interface => from_master_1,
                       
-                               operand_1 => port_1.operand_1,
-                               operand_2 => port_1.operand_2,
-                               immediate => port_1.immediate,
-                               operation_sel => port_1.operation_sel, 
-                               tag => port_1.tag,
-                               dispatch_ready => port_1.dispatch_ready,
+--                               operand_1 => ,
+--                               operand_2 => ,
+--                               immediate => ,
+--                               operation_sel => , 
+--                               tag => ,
+--                               dispatch_ready => ,
                                         
-                               cdb => cdb_ls_eu,
-                               cdb_request => cdb_req_2,
-                               cdb_granted => cdb_grant_2,
+--                               cdb => cdb_ls_eu,
+--                               cdb_request => cdb_req_2,
+--                               cdb_granted => cdb_grant_2,
                                         
-                               busy => ls_eu_busy,
+--                               busy => ls_eu_busy,
                                         
-                               reset => reset,
-                               clk => clk);
+--                               reset => reset,
+--                               clk => clk);
 
-    cdb <= cdb_ls_eu when cdb_grant_2 = '1' else
-           cdb_int_eu;
+    --cdb <= cdb_ls_eu when cdb_grant_2 = '1' else
+    --       cdb_int_eu;
+    cdb <= cdb_int_eu;
 
-    cdb_grant_1 <= cdb_req_1 and (not cdb_req_2);
-    cdb_grant_2 <= cdb_req_2;
+    --cdb_grant_1 <= cdb_req_1 and (not cdb_req_2);
+    cdb_grant_1 <= '1';
+    --cdb_grant_2 <= cdb_req_2;
     
     n_int_eu_busy <= not int_eu_busy;
-    n_ls_eu_busy <= not ls_eu_busy;
+    --n_ls_eu_busy <= not ls_eu_busy;
+    n_ls_eu_busy <= '1';
 
 end structural;

@@ -2,10 +2,10 @@
 # Webtalk v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Mon Mar 28 16:46:36 2022
-# Process ID: 9284
+# Start of session at: Wed Mar 30 14:23:52 2022
+# Process ID: 4788
 # Current directory: E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.sim/sim_1/behav/xsim
-# Command line: wbtcv.exe -mode batch -source E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.sim/sim_1/behav/xsim/xsim.dir/reorder_buffer_tb_behav/webtalk/xsim_webtalk.tcl -notrace
+# Command line: wbtcv.exe -mode batch -source E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.sim/sim_1/behav/xsim/xsim.dir/cpu_tb_behav/webtalk/xsim_webtalk.tcl -notrace
 # Log file: E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.sim/sim_1/behav/xsim/webtalk.log
 # Journal file: E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.sim/sim_1/behav/xsim\webtalk.jou
 #-----------------------------------------------------------

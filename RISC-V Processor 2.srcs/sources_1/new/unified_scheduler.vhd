@@ -32,16 +32,16 @@ entity unified_scheduler is
         i1_dest_tag : in std_logic_vector(TAG_BITS - 1 downto 0); 
         i1_src_tag_1 : in std_logic_vector(TAG_BITS - 1 downto 0); 
         i1_src_tag_2 : in std_logic_vector(TAG_BITS - 1 downto 0); 
-        i1_operand_1 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
-        i1_operand_2 : in std_logic_vector(OPERAND_BITS - 1 downto 0);
+        i1_src_tag_1_v : in std_logic;
+        i1_src_tag_2_v : in std_logic;
         i1_immediate : in std_logic_vector(OPERAND_BITS - 1 downto 0);
         
         -- OUTPUTS
         -- ===== PORT 1 =====
         o1_operation_type : out std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         o1_operation_sel : out std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        o1_operand_1 : out std_logic_vector(OPERAND_BITS - 1 downto 0);
-        o1_operand_2 : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
+        o1_src_tag_1 : out std_logic_vector(TAG_BITS - 1 downto 0);
+        o1_src_tag_2 : out std_logic_vector(TAG_BITS - 1 downto 0); 
         o1_immediate : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o1_dest_tag : out std_logic_vector(TAG_BITS - 1 downto 0);
         o1_dispatch_ready : out std_logic;
@@ -50,8 +50,8 @@ entity unified_scheduler is
         -- ===== PORT 2 =====
         o2_operation_type : out std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         o2_operation_sel : out std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        o2_operand_1 : out std_logic_vector(OPERAND_BITS - 1 downto 0);
-        o2_operand_2 : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
+        o2_src_tag_1 : out std_logic_vector(TAG_BITS - 1 downto 0);
+        o2_src_tag_2 : out std_logic_vector(TAG_BITS - 1 downto 0); 
         o2_immediate : out std_logic_vector(OPERAND_BITS - 1 downto 0); 
         o2_dest_tag : out std_logic_vector(TAG_BITS - 1 downto 0);
         o2_dispatch_ready : out std_logic;
@@ -70,27 +70,25 @@ entity unified_scheduler is
 end unified_scheduler;
 
 architecture rtl of unified_scheduler is
-    -- Reservation station format [OP. TYPE | OP. SEL | ROB_PRODUCER_TAG_1 | ROB_PRODUCER_TAG_2 | ROB_RESULT_TAG | DEST_REG | OPERAND_1 | OPERAND_2 | IMMEDIATE | BUSY]
+    -- Reservation station format [OP. TYPE | OP. SEL | OPERAND_1_TAG | OPERAND_1_TAG_V | OPERAND_2_TAG | OPERAND_2_TAG_V | DEST_PHYS_REG_TAG | IMMEDIATE | BUSY]
     constant ENTRY_TAG_BITS : integer := integer(ceil(log2(real(SCHEDULER_ENTRIES))));
-    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * TAG_BITS + 3 * OPERAND_BITS + 1;
+    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * TAG_BITS + OPERAND_BITS + 3;
     
     -- ========== STARTING AND ENDING INDEXES OF RESERVATION STATION ENTRIES ==========
     constant OPERATION_TYPE_START : integer := ENTRY_BITS - 1;
     constant OPERATION_TYPE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS;
     constant OPERATION_SELECT_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - 1;
     constant OPERATION_SELECT_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS;
-    constant SRC_TAG_1_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1;
-    constant SRC_TAG_1_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - TAG_BITS;
-    constant SRC_TAG_2_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - TAG_BITS - 1;
-    constant SRC_TAG_2_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * TAG_BITS;
-    constant DEST_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * TAG_BITS - 1;
-    constant DEST_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS;
-    constant OPERAND_1_START: integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - 1;
-    constant OPERAND_1_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - OPERAND_BITS;
-    constant OPERAND_2_START: integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - OPERAND_BITS - 1;
-    constant OPERAND_2_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - 2 * OPERAND_BITS;
-    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - 2 * OPERAND_BITS - 1;
-    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - 3 * OPERAND_BITS;
+    constant OPERAND_TAG_1_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 1;
+    constant OPERAND_TAG_1_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - TAG_BITS;
+    constant OPERAND_TAG_1_VALID : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - TAG_BITS - 1;
+    constant OPERAND_TAG_2_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - TAG_BITS - 2;
+    constant OPERAND_TAG_2_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * TAG_BITS - 1;
+    constant OPERAND_TAG_2_VALID : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * TAG_BITS - 2;
+    constant DEST_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * TAG_BITS - 3;
+    constant DEST_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - 2;
+    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - 3;
+    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * TAG_BITS - OPERAND_BITS - 2;
     -- ================================================================================
     
     constant TAG_ZERO : std_logic_vector(TAG_BITS - 1 downto 0) := (others => '0');
@@ -109,14 +107,9 @@ architecture rtl of unified_scheduler is
     signal rs_sel_write_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
     signal rs_sel_read_1 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
     signal rs_sel_read_2 : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0);
-    
-    signal register_status_src_tag_1 : std_logic_vector(TAG_BITS - 1 downto 0); 
-    signal register_status_src_tag_2 : std_logic_vector(TAG_BITS - 1 downto 0); 
-    
-    signal rs1_src_tag_1 : std_logic_vector(TAG_BITS - 1 downto 0); 
-    signal rs1_src_tag_2 : std_logic_vector(TAG_BITS - 1 downto 0); 
-    signal rs1_operand_1 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
-    signal rs1_operand_2 : std_logic_vector(OPERAND_BITS - 1 downto 0); 
+
+    signal rs1_src_tag_1_v : std_logic;
+    signal rs1_src_tag_2_v : std_logic;
     
     signal port_0_dispatch_en : std_logic;
     signal port_1_dispatch_en : std_logic;
@@ -144,8 +137,8 @@ begin
     rs_operands_ready_bits_proc : process(rs_entries)
     begin
         for i in 0 to SCHEDULER_ENTRIES - 1 loop
-            if (rs_entries(i)(SRC_TAG_1_START downto SRC_TAG_1_END) = TAG_ZERO and
-                rs_entries(i)(SRC_TAG_2_START downto SRC_TAG_2_END) = TAG_ZERO and
+            if (rs_entries(i)(OPERAND_TAG_1_VALID) = '1' and
+                rs_entries(i)(OPERAND_TAG_2_VALID) = '1' and
                 rs_entries(i)(0) = '1') then
                 rs_operands_ready_bits(i) <= '1';
             else
@@ -199,24 +192,20 @@ begin
                       port map(d => rs_port_1_dispatch_ready_bits,
                                q => rs_sel_read_2);
                                
-    -- This is a check for whether current instruction's operands are being broadcast on the CDB. If they are then that will immediately be taken
+    -- This is a check for whether current instruction's required tags are being broadcast on the CDB right now. If they are then that will immediately be taken
     -- into consideration. Without this part the instruction in an entry could keep waiting for a result of an instruction that has already finished execution.  
-    reservation_station_operand_select_proc : process(cdb_tag, cdb_data, register_status_src_tag_1, i1_operand_1, register_status_src_tag_2, i1_operand_2)
+    reservation_station_operand_select_proc : process(cdb_tag, cdb_data, i1_src_tag_1, i1_src_tag_2, i1_src_tag_1_v, i1_src_tag_2_v)
     begin
-        if (register_status_src_tag_1 /= cdb_tag) then
-            rs1_src_tag_1 <= register_status_src_tag_1;
-            rs1_operand_1 <= i1_operand_1;
+        if (i1_src_tag_1 /= cdb_tag) then
+            rs1_src_tag_1_v <= i1_src_tag_1_v;
         else
-            rs1_src_tag_1 <= (others => '0');
-            rs1_operand_1 <= cdb_data;
+            rs1_src_tag_1_v <= '1';
         end if;
         
-        if (register_status_src_tag_2 /= cdb_tag) then
-            rs1_src_tag_2 <= register_status_src_tag_2;
-            rs1_operand_2 <= i1_operand_2;
+        if (i1_src_tag_2 /= cdb_tag) then
+            rs1_src_tag_2_v <= i1_src_tag_2_v;
         else
-            rs1_src_tag_2 <= (others => '0');
-            rs1_operand_2 <= cdb_data;
+            rs1_src_tag_2_v <= '1';
         end if;
     end process;
                                
@@ -233,10 +222,10 @@ begin
                     rs_entries(to_integer(unsigned(rs_sel_write_1))) <= i1_operation_type & 
                                                                         i1_operation_sel & 
                                                                         i1_src_tag_1 & 
+                                                                        rs1_src_tag_1_v &
                                                                         i1_src_tag_2 & 
+                                                                        rs1_src_tag_2_v &
                                                                         i1_dest_tag & 
-                                                                        rs1_operand_1 & 
-                                                                        rs1_operand_2 & 
                                                                         i1_immediate & '1';
                 end if;
 
@@ -249,16 +238,14 @@ begin
                 end if;
 
                 for i in 0 to SCHEDULER_ENTRIES - 1 loop
-                    if (rs_entries(i)(SRC_TAG_1_START downto SRC_TAG_1_END) /= TAG_ZERO and
-                        rs_entries(i)(SRC_TAG_1_START downto SRC_TAG_1_END) = cdb_tag) then
-                        rs_entries(i)(SRC_TAG_1_START downto SRC_TAG_1_END) <= (others => '0');
-                        rs_entries(i)(OPERAND_1_START downto OPERAND_1_END) <= cdb_data;
+                    if (rs_entries(i)(OPERAND_TAG_1_START downto OPERAND_TAG_1_END) = cdb_tag and
+                        rs_entries(i)(OPERAND_TAG_1_START downto OPERAND_TAG_1_END) /= TAG_ZERO) then
+                        rs_entries(i)(OPERAND_TAG_1_VALID) <= '1';
                     end if;
                     
-                    if (rs_entries(i)(SRC_TAG_2_START downto SRC_TAG_2_END) /= TAG_ZERO and
-                        rs_entries(i)(SRC_TAG_2_START downto SRC_TAG_2_END) = cdb_tag) then
-                        rs_entries(i)(SRC_TAG_2_START downto SRC_TAG_2_END) <= (others => '0');
-                        rs_entries(i)(OPERAND_2_START downto OPERAND_2_END) <= cdb_data;
+                    if (rs_entries(i)(OPERAND_TAG_2_START downto OPERAND_TAG_2_END) = cdb_tag and
+                        rs_entries(i)(OPERAND_TAG_2_START downto OPERAND_TAG_2_END) /= TAG_ZERO) then
+                        rs_entries(i)(OPERAND_TAG_2_VALID) <= '1';
                     end if;
                 end loop;
             end if;
@@ -271,16 +258,16 @@ begin
         if (port_0_dispatch_en = '1') then
             o1_operation_type <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERATION_TYPE_START downto OPERATION_TYPE_END);
             o1_operation_sel <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERATION_SELECT_START downto OPERATION_SELECT_END);
-            o1_operand_1 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_1_START downto OPERAND_1_END);
-            o1_operand_2 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_2_START downto OPERAND_2_END);
+            o1_src_tag_1 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
+            o1_src_tag_2 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
             o1_immediate <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(IMMEDIATE_START downto IMMEDIATE_END);
             o1_dest_tag <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(DEST_TAG_START downto DEST_TAG_END);
             o1_dispatch_ready <= '1';
         else
             o1_operation_type <= (others => '0');
             o1_operation_sel <= (others => '0');
-            o1_operand_1 <= (others => '0');
-            o1_operand_2 <= (others => '0');
+            o1_src_tag_1 <= (others => '0');
+            o1_src_tag_2 <= (others => '0');
             o1_immediate <= (others => '0');
             o1_dest_tag <= (others => '0');
             o1_dispatch_ready <= '0';
@@ -289,16 +276,16 @@ begin
         if (port_1_dispatch_en = '1') then
             o2_operation_type <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERATION_TYPE_START downto OPERATION_TYPE_END);
             o2_operation_sel <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERATION_SELECT_START downto OPERATION_SELECT_END);
-            o2_operand_1 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_1_START downto OPERAND_1_END);
-            o2_operand_2 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_2_START downto OPERAND_2_END);
+            o2_src_tag_1 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
+            o2_src_tag_2 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
             o2_immediate <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(IMMEDIATE_START downto IMMEDIATE_END);
             o2_dest_tag <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(DEST_TAG_START downto DEST_TAG_END);
             o2_dispatch_ready <= '1';
         else
             o2_operation_type <= (others => '0');
             o2_operation_sel <= (others => '0');
-            o2_operand_1 <= (others => '0');
-            o2_operand_2 <= (others => '0');
+            o2_src_tag_1 <= (others => '0');
+            o2_src_tag_2 <= (others => '0');
             o2_immediate <= (others => '0');
             o2_dest_tag <= (others => '0');
             o2_dispatch_ready <= '0';

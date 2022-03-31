@@ -18,6 +18,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- ====================== POSSIBLE PROBLEMS ====================== 
 -- 1) What happenes when an instruction requires an operand which has been calculated but not commited
 -- (still in reorder buffer) ?
+-- 2) Due to the reorder buffer requiring that the destination physical register tag is not zero to set its valid
+-- bits writing to x0 could cause the CPU to stall! URGENT
 -- =============================================================== 
 
 -- ========================= TO DO (AXI) =================================

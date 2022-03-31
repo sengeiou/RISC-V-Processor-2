@@ -39,6 +39,7 @@ architecture rtl of reorder_buffer is
     constant REGFILE_TAG_BITS : integer := integer(ceil(log2(real(REGFILE_ENTRIES))));
     constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + TAG_BITS + REGFILE_TAG_BITS + 1;
     
+    constant TAG_ZERO : std_logic_vector(TAG_BITS - 1 downto 0) := (others => '0');
     constant ROB_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(ROB_ENTRIES)))) - 1 downto 0) := (others => '0');
     constant REGFILE_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0) := (others => '0');
     constant COUNTER_ONE : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := std_logic_vector(to_unsigned(1, ROB_TAG_BITS));
@@ -131,7 +132,8 @@ begin
                 
                 -- Sets the reorder buffer entry as ready to commit
                 for i in 0 to ROB_ENTRIES - 1 loop
-                    if (reorder_buffer(i)(DEST_TAG_START downto DEST_TAG_END) = cdb_tag) then
+                    if (reorder_buffer(i)(DEST_TAG_START downto DEST_TAG_END) = cdb_tag and
+                        reorder_buffer(i)(DEST_TAG_START downto DEST_TAG_END) /= TAG_ZERO) then
                         reorder_buffer(i)(0) <= '1';
                     end if;
                 end loop;
@@ -146,8 +148,8 @@ begin
     full <= rob_full;
     empty <= rob_empty;
     
-    head_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_REG_START downto DEST_REG_END);
-    head_dest_tag <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_TAG_START downto DEST_TAG_END);
+    head_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_REG_START downto DEST_REG_END) when commit_ready = '1' else (others => '0');
+    head_dest_tag <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_TAG_START downto DEST_TAG_END) when commit_ready = '1' else (others => '0');
 
 end rtl;
 

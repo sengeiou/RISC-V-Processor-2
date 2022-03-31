@@ -26,14 +26,19 @@ end register_alias_allocator;
 architecture rtl of register_alias_allocator is
     constant PHYS_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))); 
     constant ARCH_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))); 
+    constant ALLOCATOR_STACK_SIZE : integer := PHYS_REGFILE_ENTRIES - ARCH_REGFILE_ENTRIES;
+    constant ALLOCATOR_STACK_ADDR_BITS : integer := integer(ceil(log2(real(ALLOCATOR_STACK_SIZE))));
 
-    constant HEAD_COUNTER_MAXVAL : unsigned(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := to_unsigned(PHYS_REGFILE_ENTRIES - 1, PHYS_REGFILE_ADDR_BITS);
-    constant HEAD_COUNTER_ZERO : unsigned(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
+    constant HEAD_COUNTER_MAXVAL : unsigned(ALLOCATOR_STACK_ADDR_BITS - 1 downto 0) := to_unsigned(ALLOCATOR_STACK_SIZE - 1, ALLOCATOR_STACK_ADDR_BITS);
+    constant HEAD_COUNTER_ZERO : unsigned(ALLOCATOR_STACK_ADDR_BITS - 1 downto 0) := (others => '0');
 
-    type raa_stack_type is array (PHYS_REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    -- Contains tags of registers that are free to be allocated. Note that only physical registers that do not correspond
+    -- to architectural registers can be allocated which means that 32 registers in the physical register file will always
+    -- not be able to be allocated
+    type raa_stack_type is array (ALLOCATOR_STACK_SIZE - 1 downto 0) of std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal raa_stack : raa_stack_type;
     
-    signal head_counter_reg : unsigned(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal head_counter_reg : unsigned(ALLOCATOR_STACK_ADDR_BITS - 1 downto 0);
     
     signal raa_full : std_logic;
     signal raa_empty : std_logic;
@@ -42,8 +47,10 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                for i in 0 to PHYS_REGFILE_ENTRIES - 1 loop
-                    raa_stack(i) <= std_logic_vector(to_unsigned(i, PHYS_REGFILE_ADDR_BITS));
+                for i in 0 to ALLOCATOR_STACK_SIZE - 1 loop
+                    -- We start making physical registers with tags > 32 allocable since the first 32 registers will 
+                    -- always start out as architectural registers (unable to be allocated)
+                    raa_stack(i) <= std_logic_vector(to_unsigned(i + ARCH_REGFILE_ENTRIES, PHYS_REGFILE_ADDR_BITS));
                 end loop;
             elsif (put_en = '1') then
                 raa_stack(to_integer(head_counter_reg)) <= put_reg_alias;
@@ -56,7 +63,7 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 head_counter_reg <= HEAD_COUNTER_MAXVAL;
-            elsif (raa_empty = '0') then         -- PROBLEM!!! SEPARATE EMPTY AND FULL CONDITIONS
+            elsif (raa_empty = '0') then
                 if (get_en = '1' and put_en = '1') then
                     head_counter_reg <= head_counter_reg;
                 elsif (get_en = '1') then
