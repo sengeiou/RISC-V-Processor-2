@@ -36,7 +36,7 @@ package pkg_cpu is
     constant NUM_4 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0) := X"00000004";
     
     -- CPU Data Types
-    type decoded_instruction_type is record
+    type uop_type is record
         -- Determines what kinds of functional units can execute this type of instruction. Used to select one or multiple functional units.
         operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         
@@ -84,25 +84,6 @@ package pkg_cpu is
     constant PROG_FLOW_COND : std_logic_vector(1 downto 0) := "01";
     constant PROG_FLOW_JAL : std_logic_vector(1 downto 0) := "10";
     constant PROG_FLOW_JALR : std_logic_vector(1 downto 0) := "11";
-    
-    -- Scheduler Data Types And Constants
-    type port_type is record
-        src_tag_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
-        src_tag_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
-        immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-        operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
-        operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
-        dispatch_ready : std_logic;
-    end record;
-    
-    constant PORT_INIT : port_type := ((others => '0'),
-                                       (others => '0'),
-                                       (others => '0'),
-                                       (others => '0'),
-                                       (others => '0'),
-                                       (others => '0'),
-                                       '0');
     
     -- CDB Configuration
     

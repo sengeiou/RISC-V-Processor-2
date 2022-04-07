@@ -15,11 +15,11 @@ entity core is
 end core;
 
 architecture structural of core is
-    signal decoded_instruction : decoded_instruction_type;
+    signal uop : uop_type;
     signal instruction_ready : std_logic;
 begin
     front_end : entity work.front_end(structural)
-                port map(decoded_instruction => decoded_instruction,
+                port map(uop => uop,
                          instruction_ready => instruction_ready,
                          clk => clk,
                          reset => reset);
@@ -28,7 +28,7 @@ begin
                        port map(from_master_1 => from_master_1,
                                 to_master_1 => to_master_1,
                                 
-                                decoded_instruction => decoded_instruction,
+                                decoded_instruction => uop,
                                 instr_ready => instruction_ready,
                                 clk => clk,
                                 clk_dbg => clk_dbg,

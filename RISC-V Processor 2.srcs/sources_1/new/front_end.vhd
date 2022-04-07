@@ -5,7 +5,7 @@ use WORK.PKG_CPU.ALL;
 
 entity front_end is
     port(
-        decoded_instruction : out decoded_instruction_type;
+        uop : out uop_type;
         instruction_ready : out std_logic;
     
         reset : in std_logic;
@@ -21,7 +21,7 @@ architecture Structural of front_end is
 begin
     instruction_decoder : entity work.instruction_decoder(rtl)
                           port map(instruction => fetched_instruction,
-                                   decoded_instruction => decoded_instruction,
+                                   uop => uop,
                                    instruction_ready => instruction_ready);
 
     program_memory_temp : entity work.rom_memory(rtl)
