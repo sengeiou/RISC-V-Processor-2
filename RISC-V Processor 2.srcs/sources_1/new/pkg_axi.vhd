@@ -119,7 +119,7 @@ package pkg_axi is
     constant RESP_DECERR : std_logic_vector(1 downto 0) := "11";
     
     -- ========== CLEAR VALUES ==========
-    constant FROM_MASTER_CLEAR : ToMasterInterface := (data_write => (others => '0'),
+    constant TO_MASTER_CLEAR : ToMasterInterface := (data_write => (others => '0'),
                                                 addr_write => (others => '0'),
                                                 addr_read => (others => '0'),
                                                 burst_len => (others => '0'),
@@ -127,6 +127,10 @@ package pkg_axi is
                                                 burst_type => (others => '0'),
                                                 execute_read => '0',
                                                 execute_write => '0');
+                                                
+    constant FROM_MASTER_CLEAR : FromMasterInterface := (data_read => (others => '0'),
+                                                done_read => '0',
+                                                done_write => '0');
                                                 
     constant FROM_SLAVE_CLEAR : ToSlaveInterface := (data_read => (others => '0'),
                                               data_ready => '0');

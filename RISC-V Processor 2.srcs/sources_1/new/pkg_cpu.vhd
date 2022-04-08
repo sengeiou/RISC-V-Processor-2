@@ -20,14 +20,21 @@ package pkg_cpu is
     constant PHYS_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
     
     constant SCHEDULER_ENTRIES : integer range 1 to 1023 := 7;
+    constant REORDER_BUFFER_ENTRIES : integer := 24;
+    constant STORE_QUEUE_ENTRIES : integer := 8;
+    constant LOAD_QUEUE_ENTRIES : integer := 8;
+    
     constant OPERATION_TYPE_BITS : integer := 3;
     constant OPERATION_SELECT_BITS : integer := 5;
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
-    constant REORDER_BUFFER_ENTRIES : integer := 24;
+    constant STORE_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(STORE_QUEUE_ENTRIES))));
+    constant LOAD_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(LOAD_QUEUE_ENTRIES))));
     
     -- Constants
     constant REG_ADDR_ZERO : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0) := (others => '0');
     constant PHYS_REG_TAG_ZERO : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
+    constant ADDR_ZERO : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0) := (others => '0');
+    constant DATA_ZERO : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0) := (others => '0');
     
     -- Debugging Configuration
     constant ENABLE_REGFILE_ILA : boolean := true;
