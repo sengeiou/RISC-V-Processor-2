@@ -6,10 +6,7 @@ use WORK.PKG_CPU.ALL;
 use WORK.PKG_FU.ALL;
 use WORK.PKG_AXI.ALL;
 
--- Potential problem: When pipeline registers 2 and 3 have valid data in them and this unit is stalled due to a read or write operation
--- pipeline register 3 could cause the execution to stall (or worse) due to requesting the CDB.
-
--- Note: Addresses are tagged with QUEUE entry numbers. Data entries in the store queue are tagged with the SQ entry number.
+-- Note: Addresses are tagged with QUEUE entry numbers. Data entries in the store queue are tagged with the physical register tag.
 
 entity load_store_eu is
     generic(
@@ -17,6 +14,7 @@ entity load_store_eu is
         LQ_ENTRIES : integer  
     );
     port(
+        -- BUS INTERFACE
         to_master_interface : out ToMasterInterface; 
         from_master_interface : in FromMasterInterface; 
     
@@ -33,7 +31,7 @@ entity load_store_eu is
         sq_store_data_tag : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         sq_store_data_valid : in std_logic;
         
-        -- Tag of a newly allocated queue entry
+        -- Tag of the next entry that will be allocated
         sq_alloc_tag : out std_logic_vector(integer(ceil(log2(real(SQ_ENTRIES)))) - 1 downto 0);
         lq_alloc_tag : out std_logic_vector(integer(ceil(log2(real(LQ_ENTRIES)))) - 1 downto 0);
         
@@ -42,6 +40,7 @@ entity load_store_eu is
         
         sq_enqueue_en : in std_logic;
         
+        -- Tag of the instruction that has been retired in this cycle
         sq_retire_tag : in std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
         sq_retire_tag_valid : in std_logic;
         

@@ -7,7 +7,7 @@ use WORK.PKG_CPU.ALL;
 -- the unified scheduler for the processor
 
 package pkg_sched is
-    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * PHYS_REGFILE_ADDR_BITS + OPERAND_BITS + 3;
+    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * PHYS_REGFILE_ADDR_BITS + OPERAND_BITS + STORE_QUEUE_TAG_BITS + 3;
     constant ENTRY_TAG_BITS : integer := integer(ceil(log2(real(SCHEDULER_ENTRIES))));
     
     constant ENTRY_TAG_ZERO : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0) := (others => '0');
@@ -25,8 +25,10 @@ package pkg_sched is
     constant OPERAND_TAG_2_VALID : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * PHYS_REGFILE_ADDR_BITS - 2;
     constant DEST_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 2 * PHYS_REGFILE_ADDR_BITS - 3;
     constant DEST_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - 2;
-    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - 3;
-    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - 2;
+    constant STORE_QUEUE_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - 3;
+    constant STORE_QUEUE_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - STORE_QUEUE_TAG_BITS - 2;
+    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - STORE_QUEUE_TAG_BITS - 3;
+    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - 2;
     -- ================================================================================
 
     -- ================================================================================
@@ -37,6 +39,7 @@ package pkg_sched is
         operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0); 
+        store_queue_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
         src_tag_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_1_valid : std_logic;
@@ -46,7 +49,8 @@ package pkg_sched is
     type sched_out_port_type is record
         operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0); 
+        immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        store_queue_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0); 
         src_tag_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);         
         dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
@@ -54,6 +58,7 @@ package pkg_sched is
     end record; 
     
     constant SCHED_IN_PORT_DEFAULT : sched_in_port_type := ((others => '0'),
+                                                            (others => '0'),
                                                             (others => '0'),
                                                             (others => '0'),
                                                             (others => '0'),
@@ -68,9 +73,10 @@ package pkg_sched is
                                                               (others => '0'),
                                                               (others => '0'),
                                                               (others => '0'),
+                                                              (others => '0'),
                                                               '0');
     
-    -- Scheduler entry format [OP. TYPE | OP. SEL | OPERAND_1_TAG | OPERAND_1_TAG_V | OPERAND_2_TAG | OPERAND_2_TAG_V | DEST_PHYS_REG_TAG | IMMEDIATE | BUSY]
+    -- Scheduler entry format [OP. TYPE | OP. SEL | OPERAND_1_TAG | OPERAND_1_TAG_V | OPERAND_2_TAG | OPERAND_2_TAG_V | DEST_PHYS_REG_TAG | STORE QUEUE TAG | IMMEDIATE | BUSY]
     type reservation_station_entries_type is array(SCHEDULER_ENTRIES - 1 downto 0) of std_logic_vector(ENTRY_BITS - 1 downto 0);
     -- ================================================================================
     -- ////////////////////////////////////////////////////////////////////////////////

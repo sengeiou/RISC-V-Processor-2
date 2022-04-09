@@ -76,5 +76,5 @@ begin
     phys_reg_addr_read_2 <= rat(to_integer(unsigned(arch_reg_addr_read_2)))(PHYS_REGFILE_ADDR_BITS downto 1);
     
     phys_reg_addr_read_1_v <= rat(to_integer(unsigned(arch_reg_addr_read_1)))(0);
-    phys_reg_addr_read_2_v <= rat(to_integer(unsigned(arch_reg_addr_read_1)))(0);
+    phys_reg_addr_read_2_v <= rat(to_integer(unsigned(arch_reg_addr_read_2)))(0);
 end rtl;

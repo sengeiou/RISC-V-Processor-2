@@ -62,6 +62,11 @@ package pkg_cpu is
     constant OP_TYPE_INTEGER : std_logic_vector(2 downto 0) := "000";
     constant OP_TYPE_LOAD_STORE : std_logic_vector(2 downto 0) := "001";
     
+    -- Load-Store Unit Operation Definitions
+    constant LSU_OP_LW : std_logic_vector(4 downto 0) := "00000";
+    constant LSU_OP_SW : std_logic_vector(4 downto 0) := "10000";
+    
+    
     -- Integer EU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";
     constant ALU_OP_SUB : std_logic_vector(3 downto 0) := "1000";

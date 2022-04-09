@@ -66,9 +66,9 @@ begin
                                 to_masters(3) => test1S(2),
                        
                                 from_masters(0) => from_master_1,
-                                from_masters(1) => FROM_MASTER_CLEAR,       -- Indicates that no device is connected to the corresponding input
-                                from_masters(2) => FROM_MASTER_CLEAR,
-                                from_masters(3) => FROM_MASTER_CLEAR,
+                                from_masters(1) => TO_MASTER_CLEAR,       -- Indicates that no device is connected to the corresponding input
+                                from_masters(2) => TO_MASTER_CLEAR,
+                                from_masters(3) => TO_MASTER_CLEAR,
 
                                 to_slaves(0) => to_slave_1,
                                 to_slaves(1) => to_slave_2,

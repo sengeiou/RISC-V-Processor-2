@@ -19,12 +19,16 @@ entity register_file is
     port(
         -- Address busses
         rd_1_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
-        rd_2_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);                           -- Register selection address (read)
+        rd_2_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
+        rd_3_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
+        rd_4_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
         wr_addr : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
         
         -- Data busses
         rd_1_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
-        rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);             -- Data output ports
+        rd_2_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
+        rd_3_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
+        rd_4_data : out std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
         wr_data : in std_logic_vector(REG_DATA_WIDTH_BITS - 1 downto 0);
         
         -- Control busses
@@ -65,6 +69,8 @@ begin
     -- Read from registers
     rd_1_data <= reg_file(to_integer(unsigned(rd_1_addr)));
     rd_2_data <= reg_file(to_integer(unsigned(rd_2_addr)));
+    rd_3_data <= reg_file(to_integer(unsigned(rd_3_addr)));
+    rd_4_data <= reg_file(to_integer(unsigned(rd_4_addr)));
 
     rf_access_proc : process(clk)
     begin

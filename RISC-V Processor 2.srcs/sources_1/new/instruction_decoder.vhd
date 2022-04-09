@@ -38,16 +38,16 @@ begin
             uop.operation_select <= '0' & instruction(30) & instruction(14 downto 12);
             
             instruction_ready <= '1';
-        elsif (instruction(6 downto 0) = "0100011") then
+        elsif (instruction(6 downto 0) = "0100011") then        -- STORE
             uop.operation_type <= OP_TYPE_LOAD_STORE;
-            uop.operation_select <= "01" & instruction(14 downto 12);
+            uop.operation_select <= "10" & instruction(14 downto 12);
             
             uop.immediate <= X"00000" & instruction(31 downto 25) & instruction(11 downto 7);
             
             instruction_ready <= '1';
-        elsif (instruction(6 downto 0) = "0000011") then
+        elsif (instruction(6 downto 0) = "0000011") then        -- LOAD
             uop.operation_type <= OP_TYPE_LOAD_STORE;
-            uop.operation_select <= "10" & instruction(14 downto 12);
+            uop.operation_select <= "01" & instruction(14 downto 12);
             
             uop.immediate <= X"00000" & instruction(31 downto 20);
             

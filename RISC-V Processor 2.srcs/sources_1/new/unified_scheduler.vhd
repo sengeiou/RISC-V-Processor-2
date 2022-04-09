@@ -7,7 +7,6 @@ use WORK.PKG_CPU.ALL;
 
 -- ================ NOTES ================ 
 -- Possible optimization (?): Do reads on falling edge and writes on rising edge (or vise versa)
--- Remove register destination address and put reservation station tags to indentify where results of computation have to go
 -- =======================================
 
 entity unified_scheduler is
@@ -164,6 +163,7 @@ begin
                                                                         in_port_0.src_tag_2 & 
                                                                         rs1_src_tag_2_v &
                                                                         in_port_0.dest_tag & 
+                                                                        in_port_0.store_queue_tag &
                                                                         in_port_0.immediate & '1';
                 end if;
 
@@ -199,6 +199,7 @@ begin
             out_port_0.src_tag_1 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
             out_port_0.src_tag_2 <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
             out_port_0.immediate <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(IMMEDIATE_START downto IMMEDIATE_END);
+            out_port_0.store_queue_tag <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(STORE_QUEUE_TAG_START downto STORE_QUEUE_TAG_END);
             out_port_0.dest_tag <= rs_entries(to_integer(unsigned(rs_sel_read_1)))(DEST_TAG_START downto DEST_TAG_END);
             out_port_0.valid <= '1';
         else
@@ -207,6 +208,7 @@ begin
             out_port_0.src_tag_1 <= (others => '0');
             out_port_0.src_tag_2 <= (others => '0');
             out_port_0.immediate <= (others => '0');
+            out_port_0.store_queue_tag <= (others => '0');
             out_port_0.dest_tag <= (others => '0');
             out_port_0.valid <= '0';
         end if;
@@ -217,6 +219,7 @@ begin
             out_port_1.src_tag_1 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
             out_port_1.src_tag_2 <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
             out_port_1.immediate <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(IMMEDIATE_START downto IMMEDIATE_END);
+            out_port_1.store_queue_tag <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(STORE_QUEUE_TAG_START downto STORE_QUEUE_TAG_END);
             out_port_1.dest_tag <= rs_entries(to_integer(unsigned(rs_sel_read_2)))(DEST_TAG_START downto DEST_TAG_END);
             out_port_1.valid <= '1';
         else
@@ -225,6 +228,7 @@ begin
             out_port_1.src_tag_1 <= (others => '0');
             out_port_1.src_tag_2 <= (others => '0');
             out_port_1.immediate <= (others => '0');
+            out_port_1.store_queue_tag <= (others => '0');
             out_port_1.dest_tag <= (others => '0');
             out_port_1.valid <= '0';
         end if;
