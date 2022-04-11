@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.MATH_REAL.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use WORK.PKG_CPU.ALL;
 
 -- Implements a circular FIFO buffer to allow instruction to be committed in-order. 
 
@@ -13,14 +14,18 @@ entity reorder_buffer is
         OPERATION_TYPE_BITS : integer range 1 to 64
     );
     port(
+        head_operation_type : out std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         head_dest_reg : out std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
         head_dest_tag : out std_logic_vector(TAG_BITS - 1 downto 0);
+        head_stq_tag : out std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
     
         cdb_tag : in std_logic_vector(TAG_BITS - 1 downto 0);
     
         operation_1_type : in std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
         dest_tag_1 : in std_logic_vector(TAG_BITS - 1 downto 0);
+        stq_tag_1 : in std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
+        commit_ready_1 : in std_logic;
         
         write_1_en : in std_logic;
         commit_1_en : in std_logic;
@@ -37,7 +42,7 @@ end reorder_buffer;
 architecture rtl of reorder_buffer is
     constant ROB_TAG_BITS : integer := integer(ceil(log2(real(ROB_ENTRIES))));
     constant REGFILE_TAG_BITS : integer := integer(ceil(log2(real(REGFILE_ENTRIES))));
-    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + TAG_BITS + REGFILE_TAG_BITS + 1;
+    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + TAG_BITS + REGFILE_TAG_BITS + STORE_QUEUE_TAG_BITS + 1;
     
     constant TAG_ZERO : std_logic_vector(TAG_BITS - 1 downto 0) := (others => '0');
     constant ROB_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(ROB_ENTRIES)))) - 1 downto 0) := (others => '0');
@@ -51,9 +56,11 @@ architecture rtl of reorder_buffer is
     constant DEST_TAG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS;
     constant DEST_REG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - 1;
     constant DEST_REG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - REGFILE_TAG_BITS;
+    constant STQ_TAG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - REGFILE_TAG_BITS - 1;
+    constant STQ_TAG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - REGFILE_TAG_BITS - STORE_QUEUE_TAG_BITS;
     -- ================================================================
     
-    -- ENTRY FORMAT: [OPERATION TYPE | DEST. TAG | DEST. REG | READY]
+    -- ENTRY FORMAT: [OPERATION TYPE | DEST. TAG | DEST. REG | STQ TAG | READY]
     type reorder_buffer_type is array(ROB_ENTRIES - 1 downto 0) of std_logic_vector(ROB_ENTRY_BITS - 1 downto 0);
     signal reorder_buffer : reorder_buffer_type;
     
@@ -127,7 +134,11 @@ begin
             else 
                 -- Writes a new entry into the ROB
                 if (write_1_en = '1' and rob_full = '0') then
-                    reorder_buffer(to_integer(unsigned(tail_counter_reg))) <= operation_1_type & dest_tag_1 & dest_reg_1 & '0';
+                    reorder_buffer(to_integer(unsigned(tail_counter_reg))) <= operation_1_type & 
+                                                                              dest_tag_1 & 
+                                                                              dest_reg_1 & 
+                                                                              stq_tag_1 & 
+                                                                              commit_ready_1;
                 end if;
                 
                 -- Sets the reorder buffer entry as ready to commit
@@ -150,6 +161,8 @@ begin
     
     head_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_REG_START downto DEST_REG_END) when commit_ready = '1' else (others => '0');
     head_dest_tag <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_TAG_START downto DEST_TAG_END) when commit_ready = '1' else (others => '0');
+    head_stq_tag <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(STQ_TAG_START downto STQ_TAG_END) when commit_ready = '1' else (others => '0');
+    head_operation_type <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(OP_TYPE_START downto OP_TYPE_END) when commit_ready = '1' else (others => '0');
 
 end rtl;
 

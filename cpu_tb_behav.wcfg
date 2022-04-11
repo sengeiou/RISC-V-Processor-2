@@ -19,11 +19,11 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="5000001fs"></ZoomEndTime>
-      <Cursor1Time time="683857fs"></Cursor1Time>
+      <Cursor1Time time="1002227fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="264"></NameColumnWidth>
-      <ValueColumnWidth column_width="61"></ValueColumnWidth>
+      <NameColumnWidth column_width="263"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -76,36 +76,10 @@
          <obj_property name="ElementShortName">pipeline_reg_1_next</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_1_next</obj_property>
          <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.sched_in_port_0" type="array">
-            <obj_property name="ElementShortName">.sched_in_port_0</obj_property>
-            <obj_property name="ObjectShortName">.sched_in_port_0</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.dest_reg" type="array">
-            <obj_property name="ElementShortName">.dest_reg[4:0]</obj_property>
-            <obj_property name="ObjectShortName">.dest_reg[4:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.valid" type="logic">
-            <obj_property name="ElementShortName">.valid</obj_property>
-            <obj_property name="ObjectShortName">.valid</obj_property>
-         </wvobject>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1" type="array">
          <obj_property name="ElementShortName">pipeline_reg_1</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_1</obj_property>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1.sched_in_port_0" type="array">
-            <obj_property name="ElementShortName">.sched_in_port_0</obj_property>
-            <obj_property name="ObjectShortName">.sched_in_port_0</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1.dest_reg" type="array">
-            <obj_property name="ElementShortName">.dest_reg[4:0]</obj_property>
-            <obj_property name="ObjectShortName">.dest_reg[4:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1.valid" type="logic">
-            <obj_property name="ElementShortName">.valid</obj_property>
-            <obj_property name="ObjectShortName">.valid</obj_property>
-         </wvobject>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_p0" type="array">
          <obj_property name="ElementShortName">pipeline_reg_2_p0</obj_property>
@@ -143,11 +117,9 @@
       <wvobject fp_name="group1160" type="group">
          <obj_property name="label">REGISTER RENAMING</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="group1159" type="group">
             <obj_property name="label">FRONTEND RAT</obj_property>
             <obj_property name="DisplayName">label</obj_property>
-            <obj_property name="isExpanded"></obj_property>
             <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat" type="array">
                <obj_property name="ElementShortName">rat[31:0][7:0]</obj_property>
                <obj_property name="ObjectShortName">rat[31:0][7:0]</obj_property>
@@ -308,6 +280,7 @@
       <wvobject fp_name="group513" type="group">
          <obj_property name="label">LOAD STORE EU</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/store_queue" type="array">
             <obj_property name="ElementShortName">store_queue[7:0][73:0]</obj_property>
             <obj_property name="ObjectShortName">store_queue[7:0][73:0]</obj_property>
@@ -324,6 +297,14 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_tail_counter_reg" type="array">
             <obj_property name="ElementShortName">sq_tail_counter_reg[2:0]</obj_property>
             <obj_property name="ObjectShortName">sq_tail_counter_reg[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_retire_tag" type="array">
+            <obj_property name="ElementShortName">sq_retire_tag[2:0]</obj_property>
+            <obj_property name="ObjectShortName">sq_retire_tag[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_retire_tag_valid" type="logic">
+            <obj_property name="ElementShortName">sq_retire_tag_valid</obj_property>
+            <obj_property name="ObjectShortName">sq_retire_tag_valid</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_calc_addr" type="array">
             <obj_property name="ElementShortName">sq_calc_addr[31:0]</obj_property>
@@ -361,6 +342,10 @@
             <obj_property name="ElementShortName">sq_store_data_valid</obj_property>
             <obj_property name="ObjectShortName">sq_store_data_valid</obj_property>
          </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_store_ready" type="logic">
+            <obj_property name="ElementShortName">sq_store_ready</obj_property>
+            <obj_property name="ObjectShortName">sq_store_ready</obj_property>
+         </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_enqueue_en" type="logic">
             <obj_property name="ElementShortName">sq_enqueue_en</obj_property>
             <obj_property name="ObjectShortName">sq_enqueue_en</obj_property>
@@ -394,9 +379,106 @@
          <obj_property name="label">REORDER BUFFER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer" type="array">
-            <obj_property name="ElementShortName">reorder_buffer[23:0][15:0]</obj_property>
-            <obj_property name="ObjectShortName">reorder_buffer[23:0][15:0]</obj_property>
+            <obj_property name="ElementShortName">reorder_buffer[23:0][18:0]</obj_property>
+            <obj_property name="ObjectShortName">reorder_buffer[23:0][18:0]</obj_property>
             <obj_property name="isExpanded"></obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[23]" type="array">
+               <obj_property name="ElementShortName">[23][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[23][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[22]" type="array">
+               <obj_property name="ElementShortName">[22][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[22][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[21]" type="array">
+               <obj_property name="ElementShortName">[21][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[21][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[20]" type="array">
+               <obj_property name="ElementShortName">[20][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[20][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[19]" type="array">
+               <obj_property name="ElementShortName">[19][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[19][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[18]" type="array">
+               <obj_property name="ElementShortName">[18][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[18][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[17]" type="array">
+               <obj_property name="ElementShortName">[17][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[17][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[16]" type="array">
+               <obj_property name="ElementShortName">[16][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[16][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[15]" type="array">
+               <obj_property name="ElementShortName">[15][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[15][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[14]" type="array">
+               <obj_property name="ElementShortName">[14][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[14][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[13]" type="array">
+               <obj_property name="ElementShortName">[13][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[13][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[12]" type="array">
+               <obj_property name="ElementShortName">[12][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[12][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[11]" type="array">
+               <obj_property name="ElementShortName">[11][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[11][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[10]" type="array">
+               <obj_property name="ElementShortName">[10][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[10][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[9]" type="array">
+               <obj_property name="ElementShortName">[9][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[9][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[8]" type="array">
+               <obj_property name="ElementShortName">[8][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[8][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[7]" type="array">
+               <obj_property name="ElementShortName">[7][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[7][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[6]" type="array">
+               <obj_property name="ElementShortName">[6][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[6][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[5]" type="array">
+               <obj_property name="ElementShortName">[5][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[5][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[4]" type="array">
+               <obj_property name="ElementShortName">[4][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[4][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[3]" type="array">
+               <obj_property name="ElementShortName">[3][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[3][18:0]</obj_property>
+               <obj_property name="isExpanded"></obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[2]" type="array">
+               <obj_property name="ElementShortName">[2][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[2][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[1]" type="array">
+               <obj_property name="ElementShortName">[1][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[1][18:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer[0]" type="array">
+               <obj_property name="ElementShortName">[0][18:0]</obj_property>
+               <obj_property name="ObjectShortName">[0][18:0]</obj_property>
+            </wvobject>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/head_counter_reg" type="array">
             <obj_property name="ElementShortName">head_counter_reg[4:0]</obj_property>

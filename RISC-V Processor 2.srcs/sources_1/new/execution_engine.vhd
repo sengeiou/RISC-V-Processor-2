@@ -91,6 +91,7 @@ architecture Structural of execution_engine is
     -- ================================================
     
     -- ========== REORDER BUFFER SIGNALS ==========
+    signal rob_head_operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
     signal rob_head_dest_reg : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
     signal rob_head_dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
@@ -125,6 +126,7 @@ architecture Structural of execution_engine is
     -- ===============================================
     
     signal next_uop : uop_type;
+    signal next_uop_commit_ready : std_logic;
     
     signal iq_full : std_logic;
     signal iq_empty : std_logic;
@@ -264,6 +266,9 @@ begin
     pipeline_reg_3_ldst_next.operation_select <= pipeline_reg_2_p1.sched_out_port_1.operation_sel;
     pipeline_reg_3_ldst_next.valid <= pipeline_reg_2_p1.sched_out_port_1.valid;
       
+    next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
+    sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_LOAD_STORE else '0';
+      
     -- ==================================================================================================
     --                                        REGISTER RENAMING
     -- ==================================================================================================
@@ -358,12 +363,17 @@ begin
                                  OPERATION_TYPE_BITS => OPERATION_TYPE_BITS)
                      port map(cdb_tag => cdb.tag,
 
+                              head_operation_type => rob_head_operation_type,
                               head_dest_tag => rob_head_dest_tag,
+                              head_stq_tag => sq_retire_tag,
                               head_dest_reg => rob_head_dest_reg,
                               
                               operation_1_type => pipeline_reg_1.sched_in_port_0.operation_type,
                               dest_reg_1 => pipeline_reg_1.dest_reg,
                               dest_tag_1 => pipeline_reg_1.sched_in_port_0.dest_tag,
+                              stq_tag_1 => pipeline_reg_1.sched_in_port_0.store_queue_tag,
+                              commit_ready_1 => next_uop_commit_ready,
+                              
                               write_1_en => pipeline_reg_1.valid,
                               commit_1_en => '1',
 
