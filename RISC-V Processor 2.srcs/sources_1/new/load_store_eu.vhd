@@ -134,6 +134,7 @@ architecture rtl of load_store_eu is
     signal lq_full : std_logic;
     signal lq_empty : std_logic;
     
+    signal load_in_exec_index : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
     signal load_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     signal load_dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal load_data_valid : std_logic;
@@ -255,6 +256,19 @@ begin
         end case;
     end process;
 
+    load_in_exec_reg_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                load_in_exec_index <= (others => '0');
+            else
+                if (execute_load = '1') then
+                    load_in_exec_index <= lq_selected_index;
+                end if;
+            end if;
+        end if;
+    end process;
+
     -- QUEUE CONTROL
     queue_control_proc : process(clk)
     begin
@@ -291,8 +305,8 @@ begin
                     store_queue(to_integer(sq_head_counter_reg))(SQ_FINISHED_BIT) <= '1';
                 end if;
                 
-                if (lq_dequeue_en = '1') then
-                    load_queue(to_integer(lq_head_counter_reg))(LQ_VALID_BIT) <= '0';
+                if (from_master_interface.done_read = '1') then
+                    load_queue(to_integer(unsigned(load_in_exec_index)))(LQ_VALID_BIT) <= '0';
                 end if;
                                                                    
                 for i in 0 to SQ_ENTRIES - 1 loop
@@ -424,7 +438,7 @@ begin
                             
     to_master_interface.data_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_DATA_START downto SQ_DATA_END);
     to_master_interface.addr_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_ADDR_START downto SQ_ADDR_END);
-    to_master_interface.addr_read <= (others => '0');
+    to_master_interface.addr_read <= load_queue(to_integer(unsigned(lq_selected_index)))(LQ_ADDR_START downto LQ_ADDR_END);
     to_master_interface.burst_len <= (others => '0');
     to_master_interface.burst_size <= (others => '0');
     to_master_interface.burst_type <= (others => '0');
