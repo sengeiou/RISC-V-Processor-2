@@ -34,10 +34,11 @@ package pkg_ee is
     
     type execution_engine_pipeline_register_3_ldst_type is record
         store_data_value : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-        store_addr_value : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        base_addr_value : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         data_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         store_queue_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
+        load_queue_tag : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
         operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         valid : std_logic;
     end record;
@@ -60,6 +61,7 @@ package pkg_ee is
                                                                                         '0');
                                                                                         
     constant EE_PIPELINE_REG_3_LDST_INIT : execution_engine_pipeline_register_3_ldst_type := ((others => '0'),
+                                                                                            (others => '0'),
                                                                                             (others => '0'),
                                                                                             (others => '0'),
                                                                                             (others => '0'),

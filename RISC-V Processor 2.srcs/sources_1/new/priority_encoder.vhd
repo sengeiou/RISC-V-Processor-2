@@ -9,7 +9,8 @@ entity priority_encoder is
     );
     port(
         d : in std_logic_vector(NUM_INPUTS - 1 downto 0);
-        q : out std_logic_vector(integer(ceil(log2(real(NUM_INPUTS)))) - 1 downto 0)
+        q : out std_logic_vector(integer(ceil(log2(real(NUM_INPUTS)))) - 1 downto 0);
+        valid : out std_logic
     );
 end priority_encoder;
 
@@ -21,6 +22,7 @@ begin
     begin
         if (d = D_ZERO) then
             q <= (others => '0');
+            valid <= '0';
         else
             for k in 0 to NUM_INPUTS - 1 loop
                 if (d(k) = '1') then
@@ -29,6 +31,7 @@ begin
             end loop;
         
             q <= std_logic_vector(to_unsigned(max, integer(ceil(log2(real(NUM_INPUTS))))));
+            valid <= '1';
         end if;
     end process;
 

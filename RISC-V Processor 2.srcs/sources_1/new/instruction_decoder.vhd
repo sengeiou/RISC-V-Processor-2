@@ -42,6 +42,7 @@ begin
             uop.operation_type <= OP_TYPE_LOAD_STORE;
             uop.operation_select <= "10" & instruction(14 downto 12);
             
+            uop.reg_dest <= (others => '0');        -- HAS TO BE 0 SO THAT IS DOESN'T GET RENAMED SINCE SW DOESN'T USE A DESTINATION REGISTER!!!
             uop.immediate <= X"00000" & instruction(31 downto 25) & instruction(11 downto 7);
             
             instruction_ready <= '1';

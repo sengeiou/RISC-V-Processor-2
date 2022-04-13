@@ -113,6 +113,7 @@ architecture Structural of execution_engine is
     signal sq_store_data_valid : std_logic;
     
     signal sq_enqueue_en : std_logic;
+    signal lq_enqueue_en : std_logic;
     
     signal sq_alloc_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
     signal lq_alloc_tag : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
@@ -242,6 +243,7 @@ begin
     pipeline_reg_1_next.sched_in_port_0.dest_tag <= renamed_dest_reg;
     pipeline_reg_1_next.sched_in_port_0.immediate <= next_uop.immediate;
     pipeline_reg_1_next.sched_in_port_0.store_queue_tag <= sq_alloc_tag;
+    pipeline_reg_1_next.sched_in_port_0.load_queue_tag <= lq_alloc_tag;
     pipeline_reg_1_next.dest_reg <= next_uop.reg_dest;
     pipeline_reg_1_next.valid <= next_instr_ready;
     
@@ -259,10 +261,11 @@ begin
     pipeline_reg_3_int_next.valid <= pipeline_reg_2_p0.sched_out_port_0.valid;
     
     pipeline_reg_3_ldst_next.store_data_value <= rf_rd_data_3;
-    pipeline_reg_3_ldst_next.store_addr_value <= rf_rd_data_4;
+    pipeline_reg_3_ldst_next.base_addr_value <= rf_rd_data_4;
     pipeline_reg_3_ldst_next.immediate <= pipeline_reg_2_p1.sched_out_port_1.immediate;
     pipeline_reg_3_ldst_next.data_tag <= pipeline_reg_2_p1.sched_out_port_1.src_tag_2;
     pipeline_reg_3_ldst_next.store_queue_tag <= pipeline_reg_2_p1.sched_out_port_1.store_queue_tag;
+    pipeline_reg_3_ldst_next.load_queue_tag <= pipeline_reg_2_p1.sched_out_port_1.load_queue_tag;
     pipeline_reg_3_ldst_next.operation_select <= pipeline_reg_2_p1.sched_out_port_1.operation_sel;
     pipeline_reg_3_ldst_next.valid <= pipeline_reg_2_p1.sched_out_port_1.valid;
       
@@ -446,8 +449,7 @@ begin
                                sq_retire_tag => sq_retire_tag,
                                sq_retire_tag_valid => sq_retire_tag_valid,
                                
-                               lq_enqueue_en => '0',
-                               lq_dequeue_en => '0',
+                               lq_enqueue_en => lq_enqueue_en,
                                
                                cdb_granted => '1',
                                
@@ -459,12 +461,20 @@ begin
     sq_store_data_valid <= '1' when pipeline_reg_3_ldst.operation_select(4 downto 3) = "10" else '0';
 
     -- VERY TEMPORARY!!! WILL BE IN ADDRESS GENERATION UNIT MODULE IN THE FUTURE
-    sq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_ldst.store_addr_value) + unsigned(pipeline_reg_3_ldst.immediate));
+    sq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_ldst.base_addr_value) + unsigned(pipeline_reg_3_ldst.immediate));
     sq_calc_addr_tag <= pipeline_reg_3_ldst.store_queue_tag;
     sq_calc_addr_valid <= '1' when pipeline_reg_3_ldst.operation_select(4 downto 3) = "10" else '0';
+    
+    lq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_ldst.base_addr_value) + unsigned(pipeline_reg_3_ldst.immediate));
+    lq_calc_addr_tag <= pipeline_reg_3_ldst.load_queue_tag;
+    lq_calc_addr_valid <= '1' when pipeline_reg_3_ldst.operation_select(4 downto 3) = "01" else '0';
 
     sq_data_tag <= renamed_src_reg_2;
     sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(4) = '1' and next_instr_ready = '1' else '0';      -- 5th bit of operation select indicates a store
+
+    lq_dest_tag <= renamed_dest_reg;
+    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(3) = '1' and next_instr_ready = '1' else '0';
+
 
     --cdb <= cdb_ls_eu when cdb_grant_2 = '1' else
     --       cdb_int_eu;

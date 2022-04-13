@@ -1,0 +1,5 @@
+1. Add load instruction to LQ when dispatched
+	- Address still unknown. No dependencies can be determined, aside from which instrs. are older
+2. Address of a LOAD gets calculated:
+	- Find the youngest STORES to the same address (or overlapping)
+	- Set appropriate mask bits

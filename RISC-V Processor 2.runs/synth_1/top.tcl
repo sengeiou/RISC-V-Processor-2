@@ -103,9 +103,13 @@ read_vhdl -library xil_defaultlib {
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/front_end.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_sched.vhd}
+  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_ee.vhd}
+  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_alias_allocator.vhd}
+  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_alias_table.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd}
+  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/reorder_buffer.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/priority_encoder.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/reservation_station.vhd}
+  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/unified_scheduler.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_fu.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/integer_eu.vhd}
   {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/load_store_eu.vhd}

@@ -7,7 +7,7 @@ use WORK.PKG_CPU.ALL;
 -- the unified scheduler for the processor
 
 package pkg_sched is
-    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * PHYS_REGFILE_ADDR_BITS + OPERAND_BITS + STORE_QUEUE_TAG_BITS + 3;
+    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * PHYS_REGFILE_ADDR_BITS + OPERAND_BITS + STORE_QUEUE_TAG_BITS + LOAD_QUEUE_TAG_BITS + 3;
     constant ENTRY_TAG_BITS : integer := integer(ceil(log2(real(SCHEDULER_ENTRIES))));
     
     constant ENTRY_TAG_ZERO : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0) := (others => '0');
@@ -27,8 +27,10 @@ package pkg_sched is
     constant DEST_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - 2;
     constant STORE_QUEUE_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - 3;
     constant STORE_QUEUE_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - STORE_QUEUE_TAG_BITS - 2;
-    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - STORE_QUEUE_TAG_BITS - 3;
-    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - 2;
+    constant LOAD_QUEUE_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - STORE_QUEUE_TAG_BITS - 3;
+    constant LOAD_QUEUE_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - 2;
+    constant IMMEDIATE_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - 3;
+    constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - 2;
     -- ================================================================================
 
     -- ================================================================================
@@ -40,6 +42,7 @@ package pkg_sched is
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0); 
         store_queue_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
+        load_queue_tag : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
         src_tag_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_1_valid : std_logic;
@@ -51,6 +54,7 @@ package pkg_sched is
         operation_sel : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         store_queue_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0); 
+        load_queue_tag : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0); 
         src_tag_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);         
         dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
@@ -64,10 +68,12 @@ package pkg_sched is
                                                             (others => '0'),
                                                             (others => '0'),
                                                             (others => '0'),
+                                                            (others => '0'),
                                                             '0',
                                                             '0');
                                                             
     constant SCHED_OUT_PORT_DEFAULT : sched_out_port_type := ((others => '0'),
+                                                              (others => '0'),
                                                               (others => '0'),
                                                               (others => '0'),
                                                               (others => '0'),
