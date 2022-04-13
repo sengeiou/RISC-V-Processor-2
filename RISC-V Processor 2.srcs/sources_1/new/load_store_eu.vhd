@@ -8,6 +8,7 @@ use WORK.PKG_AXI.ALL;
 
 -- Note: Addresses are tagged with QUEUE entry numbers. Data entries in the store queue are tagged with the physical register tag.
 -- Ready bit in LQ might be unnecessary
+-- Potential problem: What if another data comes in before the current one has been written into the register file?
 
 entity load_store_eu is
     generic(
@@ -132,6 +133,10 @@ architecture rtl of load_store_eu is
     
     signal lq_full : std_logic;
     signal lq_empty : std_logic;
+    
+    signal load_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    signal load_dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal load_data_valid : std_logic;
     
     signal execute_store : std_logic;
     signal execute_load : std_logic;
@@ -365,6 +370,25 @@ begin
     lq_tail_counter_next <= (others => '0') when lq_tail_counter_reg = LQ_ENTRIES - 1 else
                             lq_head_counter_reg + 1;
               
+    -- ============================ LOAD DATA & TAG REGISTER CONTROL =============================
+    process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                load_data <= (others => '0');
+                load_dest_tag <= (others => '0');
+                load_data_valid <= '0';
+            elsif (from_master_interface.done_read = '1') then
+                load_data <= from_master_interface.data_read;
+                load_dest_tag <= load_queue(to_integer(unsigned(lq_selected_index)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
+                load_data_valid <= '1';
+            elsif (cdb_granted = '1') then
+                load_data_valid <= '0';
+            end if;
+        end if;
+    end process;
+    -- ===========================================================================================
+              
     -- ============================ LOAD INSTRUCTION ALLOCATION LOGIC ============================
     process(lq_enqueue_en, store_queue)
     begin
@@ -392,6 +416,11 @@ begin
     
     sq_alloc_tag <= std_logic_vector(sq_tail_counter_reg);
     lq_alloc_tag <= std_logic_vector(lq_tail_counter_reg);
+                 
+    cdb_request <= load_data_valid;
+    cdb.data <= load_data;
+    cdb.tag <= load_dest_tag;
+    cdb.valid <= load_data_valid;
                             
     to_master_interface.data_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_DATA_START downto SQ_DATA_END);
     to_master_interface.addr_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_ADDR_START downto SQ_ADDR_END);

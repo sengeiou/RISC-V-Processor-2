@@ -451,7 +451,9 @@ begin
                                
                                lq_enqueue_en => lq_enqueue_en,
                                
-                               cdb_granted => '1',
+                               cdb => cdb_ls_eu,
+                               cdb_request => cdb_req_2,
+                               cdb_granted => cdb_grant_2,
                                
                                reset => reset,
                                clk => clk);
@@ -476,13 +478,13 @@ begin
     lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(3) = '1' and next_instr_ready = '1' else '0';
 
 
-    --cdb <= cdb_ls_eu when cdb_grant_2 = '1' else
-    --       cdb_int_eu;
-    cdb <= cdb_int_eu;
+    cdb <= cdb_ls_eu when cdb_grant_2 = '1' else
+           cdb_int_eu;
+    --cdb <= cdb_int_eu;
 
-    --cdb_grant_1 <= cdb_req_1 and (not cdb_req_2);
-    cdb_grant_1 <= '1';
-    --cdb_grant_2 <= cdb_req_2;
+    cdb_grant_1 <= cdb_req_1 and (not cdb_req_2);
+    --cdb_grant_1 <= '1';
+    cdb_grant_2 <= cdb_req_2;
     
     n_int_eu_busy <= not int_eu_busy;
     --n_ls_eu_busy <= not ls_eu_busy;
