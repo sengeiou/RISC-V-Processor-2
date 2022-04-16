@@ -18,14 +18,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="10000001fs"></ZoomEndTime>
-      <Cursor1Time time="4569776fs"></Cursor1Time>
+      <ZoomEndTime time="20000001fs"></ZoomEndTime>
+      <Cursor1Time time="5161290fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="227"></NameColumnWidth>
+      <NameColumnWidth column_width="215"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
+   <WVObjectSize size="7" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -66,14 +66,6 @@
          <obj_property name="ElementShortName">next_instr_ready</obj_property>
          <obj_property name="ObjectShortName">next_instr_ready</obj_property>
       </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/renamed_src_reg_1_v" type="logic">
-         <obj_property name="ElementShortName">renamed_src_reg_1_v</obj_property>
-         <obj_property name="ObjectShortName">renamed_src_reg_1_v</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/renamed_src_reg_2_v" type="logic">
-         <obj_property name="ElementShortName">renamed_src_reg_2_v</obj_property>
-         <obj_property name="ObjectShortName">renamed_src_reg_2_v</obj_property>
-      </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/lq_alloc_tag" type="array">
          <obj_property name="ElementShortName">lq_alloc_tag[2:0]</obj_property>
          <obj_property name="ObjectShortName">lq_alloc_tag[2:0]</obj_property>
@@ -85,38 +77,6 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1" type="array">
          <obj_property name="ElementShortName">pipeline_reg_1</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_1</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_p0" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_2_p0</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_2_p0</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_p0_next" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_2_p0_next</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_2_p0_next</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_p1" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_2_p1</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_2_p1</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_p1_next" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_2_p1_next</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_2_p1_next</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_3_int" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_3_int</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_3_int</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_3_int_next" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_3_int_next</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_3_int_next</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_3_ldst" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_3_ldst</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_3_ldst</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_3_ldst_next" type="array">
-         <obj_property name="ElementShortName">pipeline_reg_3_ldst_next</obj_property>
-         <obj_property name="ObjectShortName">pipeline_reg_3_ldst_next</obj_property>
       </wvobject>
       <wvobject fp_name="group1160" type="group">
          <obj_property name="label">REGISTER RENAMING</obj_property>
@@ -203,10 +163,23 @@
       <wvobject fp_name="group34" type="group">
          <obj_property name="label">UNIFIED SCHEDULER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/rs_entries" type="array">
-            <obj_property name="ElementShortName">rs_entries[6:0][69:0]</obj_property>
-            <obj_property name="ObjectShortName">rs_entries[6:0][69:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/sched_entries" type="array">
+            <obj_property name="ElementShortName">sched_entries[6:0][69:0]</obj_property>
+            <obj_property name="ObjectShortName">sched_entries[6:0][69:0]</obj_property>
             <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/sched_sel_write_1" type="array">
+            <obj_property name="ElementShortName">sched_sel_write_1[2:0]</obj_property>
+            <obj_property name="ObjectShortName">sched_sel_write_1[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/sched_sel_read_1" type="array">
+            <obj_property name="ElementShortName">sched_sel_read_1[2:0]</obj_property>
+            <obj_property name="ObjectShortName">sched_sel_read_1[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/sched_sel_read_2" type="array">
+            <obj_property name="ElementShortName">sched_sel_read_2[2:0]</obj_property>
+            <obj_property name="ObjectShortName">sched_sel_read_2[2:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/rs1_src_tag_1_v" type="logic">
             <obj_property name="ElementShortName">rs1_src_tag_1_v</obj_property>
@@ -306,12 +279,10 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/store_queue" type="array">
             <obj_property name="ElementShortName">store_queue[7:0][74:0]</obj_property>
             <obj_property name="ObjectShortName">store_queue[7:0][74:0]</obj_property>
-            <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/load_queue" type="array">
             <obj_property name="ElementShortName">load_queue[7:0][50:0]</obj_property>
             <obj_property name="ObjectShortName">load_queue[7:0][50:0]</obj_property>
-            <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_selected_index" type="array">
             <obj_property name="ElementShortName">lq_selected_index[2:0]</obj_property>
@@ -645,14 +616,16 @@
       <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_read_master" type="array">
          <obj_property name="ElementShortName">handshake_read_master</obj_property>
          <obj_property name="ObjectShortName">handshake_read_master</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_write_master" type="array">
-         <obj_property name="ElementShortName">handshake_write_master</obj_property>
-         <obj_property name="ObjectShortName">handshake_write_master</obj_property>
+         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_read_slave" type="array">
          <obj_property name="ElementShortName">handshake_read_slave</obj_property>
          <obj_property name="ObjectShortName">handshake_read_slave</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_write_master" type="array">
+         <obj_property name="ElementShortName">handshake_write_master</obj_property>
+         <obj_property name="ObjectShortName">handshake_write_master</obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_write_slave" type="array">
          <obj_property name="ElementShortName">handshake_write_slave</obj_property>
@@ -709,6 +682,27 @@
       <wvobject fp_name="/cpu_tb/cpu/led_device/data_reg" type="array">
          <obj_property name="ElementShortName">data_reg[31:0]</obj_property>
          <obj_property name="ObjectShortName">data_reg[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group3592" type="group">
+      <obj_property name="label">ROM MEMORY</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/cpu_tb/cpu/rom_memory/addr_bus" type="array">
+         <obj_property name="ElementShortName">addr_bus[9:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_bus[9:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/rom_memory/data_bus" type="array">
+         <obj_property name="ElementShortName">data_bus[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_bus[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/rom_memory/data_ready" type="logic">
+         <obj_property name="ElementShortName">data_ready</obj_property>
+         <obj_property name="ObjectShortName">data_ready</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/rom_memory/addr_old_reg" type="array">
+         <obj_property name="ElementShortName">addr_old_reg[9:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_old_reg[9:0]</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

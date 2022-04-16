@@ -26,8 +26,8 @@ entity axi_master_interface is
         slave_read_handshake : in HandshakeReadSlave;
 
         -- OTHER CONTROL SIGNALS
-        interface_to_master : out FromMasterInterface;
-        master_to_interface : in ToMasterInterface;
+        to_device : out FromMasterInterface;
+        from_device : in ToMasterInterface;
         
         bus_request_read : out std_logic;
         bus_request_write : out std_logic;
@@ -42,7 +42,7 @@ architecture rtl of axi_master_interface is
                               ADDR_STATE_1,
                               DATA_STATE,
                               RESPONSE_STATE_1,
-                              RESPONSE_STATE_2);
+                              FINALIZE_STATE);
                               
     type read_state_type is (IDLE,
                              ADDR_STATE,
@@ -52,6 +52,10 @@ architecture rtl of axi_master_interface is
     -- ========== WRITE REGISTERS ==========                              
     signal write_addr_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal write_data_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal write_burst_len_init_reg : std_logic_vector(7 downto 0);
+    signal write_burst_size_reg : std_logic_vector(2 downto 0);
+    signal write_burst_type_reg : std_logic_vector(1 downto 0);
+    signal write_regs_en : std_logic;
                               
     signal write_state_reg : write_state_type;
     signal write_state_next : write_state_type;
@@ -63,6 +67,12 @@ architecture rtl of axi_master_interface is
     signal write_burst_len_mux_sel : std_logic;
     
     -- ========== READ REGISTERS ==========
+    signal read_addr_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+    signal read_burst_len_reg : std_logic_vector(7 downto 0);
+    signal read_burst_size_reg : std_logic_vector(2 downto 0);
+    signal read_burst_type_reg : std_logic_vector(1 downto 0);
+    signal read_regs_en : std_logic;
+    
     signal read_data_reg : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
     signal read_data_reg_en : std_logic;
     
@@ -76,7 +86,7 @@ begin
     begin
         case write_state_reg is
             when IDLE =>
-                if (master_to_interface.execute_write = '1') then
+                if (from_device.execute_write = '1') then
                     write_state_next <= ADDR_STATE_1;
                 else
                     write_state_next <= IDLE;
@@ -95,18 +105,22 @@ begin
                 end if;
             when RESPONSE_STATE_1 => 
                 if (slave_write_handshake.bvalid = '1') then
-                    write_state_next <= RESPONSE_STATE_2;
+                    write_state_next <= FINALIZE_STATE;
                 else 
                     write_state_next <= RESPONSE_STATE_1;
                 end if;
-            when RESPONSE_STATE_2 => 
-                write_state_next <= IDLE;
+            when FINALIZE_STATE => 
+                if (from_device.done_write_ack = '1') then
+                    write_state_next <= IDLE;
+                else
+                    write_state_next <= FINALIZE_STATE;
+                end if;
         end case;
     end process;
     
     write_state_outputs : process(all)
     begin
-        interface_to_master.done_write <= '0'; 
+        to_device.done_write <= '0'; 
         
         axi_write_addr_ch.addr <= (others => '0');
         axi_write_addr_ch.len <= (others => '0');
@@ -126,25 +140,26 @@ begin
         write_burst_len_reg_en <= '0';
         
         bus_request_write <= '0';
+        write_regs_en <= '0';
         case write_state_reg is
             when IDLE =>
-            
+                write_regs_en <= '1';
             when ADDR_STATE_1 => 
                 -- WRITE ADDRESS CHANNEL
                 axi_write_addr_ch.addr <= write_addr_reg;
-                axi_write_addr_ch.len <= master_to_interface.burst_len;
-                axi_write_addr_ch.size <= master_to_interface.burst_size;
-                axi_write_addr_ch.burst_type <= master_to_interface.burst_type;
+                axi_write_addr_ch.len <= write_burst_len_reg;
+                axi_write_addr_ch.size <= write_burst_size_reg;
+                axi_write_addr_ch.burst_type <= write_burst_type_reg;
                 
                 -- WRITE DATA CHANNEL
                 axi_write_data_ch.data <= write_data_reg;
                 axi_write_data_ch.strb <= "1111";
                 
-                -- HANDSHAKE
-                master_write_handshake.awvalid <= '1';
-                
                 -- BURST CONTROL
                 write_burst_len_reg_en <= '1';
+                
+                -- HANDSHAKE
+                master_write_handshake.awvalid <= '1';
                 
                 bus_request_write <= '1';
             when DATA_STATE => 
@@ -162,13 +177,13 @@ begin
                                           slave_write_handshake.wready;
                                           
                 bus_request_write <= '1';
-            when RESPONSE_STATE_1 => 
-                bus_request_write <= '1';
-            when RESPONSE_STATE_2 => 
-                -- HANDSHAKE
+            when RESPONSE_STATE_1 =>
                 master_write_handshake.bready <= '1';
-                
-                interface_to_master.done_write <= '1';
+             
+                bus_request_write <= '1';
+            when FINALIZE_STATE => 
+                -- HANDSHAKE
+                to_device.done_write <= '1';
                 
                 bus_request_write <= '1';
         end case;
@@ -197,10 +212,10 @@ begin
         end if;
     end process;
     
-    write_burst_len_next_mux_proc : process(write_burst_len_mux_sel, master_to_interface.burst_len, write_burst_len_reg)
+    write_burst_len_next_mux_proc : process(write_burst_len_mux_sel, from_device.burst_len, write_burst_len_reg)
     begin
         if (write_burst_len_mux_sel = '0') then
-            write_burst_len_next <= master_to_interface.burst_len;
+            write_burst_len_next <= write_burst_len_init_reg;
         elsif (write_burst_len_mux_sel = '1') then
             write_burst_len_next <= std_logic_vector(unsigned(write_burst_len_reg) - 1);
         else
@@ -213,11 +228,11 @@ begin
     -- ============================================================================================
     -- READING
     -- ============================================================================================
-    read_state_transition : process(read_state_reg, master_to_interface.execute_read, slave_read_handshake.arready, axi_read_data_ch.last, slave_read_handshake.rvalid)
+    read_state_transition : process(read_state_reg, from_device.execute_read, slave_read_handshake.arready, axi_read_data_ch.last, slave_read_handshake.rvalid)
     begin
         case read_state_reg is 
             when IDLE => 
-                if (master_to_interface.execute_read = '1') then
+                if (from_device.execute_read = '1') then
                     read_state_next <= ADDR_STATE;
                 else
                     read_state_next <= IDLE;
@@ -235,37 +250,40 @@ begin
                     read_state_next <= DATA_STATE;
                 end if;
             when FINALIZE_STATE => 
-                read_state_next <= IDLE;
+                if (from_device.done_read_ack = '1') then
+                    read_state_next <= IDLE;
+                else
+                    read_state_next <= FINALIZE_STATE;
+                end if;
         end case;
     end process;
     
     read_state_outputs : process(all)
     begin
-        interface_to_master.done_read <= '0';
-        
         axi_read_addr_ch.addr <= (others => '0');
         axi_read_addr_ch.len <= (others => '0');
         axi_read_addr_ch.size <= (others => '0');
         axi_read_addr_ch.burst_type <= (others => '0');
+    
+        to_device.done_read <= '0';
         
         bus_request_read <= '0';
-                
+        read_regs_en <= '0';
         -- HANDSHAKE
         master_read_handshake.arvalid <= '0';
-
         master_read_handshake.rready <= '0';
                 
         read_data_reg_en <= '0';
         case read_state_reg is
             when IDLE =>
-                
+                read_regs_en <= '1';
             when ADDR_STATE => 
-                axi_read_addr_ch.addr <= master_to_interface.addr_read;
-                axi_read_addr_ch.len <= master_to_interface.burst_len;
-                axi_read_addr_ch.size <= master_to_interface.burst_size;
-                axi_read_addr_ch.burst_type <= master_to_interface.burst_type;
-                
                 bus_request_read <= '1';
+                
+                axi_read_addr_ch.addr <= read_addr_reg;
+                axi_read_addr_ch.len <= read_burst_len_reg;
+                axi_read_addr_ch.size <= read_burst_size_reg;
+                axi_read_addr_ch.burst_type <= read_burst_type_reg;
                 
                 -- HANDSHAKE
                 master_read_handshake.arvalid <= '1';
@@ -275,11 +293,11 @@ begin
                 -- HANDSHAKE
                 master_read_handshake.rready <= '1';
                 
-                read_data_reg_en <= '1';
+                read_data_reg_en <= slave_read_handshake.rvalid;
             when FINALIZE_STATE => 
                 bus_request_read <= '1';
             
-                interface_to_master.done_read <= '1'; 
+                to_device.done_read <= '1'; 
         end case;
     end process;
     
@@ -289,14 +307,28 @@ begin
             if (reset = '0') then
                 write_addr_reg <= (others => '0');
                 write_data_reg <= (others => '0');
+                
                 read_data_reg <= (others => '0');
+                read_burst_len_reg <= (others => '0');
+                read_burst_size_reg <= (others => '0');
+                read_burst_type_reg <= (others => '0');
                 
                 write_state_reg <= IDLE;
                 read_state_reg <= IDLE;
             else
-                if (master_to_interface.execute_write = '1') then
-                    write_addr_reg <= master_to_interface.addr_write;
-                    write_data_reg <= master_to_interface.data_write;
+                if (write_regs_en = '1') then
+                    write_addr_reg <= from_device.addr_write;
+                    write_data_reg <= from_device.data_write;
+                    write_burst_len_init_reg <= from_device.burst_len;
+                    write_burst_size_reg <= from_device.burst_size;
+                    write_burst_type_reg <= from_device.burst_type;
+                end if;
+                
+                if (read_regs_en = '1') then
+                    read_addr_reg <= from_device.addr_read;
+                    read_burst_len_reg <= from_device.burst_len;
+                    read_burst_size_reg <= from_device.burst_size;
+                    read_burst_type_reg <= from_device.burst_type;
                 end if;
                 
                 if (read_data_reg_en = '1') then
@@ -309,6 +341,6 @@ begin
         end if;
     end process;
 
-    interface_to_master.data_read <= read_data_reg;
+    to_device.data_read <= read_data_reg;
 
 end rtl;

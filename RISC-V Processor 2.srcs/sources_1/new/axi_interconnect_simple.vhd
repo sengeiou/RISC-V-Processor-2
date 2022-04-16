@@ -137,8 +137,8 @@ begin
                                      slave_write_handshake => handshakes_write_slaves_from_bus(i),
                                      slave_read_handshake => handshakes_read_slaves_from_bus(i),
                                      
-                                     interface_to_master => to_masters(i),
-                                     master_to_interface => from_masters(i),
+                                     to_device => to_masters(i),
+                                     from_device => from_masters(i),
                                      
                                      bus_request_read => master_read_bus_reqs(i),
                                      bus_request_write => master_write_bus_reqs(i),
@@ -160,8 +160,8 @@ begin
                                      slave_write_handshake => handshakes_write_slaves_to_bus(i),
                                      slave_read_handshake => handshakes_read_slaves_to_bus(i),
                                      
-                                     to_slave => to_slaves(i),
-                                     from_slave => from_slaves(i),
+                                     to_device => to_slaves(i),
+                                     from_device => from_slaves(i),
                                      
                                      clk => clk,
                                      reset => reset);

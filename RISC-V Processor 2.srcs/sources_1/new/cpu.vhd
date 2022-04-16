@@ -105,18 +105,18 @@ begin
                           reset => reset_cpu);
                           
     rom_memory : entity work.rom_memory_2(structural)
-                 port map(data_bus => from_slave_1.data_read,
+                 port map(data_bus => from_slave_1.data,
                           addr_bus => to_slave_1.addr_read(11 downto 2),
                           
-                          data_ready => from_slave_1.data_ready,
+                          data_ready => from_slave_1.data_valid,
                           
                           clk => clk_cpu);
                           
                           
-    from_slave_3.data_read(31 downto 8) <= (others => '0');
-    from_slave_3.data_ready <= '1';
+    from_slave_3.data(31 downto 8) <= (others => '0');
+    
     uart_controller : entity work.uart_interface(rtl)
-                      port map(data_read_bus => from_slave_3.data_read(7 downto 0),
+                      port map(data_read_bus => from_slave_3.data(7 downto 0),
                                data_write_bus => to_slave_3.data_write(7 downto 0),
                                
                                addr_read_bus => to_slave_3.addr_read(2 downto 0),

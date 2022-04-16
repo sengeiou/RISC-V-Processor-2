@@ -41,28 +41,39 @@ architecture Structural of execution_engine is
     END COMPONENT;
     
     -- ========== PIPELINE REGISTERS ==========
+    -- The second _x (where x is a number) indicates what scheduler output port the pipeline register is attached to. This allows us to control the pipeline
+    -- registers of each scheduler output port independently.
+    
     signal pipeline_reg_1 : execution_engine_pipeline_register_1_type;
     signal pipeline_reg_1_next : execution_engine_pipeline_register_1_type;
     
-    signal pipeline_reg_2_p0 : execution_engine_pipeline_register_2_p0_type;
-    signal pipeline_reg_2_p0_next : execution_engine_pipeline_register_2_p0_type;
+    signal pipeline_reg_2_0 : execution_engine_pipeline_register_2_p0_type;
+    signal pipeline_reg_2_0_next : execution_engine_pipeline_register_2_p0_type;
     
-    signal pipeline_reg_2_p1 : execution_engine_pipeline_register_2_p1_type;
-    signal pipeline_reg_2_p1_next : execution_engine_pipeline_register_2_p1_type;
+    signal pipeline_reg_2_1 : execution_engine_pipeline_register_2_p1_type;
+    signal pipeline_reg_2_1_next : execution_engine_pipeline_register_2_p1_type;
     
-    signal pipeline_reg_3_int : execution_engine_pipeline_register_3_int_type;
-    signal pipeline_reg_3_int_next : execution_engine_pipeline_register_3_int_type;
+    signal pipeline_reg_3_0 : execution_engine_pipeline_register_3_int_type;
+    signal pipeline_reg_3_0_next : execution_engine_pipeline_register_3_int_type;
     
-    signal pipeline_reg_3_ldst : execution_engine_pipeline_register_3_ldst_type;
-    signal pipeline_reg_3_ldst_next : execution_engine_pipeline_register_3_ldst_type;
+    signal pipeline_reg_3_1 : execution_engine_pipeline_register_3_ldst_type;
+    signal pipeline_reg_3_1_next : execution_engine_pipeline_register_3_ldst_type;
+    
+    -- REGISTER CONTROL
+    signal pipeline_reg_1_en : std_logic;
+    signal pipeline_reg_2_0_en : std_logic;
+    signal pipeline_reg_2_1_en : std_logic;
+    signal pipeline_reg_3_0_en : std_logic;
+    signal pipeline_reg_3_1_en : std_logic;
+    
     -- ========================================
     
     -- ========== REGISTER RENAMING SIGNALS ==========
     signal renamed_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal renamed_src_reg_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
-    signal renamed_src_reg_1_v : std_logic;
+    signal renamed_src_reg_1_valid : std_logic;
     signal renamed_src_reg_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
-    signal renamed_src_reg_2_v : std_logic;
+    signal renamed_src_reg_2_valid : std_logic;
     
     signal freed_reg_addr : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
@@ -178,68 +189,52 @@ begin
       full => iq_full,
       empty => iq_empty
     );
-      
-    pipeline_reg_1_proc : process(clk)
+    
+    pipeline_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 pipeline_reg_1 <= EE_PIPELINE_REG_1_INIT;
+                pipeline_reg_2_0 <= EE_PIPELINE_REG_2_P0_INIT;
+                pipeline_reg_2_1 <= EE_PIPELINE_REG_2_P1_INIT;
+                pipeline_reg_3_0 <= EE_PIPELINE_REG_3_INT_INIT;
+                pipeline_reg_3_1 <= EE_PIPELINE_REG_3_LDST_INIT;
             else
-                pipeline_reg_1 <= pipeline_reg_1_next;
+                if (pipeline_reg_1_en = '1') then
+                    pipeline_reg_1 <= pipeline_reg_1_next;
+                end if;
+            
+                if (pipeline_reg_2_0_en = '1') then
+                    pipeline_reg_2_0 <= pipeline_reg_2_0_next;
+                end if;
+                
+                if (pipeline_reg_2_1_en = '1') then
+                    pipeline_reg_2_1 <= pipeline_reg_2_1_next;
+                end if;
+                
+                if (pipeline_reg_3_0_en = '1') then
+                    pipeline_reg_3_0 <= pipeline_reg_3_0_next;
+                end if;
+                
+                if (pipeline_reg_3_1_en = '1') then
+                    pipeline_reg_3_1 <= pipeline_reg_3_1_next;
+                end if;
             end if;
         end if;
     end process;
     
-    pipeline_reg_2_p0_proc : process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                pipeline_reg_2_p0 <= EE_PIPELINE_REG_2_P0_INIT;
-            else
-                pipeline_reg_2_p0 <= pipeline_reg_2_p0_next;
-            end if;
-        end if;
-    end process;
-    
-    pipeline_reg_2_p1_proc : process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                pipeline_reg_2_p1 <= EE_PIPELINE_REG_2_P1_INIT;
-            else
-                pipeline_reg_2_p1 <= pipeline_reg_2_p1_next;
-            end if;
-        end if;
-    end process;
-    
-    pipeline_reg_3_int_proc : process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                pipeline_reg_3_int <= EE_PIPELINE_REG_3_INT_INIT;
-            else
-                pipeline_reg_3_int <= pipeline_reg_3_int_next;
-            end if;
-        end if;
-    end process;
-    
-    pipeline_reg_3_ldst_proc : process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                pipeline_reg_3_ldst <= EE_PIPELINE_REG_3_LDST_INIT;
-            else
-                pipeline_reg_3_ldst <= pipeline_reg_3_ldst_next;
-            end if;
-        end if;
-    end process;
+    pipeline_reg_1_en <= '1';
+    pipeline_reg_2_0_en <= '1';
+    pipeline_reg_2_1_en <= '1';
+    pipeline_reg_3_0_en <= '1';
+    pipeline_reg_3_1_en <= '1';
     
     pipeline_reg_1_next.sched_in_port_0.operation_type <= next_uop.operation_type;
     pipeline_reg_1_next.sched_in_port_0.operation_select <= next_uop.operation_select;
     pipeline_reg_1_next.sched_in_port_0.src_tag_1 <= renamed_src_reg_1;
-    pipeline_reg_1_next.sched_in_port_0.src_tag_1_valid <= '1' when cdb.tag = renamed_src_reg_1 or renamed_src_reg_1_v = '1' else '0';
+    pipeline_reg_1_next.sched_in_port_0.src_tag_1_valid <= '1' when cdb.tag = renamed_src_reg_1 or renamed_src_reg_1_valid = '1' else '0';
     pipeline_reg_1_next.sched_in_port_0.src_tag_2 <= renamed_src_reg_2;
-    pipeline_reg_1_next.sched_in_port_0.src_tag_2_valid <= '1' when cdb.tag = renamed_src_reg_2 or renamed_src_reg_2_v = '1' else '0';
+    pipeline_reg_1_next.sched_in_port_0.src_tag_2_valid <= '1' when cdb.tag = renamed_src_reg_2 or renamed_src_reg_2_valid = '1' else '0';
     pipeline_reg_1_next.sched_in_port_0.dest_tag <= renamed_dest_reg;
     pipeline_reg_1_next.sched_in_port_0.immediate <= next_uop.immediate;
     pipeline_reg_1_next.sched_in_port_0.store_queue_tag <= sq_alloc_tag;
@@ -247,27 +242,27 @@ begin
     pipeline_reg_1_next.dest_reg <= next_uop.reg_dest;
     pipeline_reg_1_next.valid <= next_instr_ready;
     
-    pipeline_reg_2_p0_next.sched_out_port_0 <= port_0;
-    pipeline_reg_2_p0_next.valid <= port_0.valid;
+    pipeline_reg_2_0_next.sched_out_port_0 <= port_0;
+    pipeline_reg_2_0_next.valid <= port_0.valid;
     
-    pipeline_reg_2_p1_next.sched_out_port_1 <= port_1;
-    pipeline_reg_2_p1_next.valid <= port_1.valid;
+    pipeline_reg_2_1_next.sched_out_port_1 <= port_1;
+    pipeline_reg_2_1_next.valid <= port_1.valid;
     
-    pipeline_reg_3_int_next.operand_1 <= rf_rd_data_1;
-    pipeline_reg_3_int_next.operand_2 <= rf_rd_data_2;
-    pipeline_reg_3_int_next.immediate <= pipeline_reg_2_p0.sched_out_port_0.immediate;
-    pipeline_reg_3_int_next.dest_tag <= pipeline_reg_2_p0.sched_out_port_0.dest_tag;
-    pipeline_reg_3_int_next.operation_select <= pipeline_reg_2_p0.sched_out_port_0.operation_sel;
-    pipeline_reg_3_int_next.valid <= pipeline_reg_2_p0.sched_out_port_0.valid;
+    pipeline_reg_3_0_next.operand_1 <= rf_rd_data_1;
+    pipeline_reg_3_0_next.operand_2 <= rf_rd_data_2;
+    pipeline_reg_3_0_next.immediate <= pipeline_reg_2_0.sched_out_port_0.immediate;
+    pipeline_reg_3_0_next.dest_tag <= pipeline_reg_2_0.sched_out_port_0.dest_tag;
+    pipeline_reg_3_0_next.operation_select <= pipeline_reg_2_0.sched_out_port_0.operation_sel;
+    pipeline_reg_3_0_next.valid <= pipeline_reg_2_0.sched_out_port_0.valid;
     
-    pipeline_reg_3_ldst_next.store_data_value <= rf_rd_data_3;
-    pipeline_reg_3_ldst_next.base_addr_value <= rf_rd_data_4;
-    pipeline_reg_3_ldst_next.immediate <= pipeline_reg_2_p1.sched_out_port_1.immediate;
-    pipeline_reg_3_ldst_next.data_tag <= pipeline_reg_2_p1.sched_out_port_1.src_tag_2;
-    pipeline_reg_3_ldst_next.store_queue_tag <= pipeline_reg_2_p1.sched_out_port_1.store_queue_tag;
-    pipeline_reg_3_ldst_next.load_queue_tag <= pipeline_reg_2_p1.sched_out_port_1.load_queue_tag;
-    pipeline_reg_3_ldst_next.operation_select <= pipeline_reg_2_p1.sched_out_port_1.operation_sel;
-    pipeline_reg_3_ldst_next.valid <= pipeline_reg_2_p1.sched_out_port_1.valid;
+    pipeline_reg_3_1_next.store_data_value <= rf_rd_data_3;
+    pipeline_reg_3_1_next.base_addr_value <= rf_rd_data_4;
+    pipeline_reg_3_1_next.immediate <= pipeline_reg_2_1.sched_out_port_1.immediate;
+    pipeline_reg_3_1_next.data_tag <= pipeline_reg_2_1.sched_out_port_1.src_tag_2;
+    pipeline_reg_3_1_next.store_queue_tag <= pipeline_reg_2_1.sched_out_port_1.store_queue_tag;
+    pipeline_reg_3_1_next.load_queue_tag <= pipeline_reg_2_1.sched_out_port_1.load_queue_tag;
+    pipeline_reg_3_1_next.operation_select <= pipeline_reg_2_1.sched_out_port_1.operation_sel;
+    pipeline_reg_3_1_next.valid <= pipeline_reg_2_1.sched_out_port_1.valid;
       
     next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
     sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_LOAD_STORE else '0';
@@ -275,7 +270,6 @@ begin
     -- ==================================================================================================
     --                                        REGISTER RENAMING
     -- ==================================================================================================
-      
     next_instr_ready <= not (iq_empty or sched_full or raa_empty);
       
     register_alias_allocator : entity work.register_alias_allocator(rtl)
@@ -303,9 +297,9 @@ begin
                                              arch_reg_addr_read_2 => next_uop.reg_src_2,
                                              
                                              phys_reg_addr_read_1 => renamed_src_reg_1,
-                                             phys_reg_addr_read_1_v => renamed_src_reg_1_v,
+                                             phys_reg_addr_read_1_v => renamed_src_reg_1_valid,
                                              phys_reg_addr_read_2 => renamed_src_reg_2,
-                                             phys_reg_addr_read_2_v => renamed_src_reg_2_v,
+                                             phys_reg_addr_read_2_v => renamed_src_reg_2_valid,
                                              
                                              arch_reg_addr_write_1 => next_uop.reg_dest,
                                              phys_reg_addr_write_1 => renamed_dest_reg,
@@ -333,17 +327,16 @@ begin
                                          
     -- ==================================================================================================
     -- ==================================================================================================
-    -- ==================================================================================================
       
     register_file : entity work.register_file(rtl)
                     generic map(REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
                                 REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES)
                     port map(
                              -- ADDRESSES
-                             rd_1_addr => pipeline_reg_2_p0.sched_out_port_0.src_tag_1,     -- Operand for ALU operations
-                             rd_2_addr => pipeline_reg_2_p0.sched_out_port_0.src_tag_2,     -- Operand for ALU operations
-                             rd_3_addr => pipeline_reg_2_p1.sched_out_port_1.src_tag_2,     -- Operand for memory data read operations
-                             rd_4_addr => pipeline_reg_2_p1.sched_out_port_1.src_tag_1,     -- Operand for memory address operations
+                             rd_1_addr => pipeline_reg_2_0.sched_out_port_0.src_tag_1,     -- Operand for ALU operations
+                             rd_2_addr => pipeline_reg_2_0.sched_out_port_0.src_tag_2,     -- Operand for ALU operations
+                             rd_3_addr => pipeline_reg_2_1.sched_out_port_1.src_tag_2,     -- Operand for memory data read operations
+                             rd_4_addr => pipeline_reg_2_1.sched_out_port_1.src_tag_1,     -- Operand for memory address operations
                              wr_addr => cdb.tag,
                              
                              -- DATA
@@ -396,8 +389,8 @@ begin
                                    out_port_1 => port_1,
                                    
                                    write_en => pipeline_reg_1.valid,
-                                   p0_unit_ready => n_int_eu_busy,
-                                   p1_unit_ready => n_ls_eu_busy,
+                                   dispatch_en(0) => n_int_eu_busy,
+                                   dispatch_en(1) => n_ls_eu_busy,
                                    full => sched_full,
                                    
                                    clk => clk,
@@ -405,12 +398,12 @@ begin
       
     integer_unit : entity work.integer_eu(structural)
                                generic map(OPERAND_BITS => CPU_DATA_WIDTH_BITS)
-                               port map(operand_1 => pipeline_reg_3_int.operand_1,
-                                        operand_2 => pipeline_reg_3_int.operand_2,
-                                        immediate => pipeline_reg_3_int.immediate,
-                                        operation_sel => pipeline_reg_3_int.operation_select, 
-                                        tag => pipeline_reg_3_int.dest_tag,
-                                        dispatch_ready => pipeline_reg_3_int.valid,
+                               port map(operand_1 => pipeline_reg_3_0.operand_1,
+                                        operand_2 => pipeline_reg_3_0.operand_2,
+                                        immediate => pipeline_reg_3_0.immediate,
+                                        operation_sel => pipeline_reg_3_0.operation_select, 
+                                        tag => pipeline_reg_3_0.dest_tag,
+                                        dispatch_ready => pipeline_reg_3_0.valid,
                                         
                                         cdb => cdb_int_eu,
                                         cdb_request => cdb_req_1,
@@ -458,18 +451,18 @@ begin
                                reset => reset,
                                clk => clk);
 
-    sq_store_data <= pipeline_reg_3_ldst.store_data_value;
-    sq_store_data_tag <= pipeline_reg_3_ldst.data_tag;
-    sq_store_data_valid <= '1' when pipeline_reg_3_ldst.operation_select(4 downto 3) = "10" else '0';
+    sq_store_data <= pipeline_reg_3_1.store_data_value;
+    sq_store_data_tag <= pipeline_reg_3_1.data_tag;
+    sq_store_data_valid <= '1' when pipeline_reg_3_1.operation_select(4 downto 3) = "10" else '0';
 
     -- VERY TEMPORARY!!! WILL BE IN ADDRESS GENERATION UNIT MODULE IN THE FUTURE
-    sq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_ldst.base_addr_value) + unsigned(pipeline_reg_3_ldst.immediate));
-    sq_calc_addr_tag <= pipeline_reg_3_ldst.store_queue_tag;
-    sq_calc_addr_valid <= '1' when pipeline_reg_3_ldst.operation_select(4 downto 3) = "10" else '0';
+    sq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_1.base_addr_value) + unsigned(pipeline_reg_3_1.immediate));
+    sq_calc_addr_tag <= pipeline_reg_3_1.store_queue_tag;
+    sq_calc_addr_valid <= '1' when pipeline_reg_3_1.operation_select(4 downto 3) = "10" else '0';
     
-    lq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_ldst.base_addr_value) + unsigned(pipeline_reg_3_ldst.immediate));
-    lq_calc_addr_tag <= pipeline_reg_3_ldst.load_queue_tag;
-    lq_calc_addr_valid <= '1' when pipeline_reg_3_ldst.operation_select(4 downto 3) = "01" else '0';
+    lq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_1.base_addr_value) + unsigned(pipeline_reg_3_1.immediate));
+    lq_calc_addr_tag <= pipeline_reg_3_1.load_queue_tag;
+    lq_calc_addr_valid <= '1' when pipeline_reg_3_1.operation_select(4 downto 3) = "01" else '0';
 
     sq_data_tag <= renamed_src_reg_2;
     sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(4) = '1' and next_instr_ready = '1' else '0';      -- 5th bit of operation select indicates a store

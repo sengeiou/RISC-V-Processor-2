@@ -19,7 +19,7 @@ package pkg_cpu is
     constant PHYS_REGFILE_ENTRIES : integer range 1 to 1024 := 96;
     constant PHYS_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
     
-    constant SCHEDULER_ENTRIES : integer range 1 to 1023 := 7;
+    constant SCHEDULER_ENTRIES : integer range 1 to 1023 := 8;
     constant REORDER_BUFFER_ENTRIES : integer := 24;
     constant STORE_QUEUE_ENTRIES : integer := 8;
     constant LOAD_QUEUE_ENTRIES : integer := 8;

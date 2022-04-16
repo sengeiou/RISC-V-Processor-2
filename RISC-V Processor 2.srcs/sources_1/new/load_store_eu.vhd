@@ -134,10 +134,13 @@ architecture rtl of load_store_eu is
     signal lq_full : std_logic;
     signal lq_empty : std_logic;
     
-    signal load_in_exec_index : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
-    signal load_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-    signal load_dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
-    signal load_data_valid : std_logic;
+    signal load_active_tag_reg : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
+    signal load_active_tag_reg_en : std_logic;
+    
+    
+    --signal load_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+    --signal load_dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    --signal load_data_valid : std_logic;
     
     signal execute_store : std_logic;
     signal execute_load : std_logic;
@@ -152,13 +155,15 @@ architecture rtl of load_store_eu is
                               
     type load_state_type is (LOAD_IDLE,
                              LOAD_BUSY,
+                             LOAD_WRITEBACK,
                              LOAD_FINALIZE);
                              
     signal load_state_reg : load_state_type;
     signal load_state_next : load_state_type;
 begin
     lq_select_ready_prioenc : entity work.priority_encoder(rtl)
-                              generic map(NUM_INPUTS => LQ_ENTRIES)
+                              generic map(NUM_INPUTS => LQ_ENTRIES,
+                                          HIGHER_INPUT_HIGHER_PRIO => false)
                               port map(d => lq_ready_loads,
                                        q => lq_selected_index,
                                        valid => lq_load_ready);
@@ -194,6 +199,24 @@ begin
                 store_state_next <= STORE_IDLE;
         end case;
     end process;
+    
+    store_state_outputs_proc : process(store_state_reg)
+    begin
+        sq_finished_tag_valid <= '0';
+        to_master_interface.done_write_ack <= '0';
+        sq_dequeue_en <= '0';
+        execute_store <= '0';
+        case store_state_reg is
+            when STORE_IDLE =>
+            
+            when STORE_BUSY => 
+                execute_store <= '1';
+            when STORE_FINALIZE => 
+                sq_dequeue_en <= '1';
+                to_master_interface.done_write_ack <= '1';
+                sq_finished_tag_valid <= '1';
+        end case;
+    end process;
 
     load_next_state_proc : process(load_state_reg, lq_load_ready, from_master_interface)
     begin
@@ -206,28 +229,40 @@ begin
                 end if;
             when LOAD_BUSY =>
                 if (from_master_interface.done_read = '1') then
-                    load_state_next <= LOAD_FINALIZE;
+                    load_state_next <= LOAD_WRITEBACK;
                 else
                     load_state_next <= LOAD_BUSY;
                 end if;
-            when LOAD_FINALIZE =>
+            when LOAD_WRITEBACK =>
+                if (cdb_granted = '1') then
+                    load_state_next <= LOAD_FINALIZE;
+                else
+                    load_state_next <= LOAD_IDLE;
+                end if;
+            when LOAD_FINALIZE => 
                 load_state_next <= LOAD_IDLE;
         end case;
     end process;
     
-    store_state_outputs_proc : process(store_state_reg)
+    load_state_outputs_proc : process(load_state_reg)
     begin
-        sq_finished_tag_valid <= '0';
-        sq_dequeue_en <= '0';
-        case store_state_reg is
-            when STORE_IDLE =>
-                execute_store <= '0';
-            when STORE_BUSY => 
-                execute_store <= '1';
-            when STORE_FINALIZE => 
-                execute_store <= '0';
-                sq_dequeue_en <= '1';
-                sq_finished_tag_valid <= '1';
+        to_master_interface.done_read_ack <= '0';
+        lq_dequeue_en <= '0';
+        execute_load <= '0';
+        load_active_tag_reg_en <= '0';
+        cdb_request <= '0';
+        cdb.valid <= '0';
+        case load_state_reg is
+            when LOAD_IDLE => 
+                load_active_tag_reg_en <= '1';
+            when LOAD_BUSY => 
+                execute_load <= '1';
+            when LOAD_WRITEBACK => 
+                cdb_request <= '1';
+                cdb.valid <= '1';
+            when LOAD_FINALIZE =>
+                to_master_interface.done_read_ack <= '1';
+                lq_dequeue_en <= '1'; 
         end case;
     end process;
     
@@ -241,29 +276,15 @@ begin
             end if;
         end if;
     end process;
-    
-    load_state_outputs_proc : process(load_state_reg)
-    begin
-        lq_dequeue_en <= '0';
-        execute_load <= '0';
-        case load_state_reg is
-            when LOAD_IDLE => 
-            
-            when LOAD_BUSY => 
-                execute_load <= '1';
-            when LOAD_FINALIZE =>
-                lq_dequeue_en <= '1'; 
-        end case;
-    end process;
 
     load_in_exec_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                load_in_exec_index <= (others => '0');
+                load_active_tag_reg <= (others => '0');
             else
-                if (execute_load = '1') then
-                    load_in_exec_index <= lq_selected_index;
+                if (load_active_tag_reg_en = '1') then
+                    load_active_tag_reg <= lq_selected_index;
                 end if;
             end if;
         end if;
@@ -306,7 +327,7 @@ begin
                 end if;
                 
                 if (from_master_interface.done_read = '1') then
-                    load_queue(to_integer(unsigned(load_in_exec_index)))(LQ_VALID_BIT) <= '0';
+                    load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_VALID_BIT) <= '0';
                 end if;
                                                                    
                 for i in 0 to SQ_ENTRIES - 1 loop
@@ -384,25 +405,6 @@ begin
     lq_tail_counter_next <= (others => '0') when lq_tail_counter_reg = LQ_ENTRIES - 1 else
                             lq_head_counter_reg + 1;
               
-    -- ============================ LOAD DATA & TAG REGISTER CONTROL =============================
-    process(clk)
-    begin
-        if (rising_edge(clk)) then
-            if (reset = '1') then
-                load_data <= (others => '0');
-                load_dest_tag <= (others => '0');
-                load_data_valid <= '0';
-            elsif (from_master_interface.done_read = '1') then
-                load_data <= from_master_interface.data_read;
-                load_dest_tag <= load_queue(to_integer(unsigned(lq_selected_index)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
-                load_data_valid <= '1';
-            elsif (cdb_granted = '1') then
-                load_data_valid <= '0';
-            end if;
-        end if;
-    end process;
-    -- ===========================================================================================
-              
     -- ============================ LOAD INSTRUCTION ALLOCATION LOGIC ============================
     process(lq_enqueue_en, store_queue)
     begin
@@ -431,19 +433,18 @@ begin
     sq_alloc_tag <= std_logic_vector(sq_tail_counter_reg);
     lq_alloc_tag <= std_logic_vector(lq_tail_counter_reg);
                  
-    cdb_request <= load_data_valid;
-    cdb.data <= load_data;
-    cdb.tag <= load_dest_tag;
-    cdb.valid <= load_data_valid;
+    cdb.data <= from_master_interface.data_read;
+    cdb.tag <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
                             
     to_master_interface.data_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_DATA_START downto SQ_DATA_END);
     to_master_interface.addr_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_ADDR_START downto SQ_ADDR_END);
-    to_master_interface.addr_read <= load_queue(to_integer(unsigned(lq_selected_index)))(LQ_ADDR_START downto LQ_ADDR_END);
+    to_master_interface.addr_read <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_ADDR_START downto LQ_ADDR_END);
     to_master_interface.burst_len <= (others => '0');
     to_master_interface.burst_size <= (others => '0');
     to_master_interface.burst_type <= (others => '0');
     to_master_interface.execute_read <= execute_load;
     to_master_interface.execute_write <= execute_store;
+    to_master_interface.done_read_ack <= '1';
     
 end rtl;
 

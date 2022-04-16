@@ -78,6 +78,9 @@ package pkg_axi is
         
         execute_read : std_logic;
         execute_write : std_logic;
+        
+        done_read_ack : std_logic;
+        done_write_ack : std_logic;
     end record ToMasterInterface;
     
     type FromMasterInterface is record
@@ -91,12 +94,13 @@ package pkg_axi is
     
     type ToSlaveInterface is record
         -- Data signals
-        data_read : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
+        data : std_logic_vector(2 ** AXI_DATA_BUS_WIDTH - 1 downto 0);
         
         -- Address signals
         
         -- Control signals
-        data_ready : std_logic;
+        data_valid : std_logic;                     -- Is data on the data bus to the adapter valid 
+        write_buffer_data_read : std_logic;         -- Tells the slave adapter that the device has read data in the write buffer in this cycle
     end record ToSlaveInterface;
 
     type FromSlaveInterface is record
@@ -106,6 +110,13 @@ package pkg_axi is
         -- Address signals
         addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         addr_write : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
+        
+        -- Control signals
+        write_buffer_full : std_logic;         -- These two signals indicate the state of this slave's DATA WRITE buffers. Masters fill these buffers when they execute a WRITE command 
+        write_buffer_empty : std_logic;
+        
+        --read_buffer_full : std_logic;
+        --read_buffer_empty : std_logic;
     end record FromSlaveInterface;
     
     -- ========== CONSTANTS ==========
@@ -126,14 +137,17 @@ package pkg_axi is
                                                 burst_size => (others => '0'),
                                                 burst_type => (others => '0'),
                                                 execute_read => '0',
-                                                execute_write => '0');
+                                                execute_write => '0',
+                                                done_read_ack => '0',
+                                                done_write_ack => '0');
                                                 
     constant FROM_MASTER_CLEAR : FromMasterInterface := (data_read => (others => '0'),
                                                 done_read => '0',
                                                 done_write => '0');
                                                 
-    constant FROM_SLAVE_CLEAR : ToSlaveInterface := (data_read => (others => '0'),
-                                              data_ready => '0');
+    constant FROM_SLAVE_CLEAR : ToSlaveInterface := (data => (others => '0'),
+                                              data_valid => '0',
+                                              write_buffer_data_read => '0');
     
     constant WRITE_ADDRESS_CH_CLEAR : WriteAddressChannel := (addr => (others => '0'),
                                                               len => (others => '0'),
