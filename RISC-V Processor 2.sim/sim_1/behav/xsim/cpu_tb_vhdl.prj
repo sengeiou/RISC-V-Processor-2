@@ -25,7 +25,7 @@ vhdl xil_defaultlib  \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/priority_encoder.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/unified_scheduler.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/pkg_fu.vhd" \
-"../../../../RISC-V Processor 2.srcs/sources_1/new/integer_eu.vhd" \
+"../../../../RISC-V Processor 2.srcs/sources_1/new/execution_unit_0.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/load_store_eu.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/execution_engine.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/core.vhd" \

@@ -174,7 +174,7 @@ begin
     end process;
     
     -- Puts the selected entry onto one exit port of the reservation station
-    reservation_station_dispatch_proc : process(sched_entries, sched_read_sel)
+    reservation_station_dispatch_proc : process(sched_entries, sched_read_sel, dispatch_en, sched_read_sel_valid)
     begin
         out_port_0.operation_type <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERATION_TYPE_START downto OPERATION_TYPE_END);
         out_port_0.operation_sel <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERATION_SELECT_START downto OPERATION_SELECT_END);

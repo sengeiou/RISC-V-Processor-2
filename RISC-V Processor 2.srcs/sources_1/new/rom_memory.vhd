@@ -10,6 +10,7 @@ entity rom_memory is
     port(
         data : out std_logic_vector(DATA_WIDTH_BITS - 1 downto 0);
         addr : in std_logic_vector(ADDR_WIDTH_BITS - 1 downto 0);
+        en : in std_logic;
         clk : in std_logic
     );
 end rom_memory;
@@ -30,6 +31,7 @@ architecture rtl of rom_memory is
         28 => "00000111111100000110001000010011",       -- ORI x4, x0, 127 
         32 => "00000011001000000110001010010011",       -- ORI x5, x0, 50
         36 => "01000000010100100000001100110011",       -- SUB x6, x4, x5
+        40 => "01010101010100000000000000010011",       -- ADDI x0, x0, 0x5AA
        
         
         others => (others => '0')
@@ -47,9 +49,13 @@ architecture rtl of rom_memory is
 --    );
     
 begin
-    process (addr)
+    process (addr, en)
     begin
-        data <= mem(to_integer(unsigned(addr)));
+        if (en = '1') then
+            data <= mem(to_integer(unsigned(addr)));
+        else
+            data <= (others => '0');
+        end if;
     end process;
 
 end rtl;

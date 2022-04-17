@@ -78,7 +78,7 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 reg_file <= (others => (others => '0'));
-            elsif (en = '1') then
+            elsif (en = '1' and wr_addr /= REG_ADDR_ZERO) then
                 reg_file(to_integer(unsigned(wr_addr))) <= wr_data;
             end if;
         end if;

@@ -31,10 +31,10 @@ architecture Structural of execution_engine is
         PORT (
           clk : IN STD_LOGIC;
           srst : IN STD_LOGIC;
-          din : IN STD_LOGIC_VECTOR(54 DOWNTO 0);
+          din : IN STD_LOGIC_VECTOR(57 DOWNTO 0);
           wr_en : IN STD_LOGIC;
           rd_en : IN STD_LOGIC;
-          dout : OUT STD_LOGIC_VECTOR(54 DOWNTO 0);
+          dout : OUT STD_LOGIC_VECTOR(57 DOWNTO 0);
           full : OUT STD_LOGIC;
           empty : OUT STD_LOGIC
         );
@@ -77,6 +77,7 @@ architecture Structural of execution_engine is
     
     signal freed_reg_addr : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
+    signal raa_get_en : std_logic;
     signal raa_put_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal raa_put_en : std_logic;
     
@@ -144,24 +145,21 @@ architecture Structural of execution_engine is
     signal iq_empty : std_logic;
     
     -- ========== EXECUTION UNITS BUSY SIGNALS ==========
-    signal int_eu_busy : std_logic;
-    signal ls_eu_busy : std_logic;
-    
-    signal n_int_eu_busy : std_logic;
-    signal n_ls_eu_busy : std_logic;
+    signal execution_unit_0_ready : std_logic;
+    signal execution_unit_1_ready : std_logic;
     -- ==================================================
     
     -- ========== COMMON DATA BUS ==========
     signal cdb : cdb_type;
     
-    signal cdb_req_1 : std_logic;
-    signal cdb_req_2 : std_logic;
+    signal cdb_request_0 : std_logic;
+    signal cdb_request_1 : std_logic;
     
-    signal cdb_grant_1 : std_logic;
-    signal cdb_grant_2 : std_logic;
+    signal cdb_granted_0 : std_logic;
+    signal cdb_granted_1 : std_logic;
     
-    signal cdb_int_eu : cdb_type;
-    signal cdb_ls_eu : cdb_type;
+    signal cdb_0 : cdb_type;
+    signal cdb_1 : cdb_type;
     -- =====================================
 begin
     instruction_queue : fifo_generator_1
@@ -169,8 +167,8 @@ begin
       clk => clk,
       srst => reset,
         
-      din(54 downto 52) => decoded_instruction.operation_type,
-      din(51 downto 47) => decoded_instruction.operation_select,
+      din(57 downto 55) => decoded_instruction.operation_type,
+      din(54 downto 47) => decoded_instruction.operation_select,
       din(46 downto 42) => decoded_instruction.reg_src_1,
       din(41 downto 37) => decoded_instruction.reg_src_2,
       din(36 downto 32) => decoded_instruction.reg_dest,
@@ -179,8 +177,8 @@ begin
       wr_en => instr_ready,
       rd_en => next_instr_ready,
         
-      dout(54 downto 52) => next_uop.operation_type,
-      dout(51 downto 47) => next_uop.operation_select,
+      dout(57 downto 55) => next_uop.operation_type,
+      dout(54 downto 47) => next_uop.operation_select,
       dout(46 downto 42) => next_uop.reg_src_1,
       dout(41 downto 37) => next_uop.reg_src_2,
       dout(36 downto 32) => next_uop.reg_dest,
@@ -235,7 +233,7 @@ begin
     pipeline_reg_1_next.sched_in_port_0.src_tag_1_valid <= '1' when cdb.tag = renamed_src_reg_1 or renamed_src_reg_1_valid = '1' else '0';
     pipeline_reg_1_next.sched_in_port_0.src_tag_2 <= renamed_src_reg_2;
     pipeline_reg_1_next.sched_in_port_0.src_tag_2_valid <= '1' when cdb.tag = renamed_src_reg_2 or renamed_src_reg_2_valid = '1' else '0';
-    pipeline_reg_1_next.sched_in_port_0.dest_tag <= renamed_dest_reg;
+    pipeline_reg_1_next.sched_in_port_0.dest_tag <= renamed_dest_reg when raa_get_en = '1' else (others => '0');
     pipeline_reg_1_next.sched_in_port_0.immediate <= next_uop.immediate;
     pipeline_reg_1_next.sched_in_port_0.store_queue_tag <= sq_alloc_tag;
     pipeline_reg_1_next.sched_in_port_0.load_queue_tag <= lq_alloc_tag;
@@ -271,6 +269,8 @@ begin
     --                                        REGISTER RENAMING
     -- ==================================================================================================
     next_instr_ready <= not (iq_empty or sched_full or raa_empty);
+    raa_get_en <= '1' when next_instr_ready = '1' and next_uop.reg_dest /= "00000" else '0'; 
+    
       
     register_alias_allocator : entity work.register_alias_allocator(rtl)
                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
@@ -347,7 +347,7 @@ begin
                              wr_data => cdb.data,
                              
                              -- CONTROL
-                             en => '1',
+                             en => cdb.valid,
                              reset => reset,
                              clk => clk,
                              clk_dbg => clk_dbg);
@@ -365,7 +365,7 @@ begin
                               head_dest_reg => rob_head_dest_reg,
                               
                               operation_1_type => pipeline_reg_1.sched_in_port_0.operation_type,
-                              dest_reg_1 => pipeline_reg_1.dest_reg,
+                              dest_reg_1 => pipeline_reg_1.dest_reg,        -- DELAY REMEMBER
                               dest_tag_1 => pipeline_reg_1.sched_in_port_0.dest_tag,
                               stq_tag_1 => pipeline_reg_1.sched_in_port_0.store_queue_tag,
                               commit_ready_1 => next_uop_commit_ready,
@@ -389,27 +389,28 @@ begin
                                    out_port_1 => port_1,
                                    
                                    write_en => pipeline_reg_1.valid,
-                                   dispatch_en(0) => n_int_eu_busy,
-                                   dispatch_en(1) => n_ls_eu_busy,
+                                   dispatch_en(0) => execution_unit_0_ready,
+                                   dispatch_en(1) => execution_unit_1_ready,
                                    full => sched_full,
                                    
                                    clk => clk,
                                    reset => reset);
-      
-    integer_unit : entity work.integer_eu(structural)
-                               generic map(OPERAND_BITS => CPU_DATA_WIDTH_BITS)
-                               port map(operand_1 => pipeline_reg_3_0.operand_1,
-                                        operand_2 => pipeline_reg_3_0.operand_2,
+    -- INTEGER ALU
+    -- INTEGER DIV (WIP)
+    -- INTEGER MUL (WIP)
+    execution_unit_0 : entity work.execution_unit_0(structural)
+                               port map(reg_data_1 => pipeline_reg_3_0.operand_1,
+                                        reg_data_2 => pipeline_reg_3_0.operand_2,
                                         immediate => pipeline_reg_3_0.immediate,
-                                        operation_sel => pipeline_reg_3_0.operation_select, 
+                                        operation_select => pipeline_reg_3_0.operation_select, 
                                         tag => pipeline_reg_3_0.dest_tag,
-                                        dispatch_ready => pipeline_reg_3_0.valid,
+                                        valid => pipeline_reg_3_0.valid,
                                         
-                                        cdb => cdb_int_eu,
-                                        cdb_request => cdb_req_1,
-                                        cdb_granted => cdb_grant_1,
+                                        cdb => cdb_0,
+                                        cdb_request => cdb_request_0,
+                                        cdb_granted => cdb_granted_0,
                                         
-                                        busy => int_eu_busy,
+                                        ready => execution_unit_0_ready,
                                         
                                         reset => reset,
                                         clk => clk);
@@ -444,9 +445,9 @@ begin
                                
                                lq_enqueue_en => lq_enqueue_en,
                                
-                               cdb => cdb_ls_eu,
-                               cdb_request => cdb_req_2,
-                               cdb_granted => cdb_grant_2,
+                               cdb => cdb_1,
+                               cdb_request => cdb_request_1,
+                               cdb_granted => cdb_granted_1,
                                
                                reset => reset,
                                clk => clk);
@@ -471,16 +472,14 @@ begin
     lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(3) = '1' and next_instr_ready = '1' else '0';
 
 
-    cdb <= cdb_ls_eu when cdb_grant_2 = '1' else
-           cdb_int_eu;
-    --cdb <= cdb_int_eu;
+    cdb <= cdb_1 when cdb_granted_1 = '1' else
+           cdb_0;
+    --cdb <= cdb_0;
 
-    cdb_grant_1 <= cdb_req_1 and (not cdb_req_2);
-    --cdb_grant_1 <= '1';
-    cdb_grant_2 <= cdb_req_2;
+    cdb_granted_0 <= cdb_request_0 and (not cdb_request_1);
+    --cdb_granted_0 <= '1';
+    cdb_granted_1 <= cdb_request_1;
     
-    n_int_eu_busy <= not int_eu_busy;
-    --n_ls_eu_busy <= not ls_eu_busy;
-    n_ls_eu_busy <= '1';
+    execution_unit_1_ready <= '1';
 
 end structural;

@@ -25,7 +25,7 @@ package pkg_cpu is
     constant LOAD_QUEUE_ENTRIES : integer := 8;
     
     constant OPERATION_TYPE_BITS : integer := 3;
-    constant OPERATION_SELECT_BITS : integer := 5;
+    constant OPERATION_SELECT_BITS : integer := 8;
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
     constant STORE_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(STORE_QUEUE_ENTRIES))));
     constant LOAD_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(LOAD_QUEUE_ENTRIES))));
@@ -63,8 +63,8 @@ package pkg_cpu is
     constant OP_TYPE_LOAD_STORE : std_logic_vector(2 downto 0) := "001";
     
     -- Load-Store Unit Operation Definitions
-    constant LSU_OP_LW : std_logic_vector(4 downto 0) := "00000";
-    constant LSU_OP_SW : std_logic_vector(4 downto 0) := "10000";
+    constant LSU_OP_LW : std_logic_vector(7 downto 0) := "00000000";
+    constant LSU_OP_SW : std_logic_vector(7 downto 0) := "10000000";
     
     
     -- Integer EU Operation Definitions

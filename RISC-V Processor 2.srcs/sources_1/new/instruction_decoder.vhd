@@ -28,19 +28,19 @@ begin
         
         if (instruction(6 downto 0) = "0010011") then
             uop.operation_type <= OP_TYPE_INTEGER;      
-            uop.operation_select <= "10" & instruction(14 downto 12);
+            uop.operation_select <= "10000" & instruction(14 downto 12);
             
             uop.immediate <= X"00000" & instruction(31 downto 20);
             
             instruction_ready <= '1';
         elsif (instruction(6 downto 0) = "0110011") then
             uop.operation_type <= OP_TYPE_INTEGER;      
-            uop.operation_select <= '0' & instruction(30) & instruction(14 downto 12);
+            uop.operation_select <= "0000" & instruction(30) & instruction(14 downto 12);
             
             instruction_ready <= '1';
         elsif (instruction(6 downto 0) = "0100011") then        -- STORE
             uop.operation_type <= OP_TYPE_LOAD_STORE;
-            uop.operation_select <= "10" & instruction(14 downto 12);
+            uop.operation_select <= "10000" & instruction(14 downto 12);
             
             uop.reg_dest <= (others => '0');        -- HAS TO BE 0 SO THAT IS DOESN'T GET RENAMED SINCE SW DOESN'T USE A DESTINATION REGISTER!!!
             uop.immediate <= X"00000" & instruction(31 downto 25) & instruction(11 downto 7);
@@ -48,7 +48,7 @@ begin
             instruction_ready <= '1';
         elsif (instruction(6 downto 0) = "0000011") then        -- LOAD
             uop.operation_type <= OP_TYPE_LOAD_STORE;
-            uop.operation_select <= "01" & instruction(14 downto 12);
+            uop.operation_select <= "01000" & instruction(14 downto 12);
             
             uop.immediate <= X"00000" & instruction(31 downto 20);
             
