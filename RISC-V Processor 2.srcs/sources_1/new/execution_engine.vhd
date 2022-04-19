@@ -113,10 +113,9 @@ architecture Structural of execution_engine is
     -- ============================================
     
     -- ========== LOAD - STORE UNIT SIGNALS ==========
-    signal sq_calc_addr : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+    signal lsu_gen_addr : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
     signal sq_calc_addr_tag : std_logic_vector(integer(ceil(log2(real(STORE_QUEUE_ENTRIES)))) - 1 downto 0);
     signal sq_calc_addr_valid : std_logic;
-    signal lq_calc_addr : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0); 
     signal lq_calc_addr_tag : std_logic_vector(integer(ceil(log2(real(LOAD_QUEUE_ENTRIES)))) - 1 downto 0); 
     signal lq_calc_addr_valid : std_logic;
     
@@ -415,16 +414,40 @@ begin
                                         reset => reset,
                                         clk => clk);
                                         
+    execution_unit_1 : entity work.execution_unit_1(rtl)
+                       port map(store_data_value => pipeline_reg_3_1.store_data_value,
+                                base_addr_value => pipeline_reg_3_1.base_addr_value,
+                                immediate => pipeline_reg_3_1.immediate,
+                                
+                                operation_select => pipeline_reg_3_1.operation_select,
+                                stq_tag => pipeline_reg_3_1.store_queue_tag,
+                                stq_data_tag => pipeline_reg_3_1.data_tag,
+                                ldq_tag => pipeline_reg_3_1.load_queue_tag,
+                                
+                                valid => pipeline_reg_3_1.valid,
+                                ready => execution_unit_1_ready,
+                                
+                                lsu_generated_address => lsu_gen_addr,
+                                lsu_generated_data => sq_store_data,
+                                lsu_generated_data_tag => sq_store_data_tag,
+                                lsu_generated_data_valid => sq_store_data_valid,
+                                lsu_stq_tag => sq_calc_addr_tag,
+                                lsu_stq_tag_valid => sq_calc_addr_valid,
+                                lsu_ldq_tag => lq_calc_addr_tag,
+                                lsu_ldq_tag_valid => lq_calc_addr_valid,
+                                
+                                reset => reset,
+                                clk => clk);
+                                        
     load_store_unit : entity work.load_store_eu(rtl)
                       generic map(SQ_ENTRIES => STORE_QUEUE_ENTRIES,
                                   LQ_ENTRIES => LOAD_QUEUE_ENTRIES)
                       port map(from_master_interface => to_master_1,
                                to_master_interface => from_master_1,
                       
-                               sq_calc_addr => sq_calc_addr,
+                               generated_address => lsu_gen_addr,
                                sq_calc_addr_tag => sq_calc_addr_tag,
                                sq_calc_addr_valid => sq_calc_addr_valid,
-                               lq_calc_addr => lq_calc_addr,
                                lq_calc_addr_tag => lq_calc_addr_tag,
                                lq_calc_addr_valid => lq_calc_addr_valid,
                                
@@ -452,34 +475,17 @@ begin
                                reset => reset,
                                clk => clk);
 
-    sq_store_data <= pipeline_reg_3_1.store_data_value;
-    sq_store_data_tag <= pipeline_reg_3_1.data_tag;
-    sq_store_data_valid <= '1' when pipeline_reg_3_1.operation_select(4 downto 3) = "10" else '0';
-
-    -- VERY TEMPORARY!!! WILL BE IN ADDRESS GENERATION UNIT MODULE IN THE FUTURE
-    sq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_1.base_addr_value) + unsigned(pipeline_reg_3_1.immediate));
-    sq_calc_addr_tag <= pipeline_reg_3_1.store_queue_tag;
-    sq_calc_addr_valid <= '1' when pipeline_reg_3_1.operation_select(4 downto 3) = "10" else '0';
-    
-    lq_calc_addr <= std_logic_vector(unsigned(pipeline_reg_3_1.base_addr_value) + unsigned(pipeline_reg_3_1.immediate));
-    lq_calc_addr_tag <= pipeline_reg_3_1.load_queue_tag;
-    lq_calc_addr_valid <= '1' when pipeline_reg_3_1.operation_select(4 downto 3) = "01" else '0';
-
     sq_data_tag <= renamed_src_reg_2;
-    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(4) = '1' and next_instr_ready = '1' else '0';      -- 5th bit of operation select indicates a store
+    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '1' and next_instr_ready = '1' else '0';      -- 5th bit of operation select indicates a store
 
     lq_dest_tag <= renamed_dest_reg;
-    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(3) = '1' and next_instr_ready = '1' else '0';
+    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '0' and next_instr_ready = '1' else '0';
 
 
     cdb <= cdb_1 when cdb_granted_1 = '1' else
            cdb_0;
-    --cdb <= cdb_0;
 
     cdb_granted_0 <= cdb_request_0 and (not cdb_request_1);
-    --cdb_granted_0 <= '1';
     cdb_granted_1 <= cdb_request_1;
-    
-    execution_unit_1_ready <= '1';
 
 end structural;

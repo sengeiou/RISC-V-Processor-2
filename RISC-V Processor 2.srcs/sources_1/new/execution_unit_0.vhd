@@ -46,7 +46,7 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                pipeline_reg_0 <= PIPELINE_REG_0_INIT;
+                pipeline_reg_0 <= EU_0_PIPELINE_REG_0_INIT;
             elsif (i_ready = '1') then
                 pipeline_reg_0 <= pipeline_reg_0_next;  
             end if;

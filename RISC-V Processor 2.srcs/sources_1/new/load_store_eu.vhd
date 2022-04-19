@@ -21,10 +21,9 @@ entity load_store_eu is
         from_master_interface : in FromMasterInterface; 
     
         -- Address generation results bus
-        sq_calc_addr : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        generated_address : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         sq_calc_addr_tag : in std_logic_vector(integer(ceil(log2(real(SQ_ENTRIES)))) - 1 downto 0);
         sq_calc_addr_valid : in std_logic;
-        lq_calc_addr : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0); 
         lq_calc_addr_tag : in std_logic_vector(integer(ceil(log2(real(LQ_ENTRIES)))) - 1 downto 0); 
         lq_calc_addr_valid : in std_logic;
         
@@ -332,7 +331,7 @@ begin
                                                                    
                 for i in 0 to SQ_ENTRIES - 1 loop
                     if (to_integer(unsigned(sq_calc_addr_tag)) = i and store_queue(i)(SQ_ADDR_VALID) = '0' and sq_calc_addr_valid = '1') then
-                        store_queue(i)(SQ_ADDR_START downto SQ_ADDR_END) <= sq_calc_addr;
+                        store_queue(i)(SQ_ADDR_START downto SQ_ADDR_END) <= generated_address;
                         store_queue(i)(SQ_ADDR_VALID) <= '1';
                     end if;
                     
@@ -344,7 +343,7 @@ begin
                 
                 for i in 0 to LQ_ENTRIES - 1 loop
                     if (to_integer(unsigned(lq_calc_addr_tag)) = i and load_queue(i)(LQ_ADDR_VALID) = '0' and lq_calc_addr_valid = '1') then
-                        load_queue(i)(LQ_ADDR_START downto LQ_ADDR_END) <= lq_calc_addr;
+                        load_queue(i)(LQ_ADDR_START downto LQ_ADDR_END) <= generated_address;
                         load_queue(i)(LQ_ADDR_VALID) <= '1';
                     end if;
                     
