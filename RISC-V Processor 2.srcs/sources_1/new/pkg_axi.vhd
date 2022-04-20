@@ -111,6 +111,9 @@ package pkg_axi is
         addr_read : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         addr_write : std_logic_vector(2 ** AXI_ADDR_BUS_WIDTH - 1 downto 0);
         
+        addr_read_valid : std_logic;
+        addr_write_valid : std_logic;
+        
         -- Control signals
         write_buffer_full : std_logic;         -- These two signals indicate the state of this slave's DATA WRITE buffers. Masters fill these buffers when they execute a WRITE command 
         write_buffer_empty : std_logic;

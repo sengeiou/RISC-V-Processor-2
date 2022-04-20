@@ -15,6 +15,32 @@ entity core is
 end core;
 
 architecture structural of core is
+    COMPONENT blk_mem_gen_0
+  PORT (
+    rsta_busy : OUT STD_LOGIC;
+    rstb_busy : OUT STD_LOGIC;
+    s_aclk : IN STD_LOGIC;
+    s_aresetn : IN STD_LOGIC;
+    s_axi_awaddr : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_awvalid : IN STD_LOGIC;
+    s_axi_awready : OUT STD_LOGIC;
+    s_axi_wdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_wstrb : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_wvalid : IN STD_LOGIC;
+    s_axi_wready : OUT STD_LOGIC;
+    s_axi_bresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_bvalid : OUT STD_LOGIC;
+    s_axi_bready : IN STD_LOGIC;
+    s_axi_araddr : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_arvalid : IN STD_LOGIC;
+    s_axi_arready : OUT STD_LOGIC;
+    s_axi_rdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_rresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_rvalid : OUT STD_LOGIC;
+    s_axi_rready : IN STD_LOGIC
+  );
+END COMPONENT;
+
     signal uop : uop_type;
     signal instruction_ready : std_logic;
 begin

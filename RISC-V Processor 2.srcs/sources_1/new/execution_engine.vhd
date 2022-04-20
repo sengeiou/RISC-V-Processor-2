@@ -353,7 +353,7 @@ begin
                              
     reorder_buffer : entity work.reorder_buffer(rtl)
                      generic map(ROB_ENTRIES => REORDER_BUFFER_ENTRIES,
-                                 REGFILE_ENTRIES => 2 ** (4 + ENABLE_BIG_REGFILE),
+                                 REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
                                  TAG_BITS => PHYS_REGFILE_ADDR_BITS,
                                  OPERATION_TYPE_BITS => OPERATION_TYPE_BITS)
                      port map(cdb_tag => cdb.tag,

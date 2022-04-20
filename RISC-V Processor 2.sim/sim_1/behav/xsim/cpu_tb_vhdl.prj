@@ -31,7 +31,6 @@ vhdl xil_defaultlib  \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/execution_engine.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/core.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd" \
-"../../../../RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd" \
 
 vhdl2008 xil_defaultlib  \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/uart_interface.vhd" \

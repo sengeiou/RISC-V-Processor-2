@@ -11,7 +11,6 @@ package pkg_cpu is
     -- CPU Config Parameters
     constant CPU_DATA_WIDTH_BITS : integer := 32;
     constant CPU_ADDR_WIDTH_BITS : integer := 32;
-    constant ENABLE_BIG_REGFILE : integer range 0 to 1 := 1;        -- Selects between 16 entry register file and the 32 entry one (RV32E and RV32I) NOTE: DEPRECATE
     
     constant ARCH_REGFILE_ENTRIES : integer range 1 to 1024 := 32;
     constant ARCH_REGFILE_ADDR_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES))));
@@ -31,7 +30,7 @@ package pkg_cpu is
     constant LOAD_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(LOAD_QUEUE_ENTRIES))));
     
     -- Constants
-    constant REG_ADDR_ZERO : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0) := (others => '0');
+    constant REG_ADDR_ZERO : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
     constant PHYS_REG_TAG_ZERO : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
     constant ADDR_ZERO : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0) := (others => '0');
     constant DATA_ZERO : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0) := (others => '0');
@@ -51,9 +50,9 @@ package pkg_cpu is
         operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         
         -- Source register addresses
-        reg_src_1 : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
-        reg_src_2 : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
-        reg_dest : std_logic_vector(3 + ENABLE_BIG_REGFILE downto 0);
+        reg_src_1 : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
+        reg_src_2 : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
+        reg_dest : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
         
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     end record;

@@ -245,7 +245,6 @@ begin
     
     load_state_outputs_proc : process(load_state_reg)
     begin
-        to_master_interface.done_read_ack <= '0';
         lq_dequeue_en <= '0';
         execute_load <= '0';
         load_active_tag_reg_en <= '0';
@@ -260,7 +259,6 @@ begin
                 cdb_request <= '1';
                 cdb.valid <= '1';
             when LOAD_FINALIZE =>
-                to_master_interface.done_read_ack <= '1';
                 lq_dequeue_en <= '1'; 
         end case;
     end process;

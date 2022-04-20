@@ -14,13 +14,18 @@ entity front_end is
 end front_end;
 
 architecture Structural of front_end is
+
+
     signal fetched_instruction : std_logic_vector(31 downto 0);
 
     signal program_counter_reg : std_logic_vector(15 downto 0);
     signal program_counter_next : std_logic_vector(15 downto 0);
     
     signal rom_en : std_logic;
+    signal resetn : std_logic;
 begin
+    resetn <= not reset;
+
     instruction_decoder : entity work.instruction_decoder(rtl)
                           port map(instruction => fetched_instruction,
                                    uop => uop,

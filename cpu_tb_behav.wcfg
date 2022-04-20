@@ -17,12 +17,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1286219fs"></ZoomStartTime>
-      <ZoomEndTime time="2219082fs"></ZoomEndTime>
-      <Cursor1Time time="1550000fs"></Cursor1Time>
+      <ZoomStartTime time="2861169fs"></ZoomStartTime>
+      <ZoomEndTime time="4707541fs"></ZoomEndTime>
+      <Cursor1Time time="3750000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="195"></NameColumnWidth>
+      <NameColumnWidth column_width="191"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
@@ -83,15 +83,6 @@
          <obj_property name="ElementShortName">pipeline_reg_2_1</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_2_1</obj_property>
          <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_1.sched_out_port_1" type="array">
-            <obj_property name="ElementShortName">.sched_out_port_1</obj_property>
-            <obj_property name="ObjectShortName">.sched_out_port_1</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_1.valid" type="logic">
-            <obj_property name="ElementShortName">.valid</obj_property>
-            <obj_property name="ObjectShortName">.valid</obj_property>
-         </wvobject>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_3_0" type="array">
          <obj_property name="ElementShortName">pipeline_reg_3_0</obj_property>
@@ -612,6 +603,7 @@
    <wvobject fp_name="group529" type="group">
       <obj_property name="label">AXI BUS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/to_masters" type="array">
          <obj_property name="ElementShortName">to_masters[3:0]</obj_property>
          <obj_property name="ObjectShortName">to_masters[3:0]</obj_property>
@@ -793,24 +785,40 @@
       </wvobject>
    </wvobject>
    <wvobject fp_name="group3592" type="group">
-      <obj_property name="label">ROM MEMORY</obj_property>
+      <obj_property name="label">RAM MEMORY</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/cpu_tb/cpu/rom_memory/addr_bus" type="array">
-         <obj_property name="ElementShortName">addr_bus[9:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_bus[9:0]</obj_property>
+      <wvobject fp_name="/cpu_tb/cpu/your_instance_name/ena" type="logic">
+         <obj_property name="ElementShortName">ena</obj_property>
+         <obj_property name="ObjectShortName">ena</obj_property>
       </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/rom_memory/data_bus" type="array">
-         <obj_property name="ElementShortName">data_bus[31:0]</obj_property>
-         <obj_property name="ObjectShortName">data_bus[31:0]</obj_property>
+      <wvobject fp_name="/cpu_tb/cpu/your_instance_name/wea" type="array">
+         <obj_property name="ElementShortName">wea[0:0]</obj_property>
+         <obj_property name="ObjectShortName">wea[0:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/rom_memory/data_ready" type="logic">
-         <obj_property name="ElementShortName">data_ready</obj_property>
-         <obj_property name="ObjectShortName">data_ready</obj_property>
+      <wvobject fp_name="/cpu_tb/cpu/your_instance_name/addra" type="array">
+         <obj_property name="ElementShortName">addra[9:0]</obj_property>
+         <obj_property name="ObjectShortName">addra[9:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/rom_memory/addr_old_reg" type="array">
-         <obj_property name="ElementShortName">addr_old_reg[9:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_old_reg[9:0]</obj_property>
+      <wvobject fp_name="/cpu_tb/cpu/your_instance_name/dina" type="array">
+         <obj_property name="ElementShortName">dina[31:0]</obj_property>
+         <obj_property name="ObjectShortName">dina[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/your_instance_name/enb" type="logic">
+         <obj_property name="ElementShortName">enb</obj_property>
+         <obj_property name="ObjectShortName">enb</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/your_instance_name/addrb" type="array">
+         <obj_property name="ElementShortName">addrb[9:0]</obj_property>
+         <obj_property name="ObjectShortName">addrb[9:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/your_instance_name/doutb" type="array">
+         <obj_property name="ElementShortName">doutb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">doutb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/ram_read_valid" type="logic">
+         <obj_property name="ElementShortName">ram_read_valid</obj_property>
+         <obj_property name="ObjectShortName">ram_read_valid</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

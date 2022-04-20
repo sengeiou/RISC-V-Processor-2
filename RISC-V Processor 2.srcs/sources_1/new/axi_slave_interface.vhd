@@ -105,6 +105,9 @@ architecture rtl of axi_slave_interface is
     signal read_addr_next_sel : std_logic_vector(1 downto 0);
     
     signal write_addr_next_sel : std_logic_vector(1 downto 0);
+    
+    signal addr_write_valid : std_logic;
+    signal addr_read_valid : std_logic;
 begin
     write_state_transition : process(master_write_handshake.awvalid, axi_write_data_ch.last, slave_write_handshake.bvalid, clk)
     begin
@@ -150,6 +153,8 @@ begin
         write_addr_reg_en <= '0';
         write_wrap_addr_start_reg_en <= '0';
         write_wrap_addr_end_reg_en <= '0';
+        addr_write_valid <= '0';
+        
         
         axi_write_resp_ch.resp <= RESP_OKAY;
         
@@ -169,6 +174,7 @@ begin
                 slave_write_handshake.wready <= '1';
                 
                 write_addr_reg_en <= '1';
+                addr_write_valid <= '1';
                 
                 write_addr_next_sel <= write_burst_type_reg;
                 
@@ -313,6 +319,7 @@ begin
         read_wrap_addr_start_reg_en <= '0';
         read_wrap_addr_end_reg_en <= '0';
         read_burst_cntrl_regs_en <= '0';
+        addr_read_valid <= '0';
         
         read_burst_len_mux_sel <= '0';
         
@@ -345,6 +352,7 @@ begin
                 read_burst_len_reg_en <= not read_burst_len_reg_zero and
                                          master_read_handshake.rready and from_device.data_valid;
                 read_addr_reg_en <= master_read_handshake.rready and from_device.data_valid;
+                addr_read_valid <= '1';
 
                 read_addr_next_sel <= read_burst_type_reg;
         end case;
@@ -498,6 +506,9 @@ begin
     
     to_device.addr_write <= write_addr_reg;
     to_device.addr_read <= read_addr_reg;
+    
+    to_device.addr_write_valid <= addr_write_valid;
+    to_device.addr_read_valid <= addr_read_valid;
 
     to_device.write_buffer_empty <= not write_data_reg_valid;
     to_device.write_buffer_full <= write_data_reg_valid;

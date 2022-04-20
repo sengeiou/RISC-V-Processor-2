@@ -33,6 +33,20 @@ architecture structural of cpu is
         probe3 : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
     );
     END COMPONENT  ;
+    
+COMPONENT blk_mem_gen_0
+  PORT (
+    clka : IN STD_LOGIC;
+    ena : IN STD_LOGIC;
+    wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+    dina : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    clkb : IN STD_LOGIC;
+    enb : IN STD_LOGIC;
+    addrb : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+    doutb : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+  );
+END COMPONENT;
 
     type test1 is array (2 downto 0) of FromMasterInterface;
     type test2 is array (2 downto 0) of FromSlaveInterface;
@@ -52,7 +66,10 @@ architecture structural of cpu is
     signal from_slave_3 : ToSlaveInterface;
     signal to_slave_3 : FromSlaveInterface;
     
-    signal reset_inv : std_logic;
+    signal resetn : std_logic;
+    signal ram_en : std_logic;
+    signal ram_read_valid_1 : std_logic;
+    signal ram_read_valid_2 : std_logic;
     
     signal led_temp : std_logic_vector(15 downto 0);
 begin
@@ -81,7 +98,7 @@ begin
                                 from_slaves(3) => FROM_SLAVE_CLEAR,
                                 
                                 clk => clk_cpu,
-                                reset => reset_inv);
+                                reset => resetn);
 
     -- AXI Masters
     core_1 : entity work.core(structural)
@@ -104,14 +121,41 @@ begin
                           clk_bus => clk_cpu,
                           reset => reset_cpu);
                           
-    rom_memory : entity work.rom_memory_2(structural)
-                 port map(data_bus => from_slave_1.data,
-                          addr_bus => to_slave_1.addr_read(11 downto 2),
+--    rom_memory : entity work.rom_memory_2(structural)
+--                 port map(data_bus => from_slave_1.data,
+--                          addr_bus => to_slave_1.addr_read(11 downto 2),
                           
-                          data_ready => from_slave_1.data_valid,
+--                          data_ready => from_slave_1.data_valid,
                           
-                          clk => clk_cpu);
+--                          clk => clk_cpu);
+                      
+    -- Just a 1 clk delay to give ram time to perform a read
+    process(clk_cpu)
+    begin
+        if (rising_edge(clk_cpu)) then
+            if (reset_cpu = '1') then
+                ram_read_valid_1 <= '0';
+                ram_read_valid_2 <= '0';
+            else
+                ram_read_valid_1 <= to_slave_1.addr_read_valid;   
+                ram_read_valid_2 <= ram_read_valid_1;
+            end if;
+        end if;
+    end process;
                           
+your_instance_name : blk_mem_gen_0
+  PORT MAP (
+    clka => clk_cpu,
+    ena => to_slave_1.addr_write_valid,
+    wea(0) => to_slave_1.addr_write_valid,
+    addra => to_slave_1.addr_write(9 downto 0),
+    dina => to_slave_1.data_write,
+    clkb => clk_cpu,
+    enb => to_slave_1.addr_read_valid,
+    addrb => to_slave_1.addr_read(9 downto 0),
+    doutb => from_slave_1.data
+  );
+    from_slave_1.data_valid <= ram_read_valid_2;
                           
     from_slave_3.data(31 downto 8) <= (others => '0');
     
@@ -131,8 +175,8 @@ begin
                                clk => clk_cpu,
                                reset => reset_cpu,
                                cs => '1');
-                          
-    reset_inv <= not reset_cpu;     
+
+    resetn <= not reset_cpu;     
     led_out_debug <= led_temp;                     
 
 
