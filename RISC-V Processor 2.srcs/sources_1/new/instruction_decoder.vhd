@@ -53,6 +53,14 @@ begin
             uop.immediate <= X"00000" & instruction(31 downto 20);
             
             instruction_ready <= '1';
+        elsif (instruction(6 downto 0) = "0110111") then        -- LUI
+            uop.operation_type <= OP_TYPE_INTEGER;
+            uop.operation_select <= "10000000";
+            uop.immediate <= instruction(31 downto 12) & X"000";
+            
+            uop.reg_src_1 <= "00000";
+            
+            instruction_ready <= '1';
         end if;
     end process;
 

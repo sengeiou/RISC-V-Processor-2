@@ -5,14 +5,6 @@ vhdl xil_defaultlib  \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/pkg_axi.vhd" \
-"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd" \
-
-vhdl2008 xil_defaultlib  \
-"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd" \
-"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd" \
-
-vhdl xil_defaultlib  \
-"../../../../RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/instruction_decoder.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd" \
 "../../../../RISC-V Processor 2.srcs/sources_1/new/front_end.vhd" \

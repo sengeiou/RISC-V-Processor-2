@@ -13,12 +13,19 @@ use WORK.PKG_AXI.ALL;
 
 entity execution_engine is
     port(
-        from_master_1 : out ToMasterInterface; 
-        to_master_1 : in FromMasterInterface; 
-    
         decoded_instruction : in uop_type;
         
         instr_ready : in std_logic;
+        
+        -- TEMPORARY BUS STUFF
+        bus_addr_read : out std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        bus_addr_write : out std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        bus_data_read : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        bus_data_write : out std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        bus_stbr : out std_logic;
+        bus_stbw : out std_logic;
+        bus_ackr : in std_logic;
+        bus_ackw : in std_logic;
         
         reset : in std_logic;
         clk : in std_logic;
@@ -269,7 +276,7 @@ begin
     -- ==================================================================================================
     next_instr_ready <= not (iq_empty or sched_full or raa_empty);
     raa_get_en <= '1' when next_instr_ready = '1' and next_uop.reg_dest /= "00000" else '0'; 
-    
+    raa_put_en <= '1' when rob_commit_ready = '1' and freed_reg_addr /= PHYS_REG_TAG_ZERO else '0';
       
     register_alias_allocator : entity work.register_alias_allocator(rtl)
                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
@@ -277,8 +284,8 @@ begin
                                port map(put_reg_alias => freed_reg_addr,
                                         get_reg_alias => renamed_dest_reg,
                                         
-                                        put_en => rob_commit_ready,
-                                        get_en => next_instr_ready,
+                                        put_en => raa_put_en,
+                                        get_en => raa_get_en,
                                         
                                         empty => raa_empty,
                                         clk => clk,
@@ -442,9 +449,7 @@ begin
     load_store_unit : entity work.load_store_eu(rtl)
                       generic map(SQ_ENTRIES => STORE_QUEUE_ENTRIES,
                                   LQ_ENTRIES => LOAD_QUEUE_ENTRIES)
-                      port map(from_master_interface => to_master_1,
-                               to_master_interface => from_master_1,
-                      
+                      port map(
                                generated_address => lsu_gen_addr,
                                sq_calc_addr_tag => sq_calc_addr_tag,
                                sq_calc_addr_valid => sq_calc_addr_valid,
@@ -471,6 +476,15 @@ begin
                                cdb => cdb_1,
                                cdb_request => cdb_request_1,
                                cdb_granted => cdb_granted_1,
+                               
+                               bus_addr_read => bus_addr_read,
+                               bus_addr_write => bus_addr_write,
+                               bus_data_read => bus_data_read,
+                               bus_data_write => bus_data_write,
+                               bus_stbr => bus_stbr,
+                               bus_stbw => bus_stbw,
+                               bus_ackr => bus_ackr,
+                               bus_ackw => bus_ackw,
                                
                                reset => reset,
                                clk => clk);

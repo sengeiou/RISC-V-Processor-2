@@ -12,20 +12,23 @@
             <top_module name="pkg_ee" />
             <top_module name="pkg_fu" />
             <top_module name="pkg_sched" />
-            <top_module name="test" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="2861169fs"></ZoomStartTime>
-      <ZoomEndTime time="4707541fs"></ZoomEndTime>
-      <Cursor1Time time="3750000fs"></Cursor1Time>
+      <ZoomStartTime time="457598fs"></ZoomStartTime>
+      <ZoomEndTime time="1859141fs"></ZoomEndTime>
+      <Cursor1Time time="1176539fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="191"></NameColumnWidth>
+      <NameColumnWidth column_width="183"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
+   <wave_markers>
+      <marker time="650000" label="" />
+      <marker time="950000" label="" />
+   </wave_markers>
    <wvobject fp_name="/cpu_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -74,6 +77,20 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1" type="array">
          <obj_property name="ElementShortName">pipeline_reg_1</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_1</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1.sched_in_port_0" type="array">
+            <obj_property name="ElementShortName">.sched_in_port_0</obj_property>
+            <obj_property name="ObjectShortName">.sched_in_port_0</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1.dest_reg" type="array">
+            <obj_property name="ElementShortName">.dest_reg[4:0]</obj_property>
+            <obj_property name="ObjectShortName">.dest_reg[4:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1.valid" type="logic">
+            <obj_property name="ElementShortName">.valid</obj_property>
+            <obj_property name="ObjectShortName">.valid</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_0" type="array">
          <obj_property name="ElementShortName">pipeline_reg_2_0</obj_property>
@@ -82,7 +99,6 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_2_1" type="array">
          <obj_property name="ElementShortName">pipeline_reg_2_1</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_2_1</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_3_0" type="array">
          <obj_property name="ElementShortName">pipeline_reg_3_0</obj_property>
@@ -95,7 +111,6 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_3_1" type="array">
          <obj_property name="ElementShortName">pipeline_reg_3_1</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_3_1</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/next_instr_ready" type="logic">
          <obj_property name="ElementShortName">next_instr_ready</obj_property>
@@ -284,7 +299,6 @@
       <wvobject fp_name="group987" type="group">
          <obj_property name="label">EXECUTION UNIT 1</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_1/store_data_value" type="array">
             <obj_property name="ElementShortName">store_data_value[31:0]</obj_property>
             <obj_property name="ObjectShortName">store_data_value[31:0]</obj_property>
@@ -353,6 +367,39 @@
       <wvobject fp_name="group513" type="group">
          <obj_property name="label">LOAD STORE EU</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_addr_read" type="array">
+            <obj_property name="ElementShortName">bus_addr_read[31:0]</obj_property>
+            <obj_property name="ObjectShortName">bus_addr_read[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_addr_write" type="array">
+            <obj_property name="ElementShortName">bus_addr_write[31:0]</obj_property>
+            <obj_property name="ObjectShortName">bus_addr_write[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_data_read" type="array">
+            <obj_property name="ElementShortName">bus_data_read[31:0]</obj_property>
+            <obj_property name="ObjectShortName">bus_data_read[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_data_write" type="array">
+            <obj_property name="ElementShortName">bus_data_write[31:0]</obj_property>
+            <obj_property name="ObjectShortName">bus_data_write[31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_stbr" type="logic">
+            <obj_property name="ElementShortName">bus_stbr</obj_property>
+            <obj_property name="ObjectShortName">bus_stbr</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_stbw" type="logic">
+            <obj_property name="ElementShortName">bus_stbw</obj_property>
+            <obj_property name="ObjectShortName">bus_stbw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_ackr" type="logic">
+            <obj_property name="ElementShortName">bus_ackr</obj_property>
+            <obj_property name="ObjectShortName">bus_ackr</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_ackw" type="logic">
+            <obj_property name="ElementShortName">bus_ackw</obj_property>
+            <obj_property name="ObjectShortName">bus_ackw</obj_property>
+         </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/cdb_request" type="logic">
             <obj_property name="ElementShortName">cdb_request</obj_property>
             <obj_property name="ObjectShortName">cdb_request</obj_property>
@@ -364,11 +411,6 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/cdb" type="array">
             <obj_property name="ElementShortName">cdb</obj_property>
             <obj_property name="ObjectShortName">cdb</obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/from_master_interface" type="array">
-            <obj_property name="ElementShortName">from_master_interface</obj_property>
-            <obj_property name="ObjectShortName">from_master_interface</obj_property>
-            <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/store_queue" type="array">
             <obj_property name="ElementShortName">store_queue[7:0][74:0]</obj_property>
@@ -451,6 +493,26 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_enqueue_en" type="logic">
             <obj_property name="ElementShortName">sq_enqueue_en</obj_property>
             <obj_property name="ObjectShortName">sq_enqueue_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_enqueue_en" type="logic">
+            <obj_property name="ElementShortName">lq_enqueue_en</obj_property>
+            <obj_property name="ObjectShortName">lq_enqueue_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_head_counter_reg" type="array">
+            <obj_property name="ElementShortName">lq_head_counter_reg[2:0]</obj_property>
+            <obj_property name="ObjectShortName">lq_head_counter_reg[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_head_counter_next" type="array">
+            <obj_property name="ElementShortName">lq_head_counter_next[2:0]</obj_property>
+            <obj_property name="ObjectShortName">lq_head_counter_next[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_tail_counter_reg" type="array">
+            <obj_property name="ElementShortName">lq_tail_counter_reg[2:0]</obj_property>
+            <obj_property name="ObjectShortName">lq_tail_counter_reg[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_tail_counter_next" type="array">
+            <obj_property name="ElementShortName">lq_tail_counter_next[2:0]</obj_property>
+            <obj_property name="ObjectShortName">lq_tail_counter_next[2:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_load_ready" type="logic">
             <obj_property name="ElementShortName">lq_load_ready</obj_property>
@@ -604,165 +666,6 @@
       <obj_property name="label">AXI BUS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/to_masters" type="array">
-         <obj_property name="ElementShortName">to_masters[3:0]</obj_property>
-         <obj_property name="ObjectShortName">to_masters[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/from_masters" type="array">
-         <obj_property name="ElementShortName">from_masters[3:0]</obj_property>
-         <obj_property name="ObjectShortName">from_masters[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/to_slaves" type="array">
-         <obj_property name="ElementShortName">to_slaves[3:0]</obj_property>
-         <obj_property name="ObjectShortName">to_slaves[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/from_slaves" type="array">
-         <obj_property name="ElementShortName">from_slaves[3:0]</obj_property>
-         <obj_property name="ObjectShortName">from_slaves[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_addr_master_chs" type="array">
-         <obj_property name="ElementShortName">write_addr_master_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">write_addr_master_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_data_master_chs" type="array">
-         <obj_property name="ElementShortName">write_data_master_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">write_data_master_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_resp_master_chs" type="array">
-         <obj_property name="ElementShortName">write_resp_master_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">write_resp_master_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_addr_master_chs" type="array">
-         <obj_property name="ElementShortName">read_addr_master_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">read_addr_master_chs[0:3]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_data_master_chs" type="array">
-         <obj_property name="ElementShortName">read_data_master_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">read_data_master_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_addr_slave_chs" type="array">
-         <obj_property name="ElementShortName">write_addr_slave_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">write_addr_slave_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_data_slave_chs" type="array">
-         <obj_property name="ElementShortName">write_data_slave_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">write_data_slave_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_resp_slave_chs" type="array">
-         <obj_property name="ElementShortName">write_resp_slave_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">write_resp_slave_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_addr_slave_chs" type="array">
-         <obj_property name="ElementShortName">read_addr_slave_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">read_addr_slave_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_data_slave_chs" type="array">
-         <obj_property name="ElementShortName">read_data_slave_chs[0:3]</obj_property>
-         <obj_property name="ObjectShortName">read_data_slave_chs[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_read_masters_to_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_read_masters_to_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_read_masters_to_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_write_masters_to_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_write_masters_to_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_write_masters_to_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_read_slaves_to_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_read_slaves_to_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_read_slaves_to_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_write_slaves_to_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_write_slaves_to_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_write_slaves_to_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_read_masters_from_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_read_masters_from_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_read_masters_from_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_write_masters_from_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_write_masters_from_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_write_masters_from_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_read_slaves_from_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_read_slaves_from_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_read_slaves_from_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshakes_write_slaves_from_bus" type="array">
-         <obj_property name="ElementShortName">handshakes_write_slaves_from_bus[0:3]</obj_property>
-         <obj_property name="ObjectShortName">handshakes_write_slaves_from_bus[0:3]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_addr_bus_ch" type="array">
-         <obj_property name="ElementShortName">write_addr_bus_ch</obj_property>
-         <obj_property name="ObjectShortName">write_addr_bus_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_data_bus_ch" type="array">
-         <obj_property name="ElementShortName">write_data_bus_ch</obj_property>
-         <obj_property name="ObjectShortName">write_data_bus_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_resp_bus_ch" type="array">
-         <obj_property name="ElementShortName">write_resp_bus_ch</obj_property>
-         <obj_property name="ObjectShortName">write_resp_bus_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_addr_bus_ch" type="array">
-         <obj_property name="ElementShortName">read_addr_bus_ch</obj_property>
-         <obj_property name="ObjectShortName">read_addr_bus_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_data_bus_ch" type="array">
-         <obj_property name="ElementShortName">read_data_bus_ch</obj_property>
-         <obj_property name="ObjectShortName">read_data_bus_ch</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_read_master" type="array">
-         <obj_property name="ElementShortName">handshake_read_master</obj_property>
-         <obj_property name="ObjectShortName">handshake_read_master</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_read_slave" type="array">
-         <obj_property name="ElementShortName">handshake_read_slave</obj_property>
-         <obj_property name="ObjectShortName">handshake_read_slave</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_write_master" type="array">
-         <obj_property name="ElementShortName">handshake_write_master</obj_property>
-         <obj_property name="ObjectShortName">handshake_write_master</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/handshake_write_slave" type="array">
-         <obj_property name="ElementShortName">handshake_write_slave</obj_property>
-         <obj_property name="ObjectShortName">handshake_write_slave</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_bus_disable" type="logic">
-         <obj_property name="ElementShortName">read_bus_disable</obj_property>
-         <obj_property name="ObjectShortName">read_bus_disable</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_bus_disable" type="logic">
-         <obj_property name="ElementShortName">write_bus_disable</obj_property>
-         <obj_property name="ObjectShortName">write_bus_disable</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_bus_slave_sel" type="array">
-         <obj_property name="ElementShortName">write_bus_slave_sel[3:0]</obj_property>
-         <obj_property name="ObjectShortName">write_bus_slave_sel[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/write_bus_master_sel" type="array">
-         <obj_property name="ElementShortName">write_bus_master_sel[3:0]</obj_property>
-         <obj_property name="ObjectShortName">write_bus_master_sel[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_bus_slave_sel" type="array">
-         <obj_property name="ElementShortName">read_bus_slave_sel[3:0]</obj_property>
-         <obj_property name="ObjectShortName">read_bus_slave_sel[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/read_bus_master_sel" type="array">
-         <obj_property name="ElementShortName">read_bus_master_sel[3:0]</obj_property>
-         <obj_property name="ObjectShortName">read_bus_master_sel[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/master_read_bus_reqs" type="array">
-         <obj_property name="ElementShortName">master_read_bus_reqs[3:0]</obj_property>
-         <obj_property name="ObjectShortName">master_read_bus_reqs[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/axi_interconnect/master_write_bus_reqs" type="array">
-         <obj_property name="ElementShortName">master_write_bus_reqs[3:0]</obj_property>
-         <obj_property name="ObjectShortName">master_write_bus_reqs[3:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="group569" type="group">
       <obj_property name="label">LED DEVICE</obj_property>
@@ -815,10 +718,6 @@
       <wvobject fp_name="/cpu_tb/cpu/your_instance_name/doutb" type="array">
          <obj_property name="ElementShortName">doutb[31:0]</obj_property>
          <obj_property name="ObjectShortName">doutb[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/ram_read_valid" type="logic">
-         <obj_property name="ElementShortName">ram_read_valid</obj_property>
-         <obj_property name="ObjectShortName">ram_read_valid</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

@@ -10,6 +10,7 @@ entity led_interface is
         addr_write : in std_logic_vector(11 downto 0);
         data_write : in std_logic_vector(31 downto 0);
         
+        cs : in std_logic;
         clk_bus : in std_logic;
         reset : in std_logic
     );
@@ -31,18 +32,7 @@ begin
         end if;
     end process;
     
-    data_reg_en <= (not addr_write(11)) and
-                   (not addr_write(10)) and
-                   (not addr_write(9)) and
-                   (not addr_write(8)) and
-                   (not addr_write(7)) and
-                   (not addr_write(6)) and
-                   (not addr_write(5)) and
-                   (not addr_write(4)) and
-                   (not addr_write(3)) and
-                   (not addr_write(2)) and
-                   (not addr_write(1)) and
-                   (not addr_write(0));
+    data_reg_en <= '1' when addr_write = X"000" else '0';
                    
     led_out <= data_reg(15 downto 0);
 

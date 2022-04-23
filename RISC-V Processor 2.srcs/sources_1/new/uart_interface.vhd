@@ -233,11 +233,11 @@ begin
         if (rising_edge(clk)) then
             if (cs = '1') then                  -- ALLOCATED ADDRESSES ARE TEMPORARY AND DO NOT CORRESPOND TO THE 16550 UART IC!!!
                 case addr_read_bus is 
-                    when "000" =>
-                        data_read_bus <= rx_data_reg;
                     when "001" =>
-                        data_read_bus <= (others => '0');
+                        data_read_bus <= rx_data_reg;
                     when "010" =>
+                        data_read_bus <= (others => '0');
+                    when "011" =>
                         data_read_bus <= line_status_reg;
                     when "100" =>
                         data_read_bus <= (others => '0');

@@ -13,6 +13,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- x) Implement D and I caches
 -- x) Add FIFOs to the AXI interfaces
 -- x) Implement a DMA controller
+-- x) Allow more agressive re-ordering of LD-ST instructions
 -- =============================================================== 
 
 -- ====================== POSSIBLE PROBLEMS ====================== 
