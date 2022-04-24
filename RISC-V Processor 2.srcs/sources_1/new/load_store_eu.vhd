@@ -35,6 +35,9 @@ entity load_store_eu is
         sq_data_tag : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);       
         lq_dest_tag : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         
+        sq_full : out std_logic;
+        lq_full : out std_logic;
+        
         sq_enqueue_en : in std_logic;
         
         -- Tag of the instruction that has been retired in this cycle
@@ -133,10 +136,10 @@ architecture rtl of load_store_eu is
     signal sq_dequeue_en : std_logic;
     signal lq_dequeue_en : std_logic;
     
-    signal sq_full : std_logic;
+    signal i_sq_full : std_logic;
     signal sq_empty : std_logic;
     
-    signal lq_full : std_logic;
+    signal i_lq_full : std_logic;
     signal lq_empty : std_logic;
     
     signal load_data_reg : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
@@ -301,7 +304,7 @@ begin
                 store_queue <= (others => SQ_INIT);
                 load_queue <= (others => (others => '0'));
             else
-                if (sq_enqueue_en = '1' and sq_full = '0') then
+                if (sq_enqueue_en = '1' and i_sq_full = '0') then
                     store_queue(to_integer(sq_tail_counter_reg)) <= '0' &         
                                                                     ADDR_ZERO &   
                                                                     sq_data_tag & 
@@ -311,7 +314,7 @@ begin
                                                                     '0';
                 end if;
                 
-                if (lq_enqueue_en = '1' and lq_full = '0') then
+                if (lq_enqueue_en = '1' and i_lq_full = '0') then
                     load_queue(to_integer(lq_tail_counter_reg)) <= '0' &
                                                                    ADDR_ZERO &
                                                                    lq_dest_tag &
@@ -382,7 +385,7 @@ begin
                 
                 load_data_reg <= (others => '0');
             else
-                if (sq_enqueue_en = '1' and sq_full = '0') then
+                if (sq_enqueue_en = '1' and i_sq_full = '0') then
                     sq_tail_counter_reg <= sq_tail_counter_next;
                 end if;
                 
@@ -390,7 +393,7 @@ begin
                     sq_head_counter_reg <= sq_head_counter_next;
                 end if;
                 
-                if (lq_enqueue_en = '1' and lq_full = '0') then
+                if (lq_enqueue_en = '1' and i_lq_full = '0') then
                     lq_tail_counter_reg <= lq_tail_counter_next;
                 end if;
                 
@@ -433,11 +436,14 @@ begin
                                store_queue(to_integer(sq_head_counter_reg))(SQ_DATA_VALID) = '1' and 
                                store_queue(to_integer(sq_head_counter_reg))(SQ_RETIRED_BIT) = '1' else '0';
                             
-    sq_full <= '1' when sq_tail_counter_next = sq_head_counter_reg else '0';
-    lq_full <= '1' when lq_tail_counter_next = lq_head_counter_reg else '0';
+    i_sq_full <= '1' when sq_tail_counter_next = sq_head_counter_reg else '0';
+    i_lq_full <= '1' when lq_tail_counter_next = lq_head_counter_reg else '0';
     
     sq_empty <= '1' when sq_head_counter_reg = sq_tail_counter_reg else '0';
     lq_empty <= '1' when lq_head_counter_reg = lq_tail_counter_reg else '0';
+    
+    sq_full <= i_sq_full;
+    lq_full <= i_lq_full;
     
     sq_alloc_tag <= std_logic_vector(sq_tail_counter_reg);
     lq_alloc_tag <= std_logic_vector(lq_tail_counter_reg);

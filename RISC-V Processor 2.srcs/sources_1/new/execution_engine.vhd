@@ -53,26 +53,24 @@ architecture Structural of execution_engine is
     
     signal pipeline_reg_1 : execution_engine_pipeline_register_1_type;
     signal pipeline_reg_1_next : execution_engine_pipeline_register_1_type;
+    signal pipeline_reg_1_rst : std_logic;
     
     signal pipeline_reg_2_0 : execution_engine_pipeline_register_2_p0_type;
     signal pipeline_reg_2_0_next : execution_engine_pipeline_register_2_p0_type;
+    signal pipeline_reg_2_0_rst : std_logic;
     
     signal pipeline_reg_2_1 : execution_engine_pipeline_register_2_p1_type;
     signal pipeline_reg_2_1_next : execution_engine_pipeline_register_2_p1_type;
+    signal pipeline_reg_2_1_rst : std_logic;
     
     signal pipeline_reg_3_0 : execution_engine_pipeline_register_3_int_type;
     signal pipeline_reg_3_0_next : execution_engine_pipeline_register_3_int_type;
+    signal pipeline_reg_3_0_rst : std_logic;
     
     signal pipeline_reg_3_1 : execution_engine_pipeline_register_3_ldst_type;
     signal pipeline_reg_3_1_next : execution_engine_pipeline_register_3_ldst_type;
-    
-    -- REGISTER CONTROL
-    signal pipeline_reg_1_en : std_logic;
-    signal pipeline_reg_2_0_en : std_logic;
-    signal pipeline_reg_2_1_en : std_logic;
-    signal pipeline_reg_3_0_en : std_logic;
-    signal pipeline_reg_3_1_en : std_logic;
-    
+    signal pipeline_reg_3_1_rst : std_logic;
+
     -- ========================================
     
     -- ========== REGISTER RENAMING SIGNALS ==========
@@ -98,7 +96,7 @@ architecture Structural of execution_engine is
     signal rf_rd_data_4 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     -- ===========================================
     
-    signal next_instr_ready : std_logic; 
+    signal next_uop_ready : std_logic; 
     
     -- ========== SCHEDULER CONTROL SIGNALS ==========
     signal sched_full : std_logic;
@@ -129,6 +127,9 @@ architecture Structural of execution_engine is
     signal sq_store_data : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     signal sq_store_data_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     signal sq_store_data_valid : std_logic;
+    
+    signal sq_full : std_logic;
+    signal lq_full : std_logic;
     
     signal sq_enqueue_en : std_logic;
     signal lq_enqueue_en : std_logic;
@@ -167,6 +168,12 @@ architecture Structural of execution_engine is
     signal cdb_0 : cdb_type;
     signal cdb_1 : cdb_type;
     -- =====================================
+    
+    -- =========== CONTROL SIGNALS ===========
+    signal uop_issue_ready : std_logic;
+    signal next_uop_store : std_logic;
+    signal next_uop_load : std_logic;
+    -- =======================================
 begin
     instruction_queue : fifo_generator_1
     port map (
@@ -181,7 +188,7 @@ begin
       din(31 downto 0) => decoded_instruction.immediate,
         
       wr_en => instr_ready,
-      rd_en => next_instr_ready,
+      rd_en => next_uop_ready,
         
       dout(57 downto 55) => next_uop.operation_type,
       dout(54 downto 47) => next_uop.operation_select,
@@ -197,42 +204,55 @@ begin
     pipeline_reg_proc : process(clk)
     begin
         if (rising_edge(clk)) then
-            if (reset = '1') then
+            if (pipeline_reg_1_rst = '1') then
                 pipeline_reg_1 <= EE_PIPELINE_REG_1_INIT;
-                pipeline_reg_2_0 <= EE_PIPELINE_REG_2_P0_INIT;
-                pipeline_reg_2_1 <= EE_PIPELINE_REG_2_P1_INIT;
-                pipeline_reg_3_0 <= EE_PIPELINE_REG_3_INT_INIT;
-                pipeline_reg_3_1 <= EE_PIPELINE_REG_3_LDST_INIT;
             else
-                if (pipeline_reg_1_en = '1') then
-                    pipeline_reg_1 <= pipeline_reg_1_next;
-                end if;
+                pipeline_reg_1 <= pipeline_reg_1_next;
+            end if;
             
-                if (pipeline_reg_2_0_en = '1') then
-                    pipeline_reg_2_0 <= pipeline_reg_2_0_next;
-                end if;
-                
-                if (pipeline_reg_2_1_en = '1') then
-                    pipeline_reg_2_1 <= pipeline_reg_2_1_next;
-                end if;
-                
-                if (pipeline_reg_3_0_en = '1') then
-                    pipeline_reg_3_0 <= pipeline_reg_3_0_next;
-                end if;
-                
-                if (pipeline_reg_3_1_en = '1') then
-                    pipeline_reg_3_1 <= pipeline_reg_3_1_next;
-                end if;
+            if (pipeline_reg_2_0_rst = '1') then
+                pipeline_reg_2_0 <= EE_PIPELINE_REG_2_0_INIT;
+            else
+                pipeline_reg_2_0 <= pipeline_reg_2_0_next;
+            end if;
+            
+            if (pipeline_reg_2_1_rst = '1') then
+                pipeline_reg_2_1 <= EE_PIPELINE_REG_2_1_INIT;
+            else
+                pipeline_reg_2_1 <= pipeline_reg_2_1_next;
+            end if;
+            
+            if (pipeline_reg_3_0_rst = '1') then
+                pipeline_reg_3_0 <= EE_PIPELINE_REG_3_0_INIT;
+            else
+                pipeline_reg_3_0 <= pipeline_reg_3_0_next;
+            end if;
+            
+            if (pipeline_reg_3_1_rst = '1') then
+                pipeline_reg_3_1 <= EE_PIPELINE_REG_3_1_INIT;
+            else
+                pipeline_reg_3_1 <= pipeline_reg_3_1_next;
             end if;
         end if;
     end process;
     
-    pipeline_reg_1_en <= '1';
-    pipeline_reg_2_0_en <= '1';
-    pipeline_reg_2_1_en <= '1';
-    pipeline_reg_3_0_en <= '1';
-    pipeline_reg_3_1_en <= '1';
+    -- Will need to take SH, SB, LH, LB into consideration in the future
+    next_uop_store <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_SW) else '0';
+    next_uop_load <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_LW) else '0';
     
+    uop_issue_ready <= not next_uop_ready or
+                    raa_empty or 
+                    rob_full or 
+                    sched_full or
+                    (sq_full and next_uop_store) or 
+                    (lq_full and next_uop_load);
+                    
+    pipeline_reg_1_rst <= uop_issue_ready;
+    pipeline_reg_2_0_rst <= not port_0.valid;
+    pipeline_reg_2_1_rst <= not port_1.valid;
+    pipeline_reg_3_0_rst <= '0';
+    pipeline_reg_3_1_rst <= '0';
+
     pipeline_reg_1_next.sched_in_port_0.operation_type <= next_uop.operation_type;
     pipeline_reg_1_next.sched_in_port_0.operation_select <= next_uop.operation_select;
     pipeline_reg_1_next.sched_in_port_0.src_tag_1 <= renamed_src_reg_1;
@@ -244,21 +264,21 @@ begin
     pipeline_reg_1_next.sched_in_port_0.store_queue_tag <= sq_alloc_tag;
     pipeline_reg_1_next.sched_in_port_0.load_queue_tag <= lq_alloc_tag;
     pipeline_reg_1_next.dest_reg <= next_uop.reg_dest;
-    pipeline_reg_1_next.valid <= next_instr_ready;
+    pipeline_reg_1_next.valid <= '1';
     
     pipeline_reg_2_0_next.sched_out_port_0 <= port_0;
     pipeline_reg_2_0_next.valid <= port_0.valid;
-    
+
     pipeline_reg_2_1_next.sched_out_port_1 <= port_1;
     pipeline_reg_2_1_next.valid <= port_1.valid;
-    
+
     pipeline_reg_3_0_next.operand_1 <= rf_rd_data_1;
     pipeline_reg_3_0_next.operand_2 <= rf_rd_data_2;
     pipeline_reg_3_0_next.immediate <= pipeline_reg_2_0.sched_out_port_0.immediate;
     pipeline_reg_3_0_next.dest_tag <= pipeline_reg_2_0.sched_out_port_0.dest_tag;
     pipeline_reg_3_0_next.operation_select <= pipeline_reg_2_0.sched_out_port_0.operation_sel;
     pipeline_reg_3_0_next.valid <= pipeline_reg_2_0.sched_out_port_0.valid;
-    
+
     pipeline_reg_3_1_next.store_data_value <= rf_rd_data_3;
     pipeline_reg_3_1_next.base_addr_value <= rf_rd_data_4;
     pipeline_reg_3_1_next.immediate <= pipeline_reg_2_1.sched_out_port_1.immediate;
@@ -267,15 +287,15 @@ begin
     pipeline_reg_3_1_next.load_queue_tag <= pipeline_reg_2_1.sched_out_port_1.load_queue_tag;
     pipeline_reg_3_1_next.operation_select <= pipeline_reg_2_1.sched_out_port_1.operation_sel;
     pipeline_reg_3_1_next.valid <= pipeline_reg_2_1.sched_out_port_1.valid;
-      
+
     next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
     sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_LOAD_STORE else '0';
       
     -- ==================================================================================================
     --                                        REGISTER RENAMING
     -- ==================================================================================================
-    next_instr_ready <= not (iq_empty or sched_full or raa_empty);
-    raa_get_en <= '1' when next_instr_ready = '1' and next_uop.reg_dest /= "00000" else '0'; 
+    next_uop_ready <= not (iq_empty or sched_full or raa_empty);
+    raa_get_en <= '1' when next_uop_ready = '1' and next_uop.reg_dest /= "00000" else '0'; 
     raa_put_en <= '1' when rob_commit_ready = '1' and freed_reg_addr /= PHYS_REG_TAG_ZERO else '0';
       
     register_alias_allocator : entity work.register_alias_allocator(rtl)
@@ -410,12 +430,12 @@ begin
                                         immediate => pipeline_reg_3_0.immediate,
                                         operation_select => pipeline_reg_3_0.operation_select, 
                                         tag => pipeline_reg_3_0.dest_tag,
-                                        valid => pipeline_reg_3_0.valid,
                                         
                                         cdb => cdb_0,
                                         cdb_request => cdb_request_0,
                                         cdb_granted => cdb_granted_0,
                                         
+                                        valid => pipeline_reg_3_0.valid,
                                         ready => execution_unit_0_ready,
                                         
                                         reset => reset,
@@ -466,6 +486,9 @@ begin
                                sq_alloc_tag => sq_alloc_tag,
                                lq_alloc_tag => lq_alloc_tag,
                                
+                               sq_full => sq_full,
+                               lq_full => lq_full,
+                               
                                sq_enqueue_en => sq_enqueue_en,
                                
                                sq_retire_tag => sq_retire_tag,
@@ -490,10 +513,10 @@ begin
                                clk => clk);
 
     sq_data_tag <= renamed_src_reg_2;
-    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '1' and next_instr_ready = '1' else '0';      -- 5th bit of operation select indicates a store
+    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '1' and next_uop_ready = '1' else '0';      -- 5th bit of operation select indicates a store
 
     lq_dest_tag <= renamed_dest_reg;
-    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '0' and next_instr_ready = '1' else '0';
+    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '0' and next_uop_ready = '1' else '0';
 
 
     cdb <= cdb_1 when cdb_granted_1 = '1' else

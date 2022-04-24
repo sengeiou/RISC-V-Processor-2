@@ -47,20 +47,20 @@ package pkg_ee is
                                                                                     (others => '0'),
                                                                                     '0');
                                                                                     
-    constant EE_PIPELINE_REG_2_P0_INIT : execution_engine_pipeline_register_2_p0_type := (SCHED_OUT_PORT_DEFAULT,
+    constant EE_PIPELINE_REG_2_0_INIT : execution_engine_pipeline_register_2_p0_type := (SCHED_OUT_PORT_DEFAULT,
                                                                                          '0');
                                                                                     
-    constant EE_PIPELINE_REG_2_P1_INIT : execution_engine_pipeline_register_2_p1_type := (SCHED_OUT_PORT_DEFAULT,
+    constant EE_PIPELINE_REG_2_1_INIT : execution_engine_pipeline_register_2_p1_type := (SCHED_OUT_PORT_DEFAULT,
                                                                                          '0');
                                                                                     
-    constant EE_PIPELINE_REG_3_INT_INIT : execution_engine_pipeline_register_3_int_type := ((others => '0'),
+    constant EE_PIPELINE_REG_3_0_INIT : execution_engine_pipeline_register_3_int_type := ((others => '0'),
                                                                                         (others => '0'),
                                                                                         (others => '0'),
                                                                                         (others => '0'),
                                                                                         (others => '0'),
                                                                                         '0');
                                                                                         
-    constant EE_PIPELINE_REG_3_LDST_INIT : execution_engine_pipeline_register_3_ldst_type := ((others => '0'),
+    constant EE_PIPELINE_REG_3_1_INIT : execution_engine_pipeline_register_3_ldst_type := ((others => '0'),
                                                                                             (others => '0'),
                                                                                             (others => '0'),
                                                                                             (others => '0'),
