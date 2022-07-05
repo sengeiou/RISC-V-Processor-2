@@ -298,11 +298,11 @@ begin
     raa_get_en <= '1' when next_uop_ready = '1' and next_uop.reg_dest /= "00000" else '0'; 
     raa_put_en <= '1' when rob_commit_ready = '1' and freed_reg_addr /= PHYS_REG_TAG_ZERO else '0';
       
-    register_alias_allocator : entity work.register_alias_allocator(rtl)
+    register_status_vector : entity work.register_status_vector(rtl)
                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                            ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
-                               port map(put_reg_alias => freed_reg_addr,
-                                        get_reg_alias => renamed_dest_reg,
+                               port map(free_reg_alias => freed_reg_addr,
+                                        alloc_reg_alias => renamed_dest_reg,
                                         
                                         put_en => raa_put_en,
                                         get_en => raa_get_en,

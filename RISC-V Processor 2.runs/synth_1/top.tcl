@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.runs/synth_1/top.tcl"
+  variable script "C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.runs/synth_1/top.tcl"
   variable category "vivado_synth"
 }
 
@@ -70,10 +70,6 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
-set_param tcl.collectionResultDisplayLimit 0
-set_param chipscope.maxJobs 1
-set_param xicom.use_bs_reader 1
-set_msg_config -id {Common 17-41} -limit 10000000
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a100tcsg324-1
 
@@ -81,66 +77,60 @@ set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
 set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
-set_property webtalk.parent_dir {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.cache/wt} [current_project]
-set_property parent.project_path {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.xpr} [current_project]
+set_property webtalk.parent_dir {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.cache/wt} [current_project]
+set_property parent.project_path {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.xpr} [current_project]
 set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY} [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language VHDL [current_project]
-set_property board_part digilentinc.com:nexys-a7-100t:part0:1.0 [current_project]
-set_property ip_output_repo {e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.cache/ip} [current_project]
+set_property ip_output_repo {c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.cache/ip} [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
-add_files {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/rom_contents.coe}}
+add_files {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/rom_contents.coe}}
+add_files {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/blk_mem_gen_0/testing.coe}}
 read_vhdl -library xil_defaultlib {
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_cpu.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_axi.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/axi_bus_controller_simple.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/axi_interconnect_simple.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/instruction_decoder.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/front_end.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_sched.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_ee.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_alias_allocator.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_alias_table.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/reorder_buffer.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/priority_encoder.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/unified_scheduler.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_fu.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/integer_eu.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/load_store_eu.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/execution_engine.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/core.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/rom_memory_2.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/top.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_cpu.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/barrel_shifter_2.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/arithmetic_logic_unit.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_axi.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/instruction_decoder.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/rom_memory.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/front_end.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_sched.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_ee.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_alias_allocator.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_alias_table.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/register_file.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/reorder_buffer.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/priority_encoder.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/unified_scheduler.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/pkg_fu.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/execution_unit_0.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/execution_unit_1.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/load_store_eu.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/execution_engine.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/core.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/led_interface.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/cpu.vhd}
+  {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/top.vhd}
 }
-read_vhdl -vhdl2008 -library xil_defaultlib {
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/axi_master_interface.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/axi_slave_interface.vhd}
-  {E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/uart_interface.vhd}
-}
-read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc}}]
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc}}]
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_ooc.xdc}}]
+read_vhdl -vhdl2008 -library xil_defaultlib {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/new/uart_interface.vhd}}
+read_ip -quiet {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc}}]
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc}}]
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_ooc.xdc}}]
 
-read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/block_rom_memory/block_rom_memory.xci}}
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/block_rom_memory/block_rom_memory_ooc.xdc}}]
+read_ip -quiet {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci}}
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0_ooc.xdc}}]
 
-read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
-set_property used_in_synthesis false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila.xdc}}]
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_reg_file_ooc.xdc}}]
+read_ip -quiet {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/ila_reg_file/ila_reg_file.xci}}
+set_property used_in_synthesis false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila_impl.xdc}}]
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_v6_2/constraints/ila.xdc}}]
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/ila_reg_file/ila_reg_file_ooc.xdc}}]
 
-read_ip -quiet {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/fifo_generator_1/fifo_generator_1.xci}}
-set_property used_in_implementation false [get_files -all {{e:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/fifo_generator_1/fifo_generator_1.xdc}}]
+read_ip -quiet {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/sources_1/ip/fifo_generator_1/fifo_generator_1.xci}}
+set_property used_in_implementation false [get_files -all {{c:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.gen/sources_1/ip/fifo_generator_1/fifo_generator_1.xdc}}]
 
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
@@ -151,8 +141,8 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
-read_xdc {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/constrs_1/new/nexys_a7_constr.xdc}}
-set_property used_in_implementation false [get_files {{E:/Vivado Projects/RISC-V-Processor-2/RISC-V Processor 2.srcs/constrs_1/new/nexys_a7_constr.xdc}}]
+read_xdc {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/constrs_1/new/nexys_a7_constr.xdc}}
+set_property used_in_implementation false [get_files {{C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.srcs/constrs_1/new/nexys_a7_constr.xdc}}]
 
 read_xdc dont_touch.xdc
 set_property used_in_implementation false [get_files dont_touch.xdc]
