@@ -50,21 +50,6 @@ architecture rtl of register_file is
     signal reg_file : reg_file_type;
     -- ==================================
     
-    COMPONENT ila_reg_file
-
-    PORT (
-	clk : IN STD_LOGIC;
-
-	probe0 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
-	probe1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
-	probe2 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
-	probe3 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
-	probe4 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
-	probe5 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
-	probe6 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-	probe7 : IN STD_LOGIC_VECTOR(31 DOWNTO 0)
-);
-END COMPONENT  ;
 begin
     -- Read from registers
     rd_1_data <= reg_file(to_integer(unsigned(rd_1_addr)));
@@ -83,18 +68,4 @@ begin
             end if;
         end if;
     end process;
-    
-    your_instance_name : ila_reg_file
-    PORT MAP (
-	clk => clk_dbg,
-
-	probe0 => reg_file(1), 
-	probe1 => reg_file(2), 
-	probe2 => reg_file(3), 
-	probe3 => reg_file(4), 
-	probe4 => reg_file(5), 
-	probe5 => reg_file(6), 
-	probe6 => reg_file(7),
-	probe7 => reg_file(8)
-);
 end rtl;

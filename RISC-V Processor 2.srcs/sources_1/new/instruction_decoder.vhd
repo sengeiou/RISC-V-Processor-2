@@ -61,6 +61,12 @@ begin
             uop.reg_src_1 <= "00000";
             
             instruction_ready <= '1';
+        elsif (instruction(6 downto 0) = "1100011") then
+            uop.operation_type <= OP_TYPE_COND_BRANCH;
+            uop.operation_select <= "00000" & instruction(14 downto 12);
+            uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8); 
+            
+            --uop.reg_dest <= "00000";
         end if;
     end process;
 

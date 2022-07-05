@@ -18,7 +18,7 @@ architecture Behavioral of register_status_vector_tb is
     
     constant T : time := 20ns;
 begin
-    uut : entity work.register_status_vector(rtl)
+    uut : entity work.register_alias_allocator_2(rtl)
           generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                       ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
           port map(free_reg_alias => free_reg_alias,

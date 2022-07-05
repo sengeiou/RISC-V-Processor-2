@@ -87,6 +87,8 @@ architecture Structural of execution_engine is
     signal raa_put_en : std_logic;
     
     signal raa_empty : std_logic;
+    
+    signal rat_passthrough : rat_type;
     -- ===============================================
     
     -- ========== REGISTER FILE SIGNALS ==========
@@ -173,6 +175,9 @@ architecture Structural of execution_engine is
     signal uop_issue_ready : std_logic;
     signal next_uop_store : std_logic;
     signal next_uop_load : std_logic;
+    
+    signal is_cond_branch_commit : std_logic;
+    signal is_jump_commit : std_logic;
     -- =======================================
 begin
     instruction_queue : fifo_generator_1
@@ -298,7 +303,7 @@ begin
     raa_get_en <= '1' when next_uop_ready = '1' and next_uop.reg_dest /= "00000" else '0'; 
     raa_put_en <= '1' when rob_commit_ready = '1' and freed_reg_addr /= PHYS_REG_TAG_ZERO else '0';
       
-    register_status_vector : entity work.register_status_vector(rtl)
+    register_alias_allocator : entity work.register_alias_allocator_2(rtl)
                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                            ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
                                port map(free_reg_alias => freed_reg_addr,
@@ -327,6 +332,10 @@ begin
                                              phys_reg_addr_read_2 => renamed_src_reg_2,
                                              phys_reg_addr_read_2_v => renamed_src_reg_2_valid,
                                              
+                                             rat_in => rat_passthrough,
+                                             rat_out => open,
+                                             rat_overwrite => '0',
+                                             
                                              arch_reg_addr_write_1 => next_uop.reg_dest,
                                              phys_reg_addr_write_1 => renamed_dest_reg,
                                              
@@ -340,10 +349,14 @@ begin
                                                 ENABLE_VALID_BITS => false)
                                       port map(cdb_tag => PHYS_REG_TAG_ZERO,
                                       
-                                               arch_reg_addr_read_1 => rob_head_dest_reg,                   -- Architectural address of a register to be added onto the allocator's stack
+                                               arch_reg_addr_read_1 => rob_head_dest_reg,                   -- Architectural address of a register to be marked as free
                                                arch_reg_addr_read_2 => REG_ADDR_ZERO,                       -- Currently unused
                                                
-                                               phys_reg_addr_read_1 => freed_reg_addr,                      -- Address of a physical register to be added onto the allocator's stack
+                                               phys_reg_addr_read_1 => freed_reg_addr,                      -- Address of a physical register to be marked as free
+                                                 
+                                               rat_in => RAT_TYPE_ZERO,
+                                               rat_out => rat_passthrough,
+                                               rat_overwrite => '0',
                                                  
                                                arch_reg_addr_write_1 => rob_head_dest_reg,
                                                phys_reg_addr_write_1 => rob_head_dest_tag,
@@ -511,6 +524,9 @@ begin
                                
                                reset => reset,
                                clk => clk);
+
+    is_cond_branch_commit <= '1' when rob_head_operation_type = OP_TYPE_COND_BRANCH and rob_commit_ready = '1' else '0';
+    is_jump_commit <= '1' when rob_head_operation_type = OP_TYPE_JUMP and rob_commit_ready = '1' else '0';
 
     sq_data_tag <= renamed_src_reg_2;
     sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '1' and next_uop_ready = '1' else '0';      -- 5th bit of operation select indicates a store

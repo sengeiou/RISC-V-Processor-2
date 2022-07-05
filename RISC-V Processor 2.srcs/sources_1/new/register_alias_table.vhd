@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
+use WORK.PKG_CPU.ALL;
 
 -- Potentially change it to a synchronous read
 
@@ -34,6 +35,10 @@ entity register_alias_table is
         -- ===================================
                 
         -- Control signals
+        rat_out : out rat_type;
+        rat_in : in rat_type;
+        rat_overwrite : in std_logic;
+        
         clk : in std_logic;
         reset : in std_logic
     );
@@ -46,7 +51,6 @@ architecture rtl of register_alias_table is
     constant ARCH_REGFILE_ADDR_ZERO : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
     constant PHYS_REGFILE_ADDR_ZERO : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
 
-    type rat_type is array (ARCH_REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(PHYS_REGFILE_ADDR_BITS downto 0);
     signal rat : rat_type;
 begin
     rat_proc : process(clk)
@@ -56,6 +60,8 @@ begin
                 for i in 0 to ARCH_REGFILE_ENTRIES - 1 loop
                     rat(i) <= std_logic_vector(to_unsigned(i, PHYS_REGFILE_ADDR_BITS)) & VALID_BIT_INIT_VAL;
                 end loop;
+            elsif (rat_overwrite = '1') then
+                rat <= rat_in;
             else
                 if (arch_reg_addr_write_1 /= ARCH_REGFILE_ADDR_ZERO) then
                     rat(to_integer(unsigned(arch_reg_addr_write_1))) <= phys_reg_addr_write_1 & '0';
@@ -78,4 +84,6 @@ begin
     
     phys_reg_addr_read_1_v <= rat(to_integer(unsigned(arch_reg_addr_read_1)))(0);
     phys_reg_addr_read_2_v <= rat(to_integer(unsigned(arch_reg_addr_read_2)))(0);
+    
+    rat_out <= rat;
 end rtl;

@@ -18,11 +18,11 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="20000001fs"></ZoomEndTime>
-      <Cursor1Time time="16976242fs"></Cursor1Time>
+      <Cursor1Time time="2075877fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="194"></NameColumnWidth>
-      <ValueColumnWidth column_width="85"></ValueColumnWidth>
+      <ValueColumnWidth column_width="77"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="6" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -121,6 +121,7 @@
       <wvobject fp_name="group1160" type="group">
          <obj_property name="label">REGISTER RENAMING</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="group1159" type="group">
             <obj_property name="label">FRONTEND RAT</obj_property>
             <obj_property name="DisplayName">label</obj_property>
@@ -148,50 +149,46 @@
             </wvobject>
          </wvobject>
          <wvobject fp_name="group1161" type="group">
-            <obj_property name="label">RAA</obj_property>
+            <obj_property name="label">RSV</obj_property>
             <obj_property name="DisplayName">label</obj_property>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/put_reg_alias" type="array">
-               <obj_property name="ElementShortName">put_reg_alias[6:0]</obj_property>
-               <obj_property name="ObjectShortName">put_reg_alias[6:0]</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/free_reg_alias" type="array">
+               <obj_property name="ElementShortName">free_reg_alias[6:0]</obj_property>
+               <obj_property name="ObjectShortName">free_reg_alias[6:0]</obj_property>
             </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/get_reg_alias" type="array">
-               <obj_property name="ElementShortName">get_reg_alias[6:0]</obj_property>
-               <obj_property name="ObjectShortName">get_reg_alias[6:0]</obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/alloc_reg_alias" type="array">
+               <obj_property name="ElementShortName">alloc_reg_alias[6:0]</obj_property>
+               <obj_property name="ObjectShortName">alloc_reg_alias[6:0]</obj_property>
             </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/put_en" type="logic">
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/put_en" type="logic">
                <obj_property name="ElementShortName">put_en</obj_property>
                <obj_property name="ObjectShortName">put_en</obj_property>
             </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/get_en" type="logic">
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/get_en" type="logic">
                <obj_property name="ElementShortName">get_en</obj_property>
                <obj_property name="ObjectShortName">get_en</obj_property>
             </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/empty" type="logic">
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/empty" type="logic">
                <obj_property name="ElementShortName">empty</obj_property>
                <obj_property name="ObjectShortName">empty</obj_property>
             </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/raa_stack" type="array">
-               <obj_property name="ElementShortName">raa_stack[63:0][6:0]</obj_property>
-               <obj_property name="ObjectShortName">raa_stack[63:0][6:0]</obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/n_empty" type="logic">
+               <obj_property name="ElementShortName">n_empty</obj_property>
+               <obj_property name="ObjectShortName">n_empty</obj_property>
             </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/head_counter_reg" type="array">
-               <obj_property name="ElementShortName">head_counter_reg[5:0]</obj_property>
-               <obj_property name="ObjectShortName">head_counter_reg[5:0]</obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/i_alloc_reg_alias" type="array">
+               <obj_property name="ElementShortName">i_alloc_reg_alias[6:0]</obj_property>
+               <obj_property name="ObjectShortName">i_alloc_reg_alias[6:0]</obj_property>
             </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/raa_full" type="logic">
-               <obj_property name="ElementShortName">raa_full</obj_property>
-               <obj_property name="ObjectShortName">raa_full</obj_property>
-            </wvobject>
-            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/raa_empty" type="logic">
-               <obj_property name="ElementShortName">raa_empty</obj_property>
-               <obj_property name="ObjectShortName">raa_empty</obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_status_vector/register_status_vector" type="array">
+               <obj_property name="ElementShortName">register_status_vector[95:0]</obj_property>
+               <obj_property name="ObjectShortName">register_status_vector[95:0]</obj_property>
             </wvobject>
          </wvobject>
       </wvobject>
       <wvobject fp_name="group33" type="group">
          <obj_property name="label">REGFILE</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_file/reg_file" type="array">
             <obj_property name="ElementShortName">reg_file[95:0][31:0]</obj_property>
             <obj_property name="ObjectShortName">reg_file[95:0][31:0]</obj_property>

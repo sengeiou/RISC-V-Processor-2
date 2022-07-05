@@ -57,9 +57,14 @@ package pkg_cpu is
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     end record;
     
+    type rat_type is array (ARCH_REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(PHYS_REGFILE_ADDR_BITS downto 0);
+    constant RAT_TYPE_ZERO : rat_type := (others => (others => '0'));
+    
     -- Operation Type Definitions
     constant OP_TYPE_INTEGER : std_logic_vector(2 downto 0) := "000";
     constant OP_TYPE_LOAD_STORE : std_logic_vector(2 downto 0) := "001";
+    constant OP_TYPE_COND_BRANCH : std_logic_vector(2 downto 0) := "010";
+    constant OP_TYPE_JUMP : std_logic_vector(2 downto 0) := "011";
     
     -- Load-Store Unit Operation Definitions
     constant LSU_OP_LW : std_logic_vector(7 downto 0) := "00000000";
