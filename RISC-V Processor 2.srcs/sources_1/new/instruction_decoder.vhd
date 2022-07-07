@@ -67,6 +67,7 @@ begin
             uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & "0"; 
             
             --uop.reg_dest <= "00000";
+            instruction_ready <= '1';
         end if;
     end process;
 

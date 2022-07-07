@@ -160,7 +160,7 @@ begin
     full <= rob_full;
     empty <= rob_empty;
     
-    next_instr_tag <= tail_counter_next;
+    next_instr_tag <= tail_counter_reg;
     
     head_arch_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(ARCH_DEST_REG_START downto ARCH_DEST_REG_END) when commit_ready = '1' else (others => '0');
     head_phys_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(PHYS_DEST_REG_START downto PHYS_DEST_REG_END) when commit_ready = '1' else (others => '0');

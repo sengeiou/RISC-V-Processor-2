@@ -361,7 +361,7 @@ begin
                     end if;
                     
                     if (sq_finished_tag_valid = '1') then
-                        load_queue(i)(to_integer(unsigned(sq_finished_tag)) + 3) <= '0';
+                        load_queue(i)(to_integer(unsigned(sq_finished_tag)) + 3 + INSTR_TAG_BITS) <= '0';
                     end if;
                 end loop;
             end if;
