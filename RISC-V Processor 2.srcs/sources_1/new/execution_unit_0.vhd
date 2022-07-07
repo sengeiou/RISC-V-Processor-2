@@ -37,6 +37,11 @@ architecture structural of execution_unit_0 is
     signal alu_result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     signal i_ready : std_logic;
     
+    signal alu_comp_result : std_logic;
+    signal alu_comp_result_n : std_logic;
+    signal branch_taken : std_logic;
+    signal branch_target_addr : std_logic;
+    
     signal pipeline_reg_0 : exec_unit_0_pipeline_reg_0_type;
     signal pipeline_reg_0_next : exec_unit_0_pipeline_reg_0_type;
 begin
@@ -61,6 +66,11 @@ begin
     -- =====================================================
     -- =====================================================
 
+
+
+    -- =====================================================
+    --                          ALU 
+    -- =====================================================
     operand_1 <= reg_data_1;
     operand_2 <= reg_data_2 when operation_select(7) = '0' else immediate;
 
@@ -71,6 +81,23 @@ begin
                    result => alu_result,
                    alu_op_sel => operation_select(3 downto 0));
     
+    -- =====================================================
+    -- =====================================================
+    
+    
+    
+    -- =====================================================
+    --                      BRANCHING
+    -- =====================================================
+    alu_comp_result <= alu_result(0);
+    alu_comp_result_n <= not alu_comp_result;
+    
+    branch_taken <= alu_comp_result when operation_select(4) = '0' else alu_comp_result_n;
+    
+    branch_target_addr <= PC + unsigned(immediate);
+    
+    -- =====================================================
+    -- =====================================================
     i_ready <= '0' when (not pipeline_reg_0.valid or cdb_granted) = '0' else '1';
     ready <= i_ready;
                    

@@ -12,7 +12,7 @@ entity instruction_decoder is
 end instruction_decoder;
 
 architecture rtl of instruction_decoder is
-
+    signal branch_op_sel : std_logic_vector(2 downto 0);
 begin
     process(instruction)
     begin
@@ -24,8 +24,8 @@ begin
         uop.arch_src_reg_2 <= instruction(24 downto 20);
         uop.arch_dest_reg <= instruction(11 downto 7);
         
-        instruction_ready <= '0';
-        
+        branch_op_sel <= (others => '0');
+
         if (instruction(6 downto 0) = "0010011") then
             uop.operation_type <= OP_TYPE_INTEGER;      
             uop.operation_select <= "10000" & instruction(14 downto 12);
@@ -61,13 +61,22 @@ begin
             uop.arch_src_reg_1 <= "00000";
             
             instruction_ready <= '1';
-        elsif (instruction(6 downto 0) = "1100011") then
-            uop.operation_type <= OP_TYPE_COND_BRANCH;
-            uop.operation_select <= "00000" & instruction(14 downto 12);
+        elsif (instruction(6 downto 0) = "1100011") then        -- BRANCHING
+            with instruction(14 downto 13) select branch_op_sel <=
+                ALU_OP_EQ when "00",
+                ALU_OP_LESS when "10",
+                ALU_OP_LESSU when "11",
+                "000" when others;
+        
+            uop.operation_type <= OP_TYPE_INTEGER;
+            uop.operation_select <= "000" & instruction(12) & "1" & branch_op_sel;
             uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & "0"; 
             
             --uop.reg_dest <= "00000";
             instruction_ready <= '1';
+            
+        else
+            instruction_ready <= '0';
         end if;
     end process;
 

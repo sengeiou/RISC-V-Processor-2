@@ -76,10 +76,10 @@ package pkg_cpu is
     -- Integer EU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";
     constant ALU_OP_SUB : std_logic_vector(3 downto 0) := "1000";
+    constant ALU_OP_XOR : std_logic_vector(3 downto 0) := "0100";
     constant ALU_OP_EQ : std_logic_vector(3 downto 0) := "1100";
     constant ALU_OP_LESS : std_logic_vector(3 downto 0) := "0010";
     constant ALU_OP_LESSU : std_logic_vector(3 downto 0) := "1110";
-    constant ALU_OP_XOR : std_logic_vector(3 downto 0) := "0100";
     constant ALU_OP_OR : std_logic_vector(3 downto 0) := "0110";
     constant ALU_OP_AND : std_logic_vector(3 downto 0) := "0111";
     constant ALU_OP_SLL : std_logic_vector(3 downto 0) := "0001";
