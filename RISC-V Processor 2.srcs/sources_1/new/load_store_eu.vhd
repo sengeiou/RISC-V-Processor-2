@@ -16,6 +16,9 @@ entity load_store_eu is
         LQ_ENTRIES : integer  
     );
     port(
+        -- Instruction tags
+        instr_tag : in std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
+    
         -- Address generation results bus
         generated_address : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         sq_calc_addr_tag : in std_logic_vector(integer(ceil(log2(real(SQ_ENTRIES)))) - 1 downto 0);
@@ -71,7 +74,7 @@ architecture rtl of load_store_eu is
     constant SQ_TAG_BITS : integer := integer(ceil(log2(real(SQ_ENTRIES))));
     constant LQ_TAG_BITS : integer := integer(ceil(log2(real(LQ_ENTRIES))));
     constant SQ_ENTRY_BITS : integer := CPU_ADDR_WIDTH_BITS + PHYS_REGFILE_ADDR_BITS + CPU_DATA_WIDTH_BITS + 4;
-    constant LQ_ENTRY_BITS : integer := CPU_ADDR_WIDTH_BITS + DATA_TAG_BITS + SQ_ENTRIES + 4;
+    constant LQ_ENTRY_BITS : integer := CPU_ADDR_WIDTH_BITS + DATA_TAG_BITS + SQ_ENTRIES + INSTR_TAG_BITS + 4;
 
     -- SQ ENTRY INDEXES
     constant SQ_ADDR_VALID : integer := SQ_ENTRY_BITS - 1;
@@ -93,8 +96,10 @@ architecture rtl of load_store_eu is
     constant LQ_DATA_TAG_END : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - 1;
     constant LQ_STQ_MASK_START : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - 2;
     constant LQ_STQ_MASK_END : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - 1;
-    constant LQ_READY_BIT : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - 2;
-    constant LQ_EXECUTED_BIT : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - 3;
+    constant LQ_INSTR_TAG_START : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - 2;
+    constant LQ_INSTR_TAG_END : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - INSTR_TAG_BITS - 1;
+    constant LQ_READY_BIT : integer := 2;
+    constant LQ_EXECUTED_BIT : integer := 1;
     constant LQ_VALID_BIT : integer := 0;
 
     -- INITIALIZATION CONSTANTS
@@ -319,6 +324,7 @@ begin
                                                                    ADDR_ZERO &
                                                                    lq_dest_tag &
                                                                    lq_mask_bits &
+                                                                   instr_tag & 
                                                                    '0' &
                                                                    '0' &
                                                                    '1';
@@ -449,7 +455,8 @@ begin
     lq_alloc_tag <= std_logic_vector(lq_tail_counter_reg);
                  
     cdb.data <= load_data_reg;
-    cdb.tag <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
+    cdb.phys_dest_reg <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
+    cdb.instr_tag <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_INSTR_TAG_START downto LQ_INSTR_TAG_END);
                             
     bus_addr_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_ADDR_START downto SQ_ADDR_END);
     bus_addr_read <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_ADDR_START downto LQ_ADDR_END);

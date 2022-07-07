@@ -111,8 +111,10 @@ architecture Structural of execution_engine is
     
     -- ========== REORDER BUFFER SIGNALS ==========
     signal rob_head_operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
-    signal rob_head_dest_reg : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
-    signal rob_head_dest_tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    signal rob_head_arch_dest_reg : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
+    signal rob_head_phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+    
+    signal rob_next_alloc_tag : std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
     
     signal rob_commit_ready : std_logic;
     signal rob_full : std_logic;
@@ -187,9 +189,9 @@ begin
         
       din(57 downto 55) => decoded_instruction.operation_type,
       din(54 downto 47) => decoded_instruction.operation_select,
-      din(46 downto 42) => decoded_instruction.reg_src_1,
-      din(41 downto 37) => decoded_instruction.reg_src_2,
-      din(36 downto 32) => decoded_instruction.reg_dest,
+      din(46 downto 42) => decoded_instruction.arch_src_reg_1,
+      din(41 downto 37) => decoded_instruction.arch_src_reg_2,
+      din(36 downto 32) => decoded_instruction.arch_dest_reg,
       din(31 downto 0) => decoded_instruction.immediate,
         
       wr_en => instr_ready,
@@ -197,9 +199,9 @@ begin
         
       dout(57 downto 55) => next_uop.operation_type,
       dout(54 downto 47) => next_uop.operation_select,
-      dout(46 downto 42) => next_uop.reg_src_1,
-      dout(41 downto 37) => next_uop.reg_src_2,
-      dout(36 downto 32) => next_uop.reg_dest,
+      dout(46 downto 42) => next_uop.arch_src_reg_1,
+      dout(41 downto 37) => next_uop.arch_src_reg_2,
+      dout(36 downto 32) => next_uop.arch_dest_reg,
       dout(31 downto 0) => next_uop.immediate,
         
       full => iq_full,
@@ -258,18 +260,19 @@ begin
     pipeline_reg_3_0_rst <= '0';
     pipeline_reg_3_1_rst <= '0';
 
+    pipeline_reg_1_next.sched_in_port_0.instr_tag <= rob_next_alloc_tag;
     pipeline_reg_1_next.sched_in_port_0.operation_type <= next_uop.operation_type;
     pipeline_reg_1_next.sched_in_port_0.operation_select <= next_uop.operation_select;
     pipeline_reg_1_next.sched_in_port_0.src_tag_1 <= renamed_src_reg_1;
-    pipeline_reg_1_next.sched_in_port_0.src_tag_1_valid <= '1' when cdb.tag = renamed_src_reg_1 or renamed_src_reg_1_valid = '1' else '0';
+    pipeline_reg_1_next.sched_in_port_0.src_tag_1_valid <= '1' when cdb.phys_dest_reg = renamed_src_reg_1 or renamed_src_reg_1_valid = '1' else '0';
     pipeline_reg_1_next.sched_in_port_0.src_tag_2 <= renamed_src_reg_2;
-    pipeline_reg_1_next.sched_in_port_0.src_tag_2_valid <= '1' when cdb.tag = renamed_src_reg_2 or renamed_src_reg_2_valid = '1' else '0';
-    pipeline_reg_1_next.sched_in_port_0.dest_tag <= renamed_dest_reg when raa_get_en = '1' else (others => '0');
+    pipeline_reg_1_next.sched_in_port_0.src_tag_2_valid <= '1' when cdb.phys_dest_reg = renamed_src_reg_2 or renamed_src_reg_2_valid = '1' else '0';
+    pipeline_reg_1_next.sched_in_port_0.phys_dest_reg <= renamed_dest_reg when raa_get_en = '1' else (others => '0');
     pipeline_reg_1_next.sched_in_port_0.immediate <= next_uop.immediate;
     pipeline_reg_1_next.sched_in_port_0.store_queue_tag <= sq_alloc_tag;
     pipeline_reg_1_next.sched_in_port_0.load_queue_tag <= lq_alloc_tag;
-    pipeline_reg_1_next.dest_reg <= next_uop.reg_dest;
-    pipeline_reg_1_next.valid <= '1';
+    pipeline_reg_1_next.dest_reg <= next_uop.arch_dest_reg;
+    pipeline_reg_1_next.valid <= next_uop_ready;
     
     pipeline_reg_2_0_next.sched_out_port_0 <= port_0;
     pipeline_reg_2_0_next.valid <= port_0.valid;
@@ -277,17 +280,19 @@ begin
     pipeline_reg_2_1_next.sched_out_port_1 <= port_1;
     pipeline_reg_2_1_next.valid <= port_1.valid;
 
+    pipeline_reg_3_0_next.instr_tag <= pipeline_reg_2_0.sched_out_port_0.instr_tag;
     pipeline_reg_3_0_next.operand_1 <= rf_rd_data_1;
     pipeline_reg_3_0_next.operand_2 <= rf_rd_data_2;
     pipeline_reg_3_0_next.immediate <= pipeline_reg_2_0.sched_out_port_0.immediate;
-    pipeline_reg_3_0_next.dest_tag <= pipeline_reg_2_0.sched_out_port_0.dest_tag;
+    pipeline_reg_3_0_next.phys_dest_reg <= pipeline_reg_2_0.sched_out_port_0.phys_dest_reg;
     pipeline_reg_3_0_next.operation_select <= pipeline_reg_2_0.sched_out_port_0.operation_sel;
     pipeline_reg_3_0_next.valid <= pipeline_reg_2_0.sched_out_port_0.valid;
 
+    pipeline_reg_3_1_next.instr_tag <= pipeline_reg_2_1.sched_out_port_1.instr_tag;
     pipeline_reg_3_1_next.store_data_value <= rf_rd_data_3;
     pipeline_reg_3_1_next.base_addr_value <= rf_rd_data_4;
     pipeline_reg_3_1_next.immediate <= pipeline_reg_2_1.sched_out_port_1.immediate;
-    pipeline_reg_3_1_next.data_tag <= pipeline_reg_2_1.sched_out_port_1.src_tag_2;
+    pipeline_reg_3_1_next.data_tag <= pipeline_reg_2_1.sched_out_port_1.phys_src_reg_2;
     pipeline_reg_3_1_next.store_queue_tag <= pipeline_reg_2_1.sched_out_port_1.store_queue_tag;
     pipeline_reg_3_1_next.load_queue_tag <= pipeline_reg_2_1.sched_out_port_1.load_queue_tag;
     pipeline_reg_3_1_next.operation_select <= pipeline_reg_2_1.sched_out_port_1.operation_sel;
@@ -300,7 +305,7 @@ begin
     --                                        REGISTER RENAMING
     -- ==================================================================================================
     next_uop_ready <= not (iq_empty or sched_full or raa_empty);
-    raa_get_en <= '1' when next_uop_ready = '1' and next_uop.reg_dest /= "00000" else '0'; 
+    raa_get_en <= '1' when next_uop_ready = '1' and next_uop.arch_dest_reg /= "00000" else '0'; 
     raa_put_en <= '1' when rob_commit_ready = '1' and freed_reg_addr /= PHYS_REG_TAG_ZERO else '0';
       
     register_alias_allocator : entity work.register_alias_allocator_2(rtl)
@@ -322,10 +327,11 @@ begin
                                                 ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
                                                 VALID_BIT_INIT_VAL => '1',
                                                 ENABLE_VALID_BITS => true)
-                                    port map(cdb_tag => cdb.tag,
+                                    port map(cdb_phys_dest_reg => cdb.phys_dest_reg,
+                                             cdb_valid => cdb.valid,
                                             
-                                             arch_reg_addr_read_1 => next_uop.reg_src_1,
-                                             arch_reg_addr_read_2 => next_uop.reg_src_2,
+                                             arch_reg_addr_read_1 => next_uop.arch_src_reg_1,
+                                             arch_reg_addr_read_2 => next_uop.arch_src_reg_2,
                                              
                                              phys_reg_addr_read_1 => renamed_src_reg_1,
                                              phys_reg_addr_read_1_v => renamed_src_reg_1_valid,
@@ -336,7 +342,7 @@ begin
                                              rat_out => open,
                                              rat_overwrite => '0',
                                              
-                                             arch_reg_addr_write_1 => next_uop.reg_dest,
+                                             arch_reg_addr_write_1 => next_uop.arch_dest_reg,
                                              phys_reg_addr_write_1 => renamed_dest_reg,
                                              
                                              clk => clk,
@@ -347,9 +353,10 @@ begin
                                                 ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
                                                 VALID_BIT_INIT_VAL => '0',
                                                 ENABLE_VALID_BITS => false)
-                                      port map(cdb_tag => PHYS_REG_TAG_ZERO,
+                                      port map(cdb_phys_dest_reg => PHYS_REG_TAG_ZERO,
+                                               cdb_valid => '0',
                                       
-                                               arch_reg_addr_read_1 => rob_head_dest_reg,                   -- Architectural address of a register to be marked as free
+                                               arch_reg_addr_read_1 => rob_head_arch_dest_reg,                   -- Architectural address of a register to be marked as free
                                                arch_reg_addr_read_2 => REG_ADDR_ZERO,                       -- Currently unused
                                                
                                                phys_reg_addr_read_1 => freed_reg_addr,                      -- Address of a physical register to be marked as free
@@ -358,8 +365,8 @@ begin
                                                rat_out => rat_passthrough,
                                                rat_overwrite => '0',
                                                  
-                                               arch_reg_addr_write_1 => rob_head_dest_reg,
-                                               phys_reg_addr_write_1 => rob_head_dest_tag,
+                                               arch_reg_addr_write_1 => rob_head_arch_dest_reg,
+                                               phys_reg_addr_write_1 => rob_head_phys_dest_reg,
                                                  
                                                clk => clk,
                                                reset => reset);  
@@ -372,11 +379,11 @@ begin
                                 REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES)
                     port map(
                              -- ADDRESSES
-                             rd_1_addr => pipeline_reg_2_0.sched_out_port_0.src_tag_1,     -- Operand for ALU operations
-                             rd_2_addr => pipeline_reg_2_0.sched_out_port_0.src_tag_2,     -- Operand for ALU operations
-                             rd_3_addr => pipeline_reg_2_1.sched_out_port_1.src_tag_2,     -- Operand for memory data read operations
-                             rd_4_addr => pipeline_reg_2_1.sched_out_port_1.src_tag_1,     -- Operand for memory address operations
-                             wr_addr => cdb.tag,
+                             rd_1_addr => pipeline_reg_2_0.sched_out_port_0.phys_src_reg_1,     -- Operand for ALU operations
+                             rd_2_addr => pipeline_reg_2_0.sched_out_port_0.phys_src_reg_2,     -- Operand for ALU operations
+                             rd_3_addr => pipeline_reg_2_1.sched_out_port_1.phys_src_reg_2,     -- Operand for memory data read operations
+                             rd_4_addr => pipeline_reg_2_1.sched_out_port_1.phys_src_reg_1,     -- Operand for memory address operations
+                             wr_addr => cdb.phys_dest_reg,
                              
                              -- DATA
                              rd_1_data => rf_rd_data_1,
@@ -392,24 +399,26 @@ begin
                              clk_dbg => clk_dbg);
                              
     reorder_buffer : entity work.reorder_buffer(rtl)
-                     generic map(ROB_ENTRIES => REORDER_BUFFER_ENTRIES,
-                                 REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
-                                 TAG_BITS => PHYS_REGFILE_ADDR_BITS,
+                     generic map(ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
+                                 PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                  OPERATION_TYPE_BITS => OPERATION_TYPE_BITS)
-                     port map(cdb_tag => cdb.tag,
+                     port map(cdb_instr_tag => cdb.instr_tag,
+                              cdb_valid => cdb.valid,
 
                               head_operation_type => rob_head_operation_type,
-                              head_dest_tag => rob_head_dest_tag,
+                              head_phys_dest_reg => rob_head_phys_dest_reg,
                               head_stq_tag => sq_retire_tag,
-                              head_dest_reg => rob_head_dest_reg,
+                              head_arch_dest_reg => rob_head_arch_dest_reg,
+
+                              next_instr_tag => rob_next_alloc_tag,
                               
-                              operation_1_type => pipeline_reg_1.sched_in_port_0.operation_type,
-                              dest_reg_1 => pipeline_reg_1.dest_reg,        -- DELAY REMEMBER
-                              dest_tag_1 => pipeline_reg_1.sched_in_port_0.dest_tag,
-                              stq_tag_1 => pipeline_reg_1.sched_in_port_0.store_queue_tag,
+                              operation_1_type => next_uop.operation_type,
+                              arch_dest_reg_1 => next_uop.arch_dest_reg,    
+                              phys_dest_reg_1 => renamed_dest_reg,
+                              stq_tag_1 => sq_alloc_tag,
                               commit_ready_1 => next_uop_commit_ready,
                               
-                              write_1_en => pipeline_reg_1.valid,
+                              write_1_en => next_uop_ready,
                               commit_1_en => '1',
 
                               head_valid => rob_commit_ready,
@@ -442,7 +451,8 @@ begin
                                         reg_data_2 => pipeline_reg_3_0.operand_2,
                                         immediate => pipeline_reg_3_0.immediate,
                                         operation_select => pipeline_reg_3_0.operation_select, 
-                                        tag => pipeline_reg_3_0.dest_tag,
+                                        instr_tag => pipeline_reg_3_0.instr_tag,
+                                        phys_dest_reg => pipeline_reg_3_0.phys_dest_reg,
                                         
                                         cdb => cdb_0,
                                         cdb_request => cdb_request_0,
@@ -483,6 +493,8 @@ begin
                       generic map(SQ_ENTRIES => STORE_QUEUE_ENTRIES,
                                   LQ_ENTRIES => LOAD_QUEUE_ENTRIES)
                       port map(
+                               instr_tag => rob_next_alloc_tag,
+                      
                                generated_address => lsu_gen_addr,
                                sq_calc_addr_tag => sq_calc_addr_tag,
                                sq_calc_addr_valid => sq_calc_addr_valid,

@@ -16,7 +16,8 @@ entity execution_unit_0 is
         
         -- Bit 7 indicates whether the instruction is of I-type or R-type; Bits 3 - 0 are ALU operation select bits; Others are reserved
         operation_select : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
-        tag : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+        instr_tag : in std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
+        phys_dest_reg : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
         valid : in std_logic;       -- Signals that the input values are valid
         ready : out std_logic;      -- Whether this EU is ready to start executing a new operation
@@ -54,7 +55,8 @@ begin
     end process;
     
     pipeline_reg_0_next.result <= alu_result;
-    pipeline_reg_0_next.tag <= tag;
+    pipeline_reg_0_next.instr_tag <= instr_tag;
+    pipeline_reg_0_next.phys_dest_reg <= phys_dest_reg;
     pipeline_reg_0_next.valid <= valid;
     -- =====================================================
     -- =====================================================
@@ -73,7 +75,8 @@ begin
     ready <= i_ready;
                    
     cdb.data <= pipeline_reg_0.result;
-    cdb.tag <= pipeline_reg_0.tag;
+    cdb.instr_tag <= pipeline_reg_0.instr_tag;
+    cdb.phys_dest_reg <= pipeline_reg_0.phys_dest_reg;
     cdb.valid <= pipeline_reg_0.valid;
     
     cdb_request <= pipeline_reg_0.valid;

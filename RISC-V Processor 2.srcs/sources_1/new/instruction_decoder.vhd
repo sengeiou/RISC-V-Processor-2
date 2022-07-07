@@ -20,9 +20,9 @@ begin
         uop.operation_select <= (others => '0');
         uop.immediate <= (others => '0');
         
-        uop.reg_src_1 <= instruction(19 downto 15);
-        uop.reg_src_2 <= instruction(24 downto 20);
-        uop.reg_dest <= instruction(11 downto 7);
+        uop.arch_src_reg_1 <= instruction(19 downto 15);
+        uop.arch_src_reg_2 <= instruction(24 downto 20);
+        uop.arch_dest_reg <= instruction(11 downto 7);
         
         instruction_ready <= '0';
         
@@ -42,7 +42,7 @@ begin
             uop.operation_type <= OP_TYPE_LOAD_STORE;
             uop.operation_select <= "10000" & instruction(14 downto 12);
             
-            uop.reg_dest <= (others => '0');        -- HAS TO BE 0 SO THAT IS DOESN'T GET RENAMED SINCE SW DOESN'T USE A DESTINATION REGISTER!!!
+            uop.arch_dest_reg <= (others => '0');        -- HAS TO BE 0 SO THAT IS DOESN'T GET RENAMED SINCE SW DOESN'T USE A DESTINATION REGISTER!!!
             uop.immediate <= X"00000" & instruction(31 downto 25) & instruction(11 downto 7);
             
             instruction_ready <= '1';
@@ -58,13 +58,13 @@ begin
             uop.operation_select <= "10000000";
             uop.immediate <= instruction(31 downto 12) & X"000";
             
-            uop.reg_src_1 <= "00000";
+            uop.arch_src_reg_1 <= "00000";
             
             instruction_ready <= '1';
         elsif (instruction(6 downto 0) = "1100011") then
             uop.operation_type <= OP_TYPE_COND_BRANCH;
             uop.operation_select <= "00000" & instruction(14 downto 12);
-            uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8); 
+            uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & "0"; 
             
             --uop.reg_dest <= "00000";
         end if;

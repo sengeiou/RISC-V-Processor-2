@@ -10,11 +10,13 @@ package pkg_fu is
     -- =====================================================
     type exec_unit_0_pipeline_reg_0_type is record
         result : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
-        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+        instr_tag : std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
+        phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         valid : std_logic;
     end record;
  
     constant EU_0_PIPELINE_REG_0_INIT : exec_unit_0_pipeline_reg_0_type := ((others => '0'),
+                                                                      (others => '0'),
                                                                       (others => '0'),
                                                                       '0');
     

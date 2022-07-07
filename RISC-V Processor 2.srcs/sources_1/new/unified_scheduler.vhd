@@ -119,13 +119,13 @@ begin
     -- into consideration. Without this part the instruction in an entry could keep waiting for a result of an instruction that has already finished execution.  
     reservation_station_operand_select_proc : process(cdb, in_port_0)
     begin
-        if (in_port_0.src_tag_1 /= cdb.tag) then
+        if (in_port_0.src_tag_1 /= cdb.phys_dest_reg) then
             rs1_src_tag_1_v <= in_port_0.src_tag_1_valid;
         else
             rs1_src_tag_1_v <= '1';
         end if;
         
-        if (in_port_0.src_tag_2 /= cdb.tag) then
+        if (in_port_0.src_tag_2 /= cdb.phys_dest_reg) then
             rs1_src_tag_2_v <= in_port_0.src_tag_2_valid;
         else
             rs1_src_tag_2_v <= '1';
@@ -146,10 +146,12 @@ begin
                                                                         rs1_src_tag_1_v &
                                                                         in_port_0.src_tag_2 & 
                                                                         rs1_src_tag_2_v &
-                                                                        in_port_0.dest_tag & 
+                                                                        in_port_0.phys_dest_reg & 
                                                                         in_port_0.store_queue_tag &
                                                                         in_port_0.load_queue_tag & 
-                                                                        in_port_0.immediate & '1';
+                                                                        in_port_0.immediate & 
+                                                                        in_port_0.instr_tag & 
+                                                                        '1';
                 end if;
 
                 for i in 0 to OUTPUT_PORT_COUNT - 1 loop
@@ -159,12 +161,12 @@ begin
                 end loop;
 
                 for i in 0 to SCHEDULER_ENTRIES - 1 loop
-                    if (sched_entries(i)(OPERAND_TAG_1_START downto OPERAND_TAG_1_END) = cdb.tag and
+                    if (sched_entries(i)(OPERAND_TAG_1_START downto OPERAND_TAG_1_END) = cdb.phys_dest_reg and
                         sched_entries(i)(0) = '1' and sched_entries(i)(OPERAND_TAG_1_VALID) = '0') then
                         sched_entries(i)(OPERAND_TAG_1_VALID) <= '1';
                     end if;
                     
-                    if (sched_entries(i)(OPERAND_TAG_2_START downto OPERAND_TAG_2_END) = cdb.tag and
+                    if (sched_entries(i)(OPERAND_TAG_2_START downto OPERAND_TAG_2_END) = cdb.phys_dest_reg and
                         sched_entries(i)(0) = '1' and sched_entries(i)(OPERAND_TAG_2_VALID) = '0') then
                         sched_entries(i)(OPERAND_TAG_2_VALID) <= '1';
                     end if;
@@ -176,24 +178,26 @@ begin
     -- Puts the selected entry onto one exit port of the reservation station
     reservation_station_dispatch_proc : process(sched_entries, sched_read_sel, dispatch_en, sched_read_sel_valid)
     begin
+        out_port_0.instr_tag <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(INSTR_TAG_START downto INSTR_TAG_END);
         out_port_0.operation_type <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERATION_TYPE_START downto OPERATION_TYPE_END);
         out_port_0.operation_sel <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERATION_SELECT_START downto OPERATION_SELECT_END);
-        out_port_0.src_tag_1 <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
-        out_port_0.src_tag_2 <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
+        out_port_0.phys_src_reg_1 <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
+        out_port_0.phys_src_reg_2 <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
         out_port_0.immediate <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(IMMEDIATE_START downto IMMEDIATE_END);
         out_port_0.store_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(STORE_QUEUE_TAG_START downto STORE_QUEUE_TAG_END);
         out_port_0.load_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(LOAD_QUEUE_TAG_START downto LOAD_QUEUE_TAG_END);
-        out_port_0.dest_tag <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(DEST_TAG_START downto DEST_TAG_END);
+        out_port_0.phys_dest_reg <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(DEST_TAG_START downto DEST_TAG_END);
         out_port_0.valid <= dispatch_en(0) and sched_read_sel_valid(0);
         
+        out_port_1.instr_tag <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(INSTR_TAG_START downto INSTR_TAG_END);
         out_port_1.operation_type <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(OPERATION_TYPE_START downto OPERATION_TYPE_END);
         out_port_1.operation_sel <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(OPERATION_SELECT_START downto OPERATION_SELECT_END);
-        out_port_1.src_tag_1 <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
-        out_port_1.src_tag_2 <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
+        out_port_1.phys_src_reg_1 <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(OPERAND_TAG_1_START downto OPERAND_TAG_1_END);
+        out_port_1.phys_src_reg_2 <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(OPERAND_TAG_2_START downto OPERAND_TAG_2_END);
         out_port_1.immediate <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(IMMEDIATE_START downto IMMEDIATE_END);
         out_port_1.store_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(STORE_QUEUE_TAG_START downto STORE_QUEUE_TAG_END);
         out_port_1.load_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(LOAD_QUEUE_TAG_START downto LOAD_QUEUE_TAG_END);
-        out_port_1.dest_tag <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(DEST_TAG_START downto DEST_TAG_END);
+        out_port_1.phys_dest_reg <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(DEST_TAG_START downto DEST_TAG_END);
         out_port_1.valid <= dispatch_en(1) and sched_read_sel_valid(1);
     end process;
 end rtl;

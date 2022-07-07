@@ -28,8 +28,10 @@ package pkg_cpu is
     constant OPERAND_BITS : integer := CPU_DATA_WIDTH_BITS;
     constant STORE_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(STORE_QUEUE_ENTRIES))));
     constant LOAD_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(LOAD_QUEUE_ENTRIES))));
+    constant INSTR_TAG_BITS : integer := integer(ceil(log2(real(REORDER_BUFFER_ENTRIES))));
     
     -- Constants
+    constant INSTR_TAG_ZERO : std_logic_vector(INSTR_TAG_BITS - 1 downto 0) := (others => '0');
     constant REG_ADDR_ZERO : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
     constant PHYS_REG_TAG_ZERO : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
     constant ADDR_ZERO : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0) := (others => '0');
@@ -50,9 +52,9 @@ package pkg_cpu is
         operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         
         -- Source register addresses
-        reg_src_1 : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
-        reg_src_2 : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
-        reg_dest : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
+        arch_src_reg_1 : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
+        arch_src_reg_2 : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
+        arch_dest_reg : std_logic_vector(ARCH_REGFILE_ADDR_BITS - 1 downto 0);
         
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     end record;
@@ -104,7 +106,8 @@ package pkg_cpu is
     -- CDB Configuration
     
     type cdb_type is record
-        tag : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+        instr_tag : std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
+        phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         data : std_logic_vector(OPERAND_BITS - 1 downto 0);
         valid : std_logic;
     end record;

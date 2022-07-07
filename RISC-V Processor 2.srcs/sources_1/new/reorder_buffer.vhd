@@ -8,22 +8,24 @@ use WORK.PKG_CPU.ALL;
 
 entity reorder_buffer is
     generic(
-        ROB_ENTRIES : integer range 1 to 1024;
-        TAG_BITS : integer;
-        REGFILE_ENTRIES : integer range 1 to 1024;
+        ARCH_REGFILE_ENTRIES : integer range 1 to 1024;
+        PHYS_REGFILE_ENTRIES : integer range 1 to 1024;
         OPERATION_TYPE_BITS : integer range 1 to 64
     );
     port(
         head_operation_type : out std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
-        head_dest_reg : out std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
-        head_dest_tag : out std_logic_vector(TAG_BITS - 1 downto 0);
+        head_arch_dest_reg : out std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0);
+        head_phys_dest_reg : out std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         head_stq_tag : out std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
     
-        cdb_tag : in std_logic_vector(TAG_BITS - 1 downto 0);
+        cdb_instr_tag : in std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        cdb_valid : in std_logic;
+    
+        next_instr_tag : out std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
     
         operation_1_type : in std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
-        dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0);
-        dest_tag_1 : in std_logic_vector(TAG_BITS - 1 downto 0);
+        arch_dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0);
+        phys_dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         stq_tag_1 : in std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
         commit_ready_1 : in std_logic;
         
@@ -40,28 +42,30 @@ entity reorder_buffer is
 end reorder_buffer;
 
 architecture rtl of reorder_buffer is
-    constant ROB_TAG_BITS : integer := integer(ceil(log2(real(ROB_ENTRIES))));
-    constant REGFILE_TAG_BITS : integer := integer(ceil(log2(real(REGFILE_ENTRIES))));
-    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + TAG_BITS + REGFILE_TAG_BITS + STORE_QUEUE_TAG_BITS + 1;
+    constant ROB_TAG_BITS : integer := integer(ceil(log2(real(REORDER_BUFFER_ENTRIES))));
+    constant ARCH_REG_TAG_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES))));
+    constant PHYS_REG_TAG_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
+    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + ARCH_REG_TAG_BITS + PHYS_REG_TAG_BITS + STORE_QUEUE_TAG_BITS + 1 + 1;
     
-    constant TAG_ZERO : std_logic_vector(TAG_BITS - 1 downto 0) := (others => '0');
-    constant ROB_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(ROB_ENTRIES)))) - 1 downto 0) := (others => '0');
-    constant REGFILE_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(REGFILE_ENTRIES)))) - 1 downto 0) := (others => '0');
+    constant TAG_ZERO : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := (others => '0');
+    constant ROB_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0) := (others => '0');
+    constant REGFILE_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0) := (others => '0');
     constant COUNTER_ONE : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := std_logic_vector(to_unsigned(1, ROB_TAG_BITS));
     
     -- ========== STARTING AND ENDING INDEXES OF ROB ENTRIES ==========
     constant OP_TYPE_START : integer := ROB_ENTRY_BITS - 1;
     constant OP_TYPE_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS;
-    constant DEST_TAG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - 1;
-    constant DEST_TAG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS;
-    constant DEST_REG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - 1;
-    constant DEST_REG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - REGFILE_TAG_BITS;
-    constant STQ_TAG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - REGFILE_TAG_BITS - 1;
-    constant STQ_TAG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - TAG_BITS - REGFILE_TAG_BITS - STORE_QUEUE_TAG_BITS;
+    constant ARCH_DEST_REG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - 1;
+    constant ARCH_DEST_REG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS;
+    constant PHYS_DEST_REG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - 1;
+    constant PHYS_DEST_REG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS;
+    constant STQ_TAG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - 1;
+    constant STQ_TAG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS;
+    constant BRANCH_RESULT_BIT : integer := 1;          -- 0 = NOT TAKEN | 1 = TAKEN
     -- ================================================================
     
     -- ENTRY FORMAT: [OPERATION TYPE | DEST. TAG | DEST. REG | STQ TAG | READY]
-    type reorder_buffer_type is array(ROB_ENTRIES - 1 downto 0) of std_logic_vector(ROB_ENTRY_BITS - 1 downto 0);
+    type reorder_buffer_type is array(REORDER_BUFFER_ENTRIES - 1 downto 0) of std_logic_vector(ROB_ENTRY_BITS - 1 downto 0);
     signal reorder_buffer : reorder_buffer_type;
     
     -- ===== HEAD & TAIL COUNTERS =====
@@ -111,13 +115,13 @@ begin
     
     counters_next_proc : process(head_counter_reg, tail_counter_reg)
     begin
-        if (unsigned(head_counter_reg) = ROB_ENTRIES - 1) then
+        if (unsigned(head_counter_reg) = REORDER_BUFFER_ENTRIES - 1) then
             head_counter_next <= COUNTER_ONE;
         else
             head_counter_next <= std_logic_vector(unsigned(head_counter_reg) + 1);
         end if;
         
-        if (unsigned(tail_counter_reg) = ROB_ENTRIES - 1) then
+        if (unsigned(tail_counter_reg) = REORDER_BUFFER_ENTRIES - 1) then
             tail_counter_next <= COUNTER_ONE;
         else
             tail_counter_next <= std_logic_vector(unsigned(tail_counter_reg) + 1);
@@ -135,19 +139,16 @@ begin
                 -- Writes a new entry into the ROB
                 if (write_1_en = '1' and rob_full = '0') then
                     reorder_buffer(to_integer(unsigned(tail_counter_reg))) <= operation_1_type & 
-                                                                              dest_tag_1 & 
-                                                                              dest_reg_1 & 
+                                                                              arch_dest_reg_1 &
+                                                                              phys_dest_reg_1 &  
                                                                               stq_tag_1 & 
+                                                                              '0' & 
                                                                               commit_ready_1;
                 end if;
-                
-                -- Sets the reorder buffer entry as ready to commit
-                for i in 0 to ROB_ENTRIES - 1 loop
-                    if (reorder_buffer(i)(DEST_TAG_START downto DEST_TAG_END) = cdb_tag and
-                        reorder_buffer(i)(DEST_TAG_START downto DEST_TAG_END) /= TAG_ZERO) then
-                        reorder_buffer(i)(0) <= '1';
-                    end if;
-                end loop;
+
+                if (cdb_valid = '1') then
+                    reorder_buffer(to_integer(unsigned(cdb_instr_tag)))(0) <= '1';
+                end if;
             end if;
         end if;
     end process;
@@ -159,8 +160,10 @@ begin
     full <= rob_full;
     empty <= rob_empty;
     
-    head_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_REG_START downto DEST_REG_END) when commit_ready = '1' else (others => '0');
-    head_dest_tag <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(DEST_TAG_START downto DEST_TAG_END) when commit_ready = '1' else (others => '0');
+    next_instr_tag <= tail_counter_next;
+    
+    head_arch_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(ARCH_DEST_REG_START downto ARCH_DEST_REG_END) when commit_ready = '1' else (others => '0');
+    head_phys_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(PHYS_DEST_REG_START downto PHYS_DEST_REG_END) when commit_ready = '1' else (others => '0');
     head_stq_tag <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(STQ_TAG_START downto STQ_TAG_END) when commit_ready = '1' else (others => '0');
     head_operation_type <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(OP_TYPE_START downto OP_TYPE_END) when commit_ready = '1' else (others => '0');
 

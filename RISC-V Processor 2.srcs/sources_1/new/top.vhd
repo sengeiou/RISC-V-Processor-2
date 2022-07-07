@@ -29,6 +29,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- 3) Generate proper response signals
 -- =================================================================
 
+-- CHANGE TAGGING (AGAIN). Maybe have the tag be generated completely independently of the ROB and renaming registers. Might allow for some interesting decisions
+
 entity top is
     port(
         LED : out std_logic_vector(15 downto 0);

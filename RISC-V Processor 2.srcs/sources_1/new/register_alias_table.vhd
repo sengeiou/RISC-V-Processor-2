@@ -28,7 +28,8 @@ entity register_alias_table is
         -- ===================================
         
         -- ========== WRITING PORTS ==========
-        cdb_tag : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
+        cdb_phys_dest_reg : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
+        cdb_valid : in std_logic;
         
         arch_reg_addr_write_1 : in std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0); 
         phys_reg_addr_write_1 : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
@@ -70,7 +71,7 @@ begin
                 -- Questionable implementation of conditional generation
                 if (ENABLE_VALID_BITS = true) then
                     for i in 0 to ARCH_REGFILE_ENTRIES - 1 loop
-                        if (rat(i)(PHYS_REGFILE_ADDR_BITS downto 1) = cdb_tag) then
+                        if (rat(i)(PHYS_REGFILE_ADDR_BITS downto 1) = cdb_phys_dest_reg and cdb_valid = '1') then
                             rat(i)(0) <= '1';
                         end if;
                     end loop;
