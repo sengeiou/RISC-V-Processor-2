@@ -6,13 +6,14 @@ entity instruction_decoder is
     port(
         instruction : in std_logic_vector(31 downto 0);
         instruction_ready : out std_logic; 
+        pc : in std_logic_vector(31 downto 0);
         
         uop : out uop_type
     );
 end instruction_decoder;
 
 architecture rtl of instruction_decoder is
-    signal branch_op_sel : std_logic_vector(2 downto 0);
+    signal branch_op_sel : std_logic_vector(3 downto 0);
 begin
     process(instruction)
     begin
@@ -23,6 +24,7 @@ begin
         uop.arch_src_reg_1 <= instruction(19 downto 15);
         uop.arch_src_reg_2 <= instruction(24 downto 20);
         uop.arch_dest_reg <= instruction(11 downto 7);
+        uop.pc <= pc;
         
         branch_op_sel <= (others => '0');
 
@@ -66,10 +68,10 @@ begin
                 ALU_OP_EQ when "00",
                 ALU_OP_LESS when "10",
                 ALU_OP_LESSU when "11",
-                "000" when others;
+                "0000" when others;
         
             uop.operation_type <= OP_TYPE_INTEGER;
-            uop.operation_select <= "000" & instruction(12) & "1" & branch_op_sel;
+            uop.operation_select <= "010" & instruction(12) & branch_op_sel;
             uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & "0"; 
             
             --uop.reg_dest <= "00000";

@@ -18,8 +18,8 @@ architecture Structural of front_end is
 
     signal fetched_instruction : std_logic_vector(31 downto 0);
 
-    signal program_counter_reg : std_logic_vector(15 downto 0);
-    signal program_counter_next : std_logic_vector(15 downto 0);
+    signal program_counter_reg : std_logic_vector(31 downto 0);
+    signal program_counter_next : std_logic_vector(31 downto 0);
     
     signal rom_en : std_logic;
     signal resetn : std_logic;
@@ -29,6 +29,8 @@ begin
     instruction_decoder : entity work.instruction_decoder(rtl)
                           port map(instruction => fetched_instruction,
                                    uop => uop,
+                                   pc => program_counter_reg,
+                                   
                                    instruction_ready => instruction_ready);
 
     program_memory_temp : entity work.rom_memory(rtl)
@@ -37,7 +39,7 @@ begin
                                    en => rom_en,
                                    clk => clk);
                           
-    rom_en <= '1' when program_counter_reg(15 downto 8) = "00000000" else '0';
+    rom_en <= '1' when program_counter_reg(31 downto 8) = X"000000" else '0';
                           
     pc_proc : process(clk)
     begin

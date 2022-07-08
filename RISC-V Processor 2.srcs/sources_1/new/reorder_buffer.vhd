@@ -6,6 +6,9 @@ use WORK.PKG_CPU.ALL;
 
 -- Implements a circular FIFO buffer to allow instruction to be committed in-order. 
 
+-- Currently PC is stored for EVERY instruction which might not be necessary and takes a LOT of space. A better solution 
+-- might be needed in the future
+
 entity reorder_buffer is
     generic(
         ARCH_REGFILE_ENTRIES : integer range 1 to 1024;
@@ -27,6 +30,7 @@ entity reorder_buffer is
         arch_dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0);
         phys_dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         stq_tag_1 : in std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
+        pc_1 : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         commit_ready_1 : in std_logic;
         
         write_1_en : in std_logic;
@@ -45,7 +49,7 @@ architecture rtl of reorder_buffer is
     constant ROB_TAG_BITS : integer := integer(ceil(log2(real(REORDER_BUFFER_ENTRIES))));
     constant ARCH_REG_TAG_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES))));
     constant PHYS_REG_TAG_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
-    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + ARCH_REG_TAG_BITS + PHYS_REG_TAG_BITS + STORE_QUEUE_TAG_BITS + 1 + 1;
+    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + ARCH_REG_TAG_BITS + PHYS_REG_TAG_BITS + STORE_QUEUE_TAG_BITS + CPU_ADDR_WIDTH_BITS + 1 + 1;
     
     constant TAG_ZERO : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := (others => '0');
     constant ROB_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0) := (others => '0');
@@ -61,19 +65,21 @@ architecture rtl of reorder_buffer is
     constant PHYS_DEST_REG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS;
     constant STQ_TAG_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - 1;
     constant STQ_TAG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS;
+    constant PC_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS - 1;
+    constant PC_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS - CPU_ADDR_WIDTH_BITS;
     constant BRANCH_RESULT_BIT : integer := 1;          -- 0 = NOT TAKEN | 1 = TAKEN
     -- ================================================================
     
-    -- ENTRY FORMAT: [OPERATION TYPE | DEST. TAG | DEST. REG | STQ TAG | READY]
+    -- ENTRY FORMAT: [OPERATION TYPE | DEST. TAG | DEST. REG | STQ TAG | PC | BRANCH TAKEN | READY]
     type reorder_buffer_type is array(REORDER_BUFFER_ENTRIES - 1 downto 0) of std_logic_vector(ROB_ENTRY_BITS - 1 downto 0);
     signal reorder_buffer : reorder_buffer_type;
     
     -- ===== HEAD & TAIL COUNTERS =====
-    signal head_counter_reg : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
-    signal tail_counter_reg : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
+    signal rob_head_counter_reg : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
+    signal rob_tail_counter_reg : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
     
-    signal head_counter_next : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
-    signal tail_counter_next : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
+    signal rob_head_counter_next : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
+    signal rob_tail_counter_next : std_logic_vector(ROB_TAG_BITS - 1 downto 0);
     -- ================================
     
     -- ===== STATUS SIGNALS =====
@@ -87,7 +93,7 @@ architecture rtl of reorder_buffer is
 
     -- ===========================
 begin
-    commit_ready <= '1' when commit_1_en = '1' and reorder_buffer(to_integer(unsigned(head_counter_reg)))(0) = '1' and rob_empty = '0' else '0';
+    commit_ready <= '1' when commit_1_en = '1' and reorder_buffer(to_integer(unsigned(rob_head_counter_reg)))(0) = '1' and rob_empty = '0' else '0';
     head_valid <= commit_ready;
 
     -- ========== HEAD & TAIL COUNTER PROCESSES ==========
@@ -95,9 +101,9 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                tail_counter_reg <= COUNTER_ONE;
+                rob_tail_counter_reg <= COUNTER_ONE;
             elsif (write_1_en = '1' and rob_full = '0') then
-                tail_counter_reg <= tail_counter_next;
+                rob_tail_counter_reg <= rob_tail_counter_next;
             end if;
         end if;
     end process;
@@ -106,25 +112,25 @@ begin
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
-                head_counter_reg <= COUNTER_ONE;
+                rob_head_counter_reg <= COUNTER_ONE;
             elsif (commit_ready = '1') then
-                head_counter_reg <= head_counter_next;
+                rob_head_counter_reg <= rob_head_counter_next;
             end if;
         end if;
     end process;
     
-    counters_next_proc : process(head_counter_reg, tail_counter_reg)
+    counters_next_proc : process(rob_head_counter_reg, rob_tail_counter_reg)
     begin
-        if (unsigned(head_counter_reg) = REORDER_BUFFER_ENTRIES - 1) then
-            head_counter_next <= COUNTER_ONE;
+        if (unsigned(rob_head_counter_reg) = REORDER_BUFFER_ENTRIES - 1) then
+            rob_head_counter_next <= COUNTER_ONE;
         else
-            head_counter_next <= std_logic_vector(unsigned(head_counter_reg) + 1);
+            rob_head_counter_next <= std_logic_vector(unsigned(rob_head_counter_reg) + 1);
         end if;
         
-        if (unsigned(tail_counter_reg) = REORDER_BUFFER_ENTRIES - 1) then
-            tail_counter_next <= COUNTER_ONE;
+        if (unsigned(rob_tail_counter_reg) = REORDER_BUFFER_ENTRIES - 1) then
+            rob_tail_counter_next <= COUNTER_ONE;
         else
-            tail_counter_next <= std_logic_vector(unsigned(tail_counter_reg) + 1);
+            rob_tail_counter_next <= std_logic_vector(unsigned(rob_tail_counter_reg) + 1);
         end if;
     end process;
     -- =======================================
@@ -138,10 +144,11 @@ begin
             else 
                 -- Writes a new entry into the ROB
                 if (write_1_en = '1' and rob_full = '0') then
-                    reorder_buffer(to_integer(unsigned(tail_counter_reg))) <= operation_1_type & 
+                    reorder_buffer(to_integer(unsigned(rob_tail_counter_reg))) <= operation_1_type & 
                                                                               arch_dest_reg_1 &
                                                                               phys_dest_reg_1 &  
                                                                               stq_tag_1 & 
+                                                                              pc_1 &
                                                                               '0' & 
                                                                               commit_ready_1;
                 end if;
@@ -154,18 +161,18 @@ begin
     end process;
     -- =====================================
     
-    rob_full <= '1' when tail_counter_next = head_counter_reg else '0';
-    rob_empty <= '1' when head_counter_reg = tail_counter_reg else '0';
+    rob_full <= '1' when rob_tail_counter_next = rob_head_counter_reg else '0';
+    rob_empty <= '1' when rob_head_counter_reg = rob_tail_counter_reg else '0';
 
     full <= rob_full;
     empty <= rob_empty;
     
-    next_instr_tag <= tail_counter_reg;
+    next_instr_tag <= rob_tail_counter_reg;
     
-    head_arch_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(ARCH_DEST_REG_START downto ARCH_DEST_REG_END) when commit_ready = '1' else (others => '0');
-    head_phys_dest_reg <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(PHYS_DEST_REG_START downto PHYS_DEST_REG_END) when commit_ready = '1' else (others => '0');
-    head_stq_tag <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(STQ_TAG_START downto STQ_TAG_END) when commit_ready = '1' else (others => '0');
-    head_operation_type <= reorder_buffer(to_integer(unsigned(head_counter_reg)))(OP_TYPE_START downto OP_TYPE_END) when commit_ready = '1' else (others => '0');
+    head_arch_dest_reg <= reorder_buffer(to_integer(unsigned(rob_head_counter_reg)))(ARCH_DEST_REG_START downto ARCH_DEST_REG_END) when commit_ready = '1' else (others => '0');
+    head_phys_dest_reg <= reorder_buffer(to_integer(unsigned(rob_head_counter_reg)))(PHYS_DEST_REG_START downto PHYS_DEST_REG_END) when commit_ready = '1' else (others => '0');
+    head_stq_tag <= reorder_buffer(to_integer(unsigned(rob_head_counter_reg)))(STQ_TAG_START downto STQ_TAG_END) when commit_ready = '1' else (others => '0');
+    head_operation_type <= reorder_buffer(to_integer(unsigned(rob_head_counter_reg)))(OP_TYPE_START downto OP_TYPE_END) when commit_ready = '1' else (others => '0');
 
 end rtl;
 

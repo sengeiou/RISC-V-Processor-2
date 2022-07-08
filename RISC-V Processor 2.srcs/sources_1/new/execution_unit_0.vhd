@@ -94,7 +94,7 @@ begin
     
     branch_taken <= alu_comp_result when operation_select(4) = '0' else alu_comp_result_n;
     
-    branch_target_addr <= PC + unsigned(immediate);
+    --branch_target_addr <= PC + unsigned(immediate);
     
     -- =====================================================
     -- =====================================================

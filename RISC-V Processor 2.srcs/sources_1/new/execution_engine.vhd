@@ -38,10 +38,10 @@ architecture Structural of execution_engine is
         PORT (
           clk : IN STD_LOGIC;
           srst : IN STD_LOGIC;
-          din : IN STD_LOGIC_VECTOR(57 DOWNTO 0);
+          din : IN STD_LOGIC_VECTOR(89 DOWNTO 0);
           wr_en : IN STD_LOGIC;
           rd_en : IN STD_LOGIC;
-          dout : OUT STD_LOGIC_VECTOR(57 DOWNTO 0);
+          dout : OUT STD_LOGIC_VECTOR(89 DOWNTO 0);
           full : OUT STD_LOGIC;
           empty : OUT STD_LOGIC
         );
@@ -187,6 +187,7 @@ begin
       clk => clk,
       srst => reset,
         
+      din(89 downto 58) => decoded_instruction.pc,
       din(57 downto 55) => decoded_instruction.operation_type,
       din(54 downto 47) => decoded_instruction.operation_select,
       din(46 downto 42) => decoded_instruction.arch_src_reg_1,
@@ -197,6 +198,7 @@ begin
       wr_en => instr_ready,
       rd_en => next_uop_ready,
         
+      dout(89 downto 58) => next_uop.pc,
       dout(57 downto 55) => next_uop.operation_type,
       dout(54 downto 47) => next_uop.operation_select,
       dout(46 downto 42) => next_uop.arch_src_reg_1,
@@ -416,6 +418,7 @@ begin
                               arch_dest_reg_1 => next_uop.arch_dest_reg,    
                               phys_dest_reg_1 => renamed_dest_reg,
                               stq_tag_1 => sq_alloc_tag,
+                              pc_1 => next_uop.pc,
                               commit_ready_1 => next_uop_commit_ready,
                               
                               write_1_en => next_uop_ready,

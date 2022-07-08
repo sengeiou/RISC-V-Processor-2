@@ -45,6 +45,7 @@ package pkg_cpu is
     
     -- CPU Data Types
     type uop_type is record
+        pc : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         -- Determines what kinds of functional units can execute this type of instruction. Used to select one or multiple functional units.
         operation_type : std_logic_vector(OPERATION_TYPE_BITS - 1 downto 0);
         
