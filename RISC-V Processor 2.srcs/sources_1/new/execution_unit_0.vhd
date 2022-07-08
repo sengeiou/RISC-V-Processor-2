@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 use WORK.PKG_CPU.ALL;
 use WORK.PKG_FU.ALL;
 
@@ -13,6 +14,7 @@ entity execution_unit_0 is
         reg_data_1 : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         reg_data_2 : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         immediate : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        pc : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         
         -- Bit 7 indicates whether the instruction is of I-type or R-type; Bits 3 - 0 are ALU operation select bits; Others are reserved
         operation_select : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
@@ -40,7 +42,7 @@ architecture structural of execution_unit_0 is
     signal alu_comp_result : std_logic;
     signal alu_comp_result_n : std_logic;
     signal branch_taken : std_logic;
-    signal branch_target_addr : std_logic;
+    signal branch_target_addr : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
     
     signal pipeline_reg_0 : exec_unit_0_pipeline_reg_0_type;
     signal pipeline_reg_0_next : exec_unit_0_pipeline_reg_0_type;
@@ -94,7 +96,7 @@ begin
     
     branch_taken <= alu_comp_result when operation_select(4) = '0' else alu_comp_result_n;
     
-    --branch_target_addr <= PC + unsigned(immediate);
+    branch_target_addr <= std_logic_vector(unsigned(pc) + unsigned(immediate));
     
     -- =====================================================
     -- =====================================================

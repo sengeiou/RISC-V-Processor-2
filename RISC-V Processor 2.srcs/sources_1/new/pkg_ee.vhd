@@ -28,6 +28,7 @@ package pkg_ee is
         operand_1 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         operand_2 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
+        pc : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         valid : std_logic;
@@ -56,6 +57,7 @@ package pkg_ee is
                                                                                          '0');
                                                                                     
     constant EE_PIPELINE_REG_3_0_INIT : execution_engine_pipeline_register_3_int_type := ((others => '0'),
+                                                                                        (others => '0'),
                                                                                         (others => '0'),
                                                                                         (others => '0'),
                                                                                         (others => '0'),

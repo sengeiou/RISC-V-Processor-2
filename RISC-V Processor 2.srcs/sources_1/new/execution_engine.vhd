@@ -115,6 +115,7 @@ architecture Structural of execution_engine is
     signal rob_head_phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
     
     signal rob_next_alloc_tag : std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
+    signal rob_pc_out : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
     
     signal rob_commit_ready : std_logic;
     signal rob_full : std_logic;
@@ -286,6 +287,7 @@ begin
     pipeline_reg_3_0_next.operand_1 <= rf_rd_data_1;
     pipeline_reg_3_0_next.operand_2 <= rf_rd_data_2;
     pipeline_reg_3_0_next.immediate <= pipeline_reg_2_0.sched_out_port_0.immediate;
+    pipeline_reg_3_0_next.pc <= rob_pc_out;
     pipeline_reg_3_0_next.phys_dest_reg <= pipeline_reg_2_0.sched_out_port_0.phys_dest_reg;
     pipeline_reg_3_0_next.operation_select <= pipeline_reg_2_0.sched_out_port_0.operation_sel;
     pipeline_reg_3_0_next.valid <= pipeline_reg_2_0.sched_out_port_0.valid;
@@ -418,11 +420,14 @@ begin
                               arch_dest_reg_1 => next_uop.arch_dest_reg,    
                               phys_dest_reg_1 => renamed_dest_reg,
                               stq_tag_1 => sq_alloc_tag,
-                              pc_1 => next_uop.pc,
+                              pc_1_in => next_uop.pc,
                               commit_ready_1 => next_uop_commit_ready,
                               
                               write_1_en => next_uop_ready,
                               commit_1_en => '1',
+
+                              rob_entry_addr => pipeline_reg_2_0.sched_out_port_0.instr_tag,
+                              pc_1_out => rob_pc_out,
 
                               head_valid => rob_commit_ready,
                               full => rob_full,
@@ -453,6 +458,7 @@ begin
                                port map(reg_data_1 => pipeline_reg_3_0.operand_1,
                                         reg_data_2 => pipeline_reg_3_0.operand_2,
                                         immediate => pipeline_reg_3_0.immediate,
+                                        pc => pipeline_reg_3_0.pc,
                                         operation_select => pipeline_reg_3_0.operation_select, 
                                         instr_tag => pipeline_reg_3_0.instr_tag,
                                         phys_dest_reg => pipeline_reg_3_0.phys_dest_reg,

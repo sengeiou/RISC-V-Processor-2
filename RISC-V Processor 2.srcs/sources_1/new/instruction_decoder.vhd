@@ -15,7 +15,7 @@ end instruction_decoder;
 architecture rtl of instruction_decoder is
     signal branch_op_sel : std_logic_vector(3 downto 0);
 begin
-    process(instruction)
+    process(instruction, branch_op_sel)
     begin
         uop.operation_type <= (others => '0');
         uop.operation_select <= (others => '0');
@@ -27,6 +27,8 @@ begin
         uop.pc <= pc;
         
         branch_op_sel <= (others => '0');
+        
+        instruction_ready <= '0';
 
         if (instruction(6 downto 0) = "0010011") then
             uop.operation_type <= OP_TYPE_INTEGER;      
@@ -64,21 +66,25 @@ begin
             
             instruction_ready <= '1';
         elsif (instruction(6 downto 0) = "1100011") then        -- BRANCHING
-            with instruction(14 downto 13) select branch_op_sel <=
-                ALU_OP_EQ when "00",
-                ALU_OP_LESS when "10",
-                ALU_OP_LESSU when "11",
-                "0000" when others;
+               case instruction(14 downto 13) is
+                   when "00" => branch_op_sel <= ALU_OP_EQ;
+                   when "10" => branch_op_sel <= ALU_OP_LESS;
+                   when "11" => branch_op_sel <= ALU_OP_LESSU;
+                   when others => branch_op_sel <= (others => '0');
+               end case;
+        
+--            with instruction(14 downto 13) select branch_op_sel <=
+--                ALU_OP_EQ when "00",
+--                ALU_OP_LESS when "10",
+--                ALU_OP_LESSU when "11",
+--                "0000" when others;
         
             uop.operation_type <= OP_TYPE_INTEGER;
             uop.operation_select <= "010" & instruction(12) & branch_op_sel;
             uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & "0"; 
             
-            --uop.reg_dest <= "00000";
+            uop.arch_dest_reg <= "00000";
             instruction_ready <= '1';
-            
-        else
-            instruction_ready <= '0';
         end if;
     end process;
 

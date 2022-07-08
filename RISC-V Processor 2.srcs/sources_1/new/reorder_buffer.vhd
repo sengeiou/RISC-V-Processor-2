@@ -30,12 +30,15 @@ entity reorder_buffer is
         arch_dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(ARCH_REGFILE_ENTRIES)))) - 1 downto 0);
         phys_dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         stq_tag_1 : in std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
-        pc_1 : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
+        pc_1_in : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
         commit_ready_1 : in std_logic;
         
         write_1_en : in std_logic;
         commit_1_en : in std_logic;
         head_valid : out std_logic;
+
+        rob_entry_addr : in std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0);
+        pc_1_out : out std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
 
         full : out std_logic;
         empty : out std_logic;
@@ -148,7 +151,7 @@ begin
                                                                               arch_dest_reg_1 &
                                                                               phys_dest_reg_1 &  
                                                                               stq_tag_1 & 
-                                                                              pc_1 &
+                                                                              pc_1_in &
                                                                               '0' & 
                                                                               commit_ready_1;
                 end if;
@@ -168,6 +171,8 @@ begin
     empty <= rob_empty;
     
     next_instr_tag <= rob_tail_counter_reg;
+    
+    pc_1_out <= reorder_buffer(to_integer(unsigned(rob_entry_addr)))(PC_START downto PC_END);
     
     head_arch_dest_reg <= reorder_buffer(to_integer(unsigned(rob_head_counter_reg)))(ARCH_DEST_REG_START downto ARCH_DEST_REG_END) when commit_ready = '1' else (others => '0');
     head_phys_dest_reg <= reorder_buffer(to_integer(unsigned(rob_head_counter_reg)))(PHYS_DEST_REG_START downto PHYS_DEST_REG_END) when commit_ready = '1' else (others => '0');
