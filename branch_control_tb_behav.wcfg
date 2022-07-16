@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="branch_control_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="branch_control_tb" />
+            <top_module name="glbl" />
+            <top_module name="pkg_cpu" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="20000000fs"></ZoomEndTime>
+      <Cursor1Time time="3628751fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="177"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wvobject fp_name="/branch_control_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/branch_target_addr" type="array">
+      <obj_property name="ElementShortName">branch_target_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">branch_target_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/alloc_branch_tag" type="array">
+      <obj_property name="ElementShortName">alloc_branch_tag[3:0]</obj_property>
+      <obj_property name="ObjectShortName">alloc_branch_tag[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/alloc_en" type="logic">
+      <obj_property name="ElementShortName">alloc_en</obj_property>
+      <obj_property name="ObjectShortName">alloc_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/T" type="other">
+      <obj_property name="ElementShortName">T</obj_property>
+      <obj_property name="ObjectShortName">T</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/uut/free_bits" type="array">
+      <obj_property name="ElementShortName">free_bits[3:0]</obj_property>
+      <obj_property name="ObjectShortName">free_bits[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/uut/speculation_tag" type="array">
+      <obj_property name="ElementShortName">speculation_tag[3:0]</obj_property>
+      <obj_property name="ObjectShortName">speculation_tag[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/uut/branch_table" type="array">
+      <obj_property name="ElementShortName">branch_table[3:0][35:0]</obj_property>
+      <obj_property name="ObjectShortName">branch_table[3:0][35:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+</wave_config>

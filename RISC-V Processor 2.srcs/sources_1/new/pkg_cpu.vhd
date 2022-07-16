@@ -22,7 +22,7 @@ package pkg_cpu is
     constant REORDER_BUFFER_ENTRIES : integer := 24;
     constant STORE_QUEUE_ENTRIES : integer := 8;
     constant LOAD_QUEUE_ENTRIES : integer := 8;
-    constant BRANCH_TARGET_STORAGE_ENTRIES : integer := 4;
+    constant BRANCHING_DEPTH : integer := 6;            -- How many branches this CPU is capable of speculating against. For ex. 4 Means 4 cond. branch instructions before further fetching is halted
     
     constant OPERATION_TYPE_BITS : integer := 3;
     constant OPERATION_SELECT_BITS : integer := 8;
@@ -30,7 +30,6 @@ package pkg_cpu is
     constant STORE_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(STORE_QUEUE_ENTRIES))));
     constant LOAD_QUEUE_TAG_BITS : integer := integer(ceil(log2(real(LOAD_QUEUE_ENTRIES))));
     constant INSTR_TAG_BITS : integer := integer(ceil(log2(real(REORDER_BUFFER_ENTRIES))));
-    constant BRANCH_TAG_BITS : integer := integer(ceil(log2(real(BRANCH_TARGET_STORAGE_ENTRIES))));
     
     -- Constants
     constant INSTR_TAG_ZERO : std_logic_vector(INSTR_TAG_BITS - 1 downto 0) := (others => '0');
@@ -73,8 +72,7 @@ package pkg_cpu is
     
     -- Load-Store Unit Operation Definitions
     constant LSU_OP_LW : std_logic_vector(7 downto 0) := "00000000";
-    constant LSU_OP_SW : std_logic_vector(7 downto 0) := "10000000";
-    
+    constant LSU_OP_SW : std_logic_vector(7 downto 0) := "10000000";    
     
     -- Integer EU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";
