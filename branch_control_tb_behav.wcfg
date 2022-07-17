@@ -13,14 +13,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="20000000fs"></ZoomEndTime>
-      <Cursor1Time time="3628751fs"></Cursor1Time>
+      <ZoomEndTime time="1197524fs"></ZoomEndTime>
+      <Cursor1Time time="313186fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="177"></NameColumnWidth>
+      <NameColumnWidth column_width="157"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="9" />
+   <WVObjectSize size="13" />
    <wvobject fp_name="/branch_control_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -34,28 +34,43 @@
       <obj_property name="ObjectShortName">branch_target_addr[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/branch_control_tb/alloc_branch_tag" type="array">
-      <obj_property name="ElementShortName">alloc_branch_tag[3:0]</obj_property>
-      <obj_property name="ObjectShortName">alloc_branch_tag[3:0]</obj_property>
+      <obj_property name="ElementShortName">alloc_branch_tag[5:0]</obj_property>
+      <obj_property name="ObjectShortName">alloc_branch_tag[5:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/branch_control_tb/alloc_en" type="logic">
       <obj_property name="ElementShortName">alloc_en</obj_property>
       <obj_property name="ObjectShortName">alloc_en</obj_property>
    </wvobject>
+   <wvobject fp_name="/branch_control_tb/commit_en" type="logic">
+      <obj_property name="ElementShortName">commit_en</obj_property>
+      <obj_property name="ObjectShortName">commit_en</obj_property>
+   </wvobject>
    <wvobject fp_name="/branch_control_tb/T" type="other">
       <obj_property name="ElementShortName">T</obj_property>
       <obj_property name="ObjectShortName">T</obj_property>
    </wvobject>
-   <wvobject fp_name="/branch_control_tb/uut/free_bits" type="array">
-      <obj_property name="ElementShortName">free_bits[3:0]</obj_property>
-      <obj_property name="ObjectShortName">free_bits[3:0]</obj_property>
+   <wvobject fp_name="/branch_control_tb/uut/cb_full" type="logic">
+      <obj_property name="ElementShortName">cb_full</obj_property>
+      <obj_property name="ObjectShortName">cb_full</obj_property>
    </wvobject>
-   <wvobject fp_name="/branch_control_tb/uut/speculation_tag" type="array">
-      <obj_property name="ElementShortName">speculation_tag[3:0]</obj_property>
-      <obj_property name="ObjectShortName">speculation_tag[3:0]</obj_property>
+   <wvobject fp_name="/branch_control_tb/uut/cb_empty" type="logic">
+      <obj_property name="ElementShortName">cb_empty</obj_property>
+      <obj_property name="ObjectShortName">cb_empty</obj_property>
    </wvobject>
-   <wvobject fp_name="/branch_control_tb/uut/branch_table" type="array">
-      <obj_property name="ElementShortName">branch_table[3:0][35:0]</obj_property>
-      <obj_property name="ObjectShortName">branch_table[3:0][35:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
+   <wvobject fp_name="/branch_control_tb/uut/cb" type="array">
+      <obj_property name="ElementShortName">cb[5:0][5:0]</obj_property>
+      <obj_property name="ObjectShortName">cb[5:0][5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/uut/head_counter_reg" type="array">
+      <obj_property name="ElementShortName">head_counter_reg[2:0]</obj_property>
+      <obj_property name="ObjectShortName">head_counter_reg[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/uut/tail_counter_reg" type="array">
+      <obj_property name="ElementShortName">tail_counter_reg[2:0]</obj_property>
+      <obj_property name="ObjectShortName">tail_counter_reg[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/branch_control_tb/uut/entries_allocated" type="array">
+      <obj_property name="ElementShortName">entries_allocated[2:0]</obj_property>
+      <obj_property name="ObjectShortName">entries_allocated[2:0]</obj_property>
    </wvobject>
 </wave_config>

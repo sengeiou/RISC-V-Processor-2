@@ -15,9 +15,6 @@ entity circular_buffer is
         read_en : in std_logic;
         write_en : in std_logic;
         
-        data_write_tagged : in std_logic_vector(ENTRY_BITS - 1 downto 0);      -- Data to be put at the specified location in the buffer
-        data_write_tag : in std_logic_vector(integer(ceil(log2(real(BUFFER_ENTRIES)))) - 1 downto 0); 
-        
         full : out std_logic;
         empty : out std_logic;
         

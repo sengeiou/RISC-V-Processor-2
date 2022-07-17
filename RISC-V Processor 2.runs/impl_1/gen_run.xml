@@ -15,6 +15,7 @@
   <File Type="BITSTR-SYSDEF" Name="top.sysdef"/>
   <File Type="BITSTR-LTX" Name="debug_nets.ltx"/>
   <File Type="BITSTR-LTX" Name="top.ltx"/>
+  <File Type="RCFI_FILE" Name="top.rcfi"/>
   <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
   <File Type="OPT-HWDEF" Name="top.hwdef"/>
   <File Type="PLACE-PRE-SIMILARITY" Name="top_incremental_reuse_pre_placed.rpt"/>
@@ -30,7 +31,6 @@
   <File Type="POSTROUTE-PHYSOPT-DCP" Name="top_postroute_physopt.dcp"/>
   <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="top_postroute_physopt_bb.dcp"/>
   <File Type="PDI-FILE" Name="top.pdi"/>
-  <File Type="RCFI_FILE" Name="top.rcfi"/>
   <File Type="CFI_FILE" Name="top.cfi"/>
   <File Type="RNPI_FILE" Name="top.rnpi"/>
   <File Type="NPI_FILE" Name="top.npi"/>

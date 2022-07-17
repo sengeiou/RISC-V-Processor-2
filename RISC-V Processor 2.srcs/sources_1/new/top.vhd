@@ -29,7 +29,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- 3) Generate proper response signals
 -- =================================================================
 
--- CHANGE TAGGING (AGAIN). Maybe have the tag be generated completely independently of the ROB and renaming registers. Might allow for some interesting decisions
+-- THINK ABOUT CHECKING FOR CIRCULAR BUFFER FULLNESS WITH A COUNTER RATHER THEN HEAD AND TAIL VALUES
+
 
 entity top is
     port(
