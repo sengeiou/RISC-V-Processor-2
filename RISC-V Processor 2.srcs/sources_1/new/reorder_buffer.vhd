@@ -31,7 +31,6 @@ entity reorder_buffer is
         phys_dest_reg_1 : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         stq_tag_1 : in std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
         pc_1_in : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
-        speculated_branches : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         commit_ready_1 : in std_logic;
         
         write_1_en : in std_logic;
@@ -53,7 +52,7 @@ architecture rtl of reorder_buffer is
     constant ROB_TAG_BITS : integer := integer(ceil(log2(real(REORDER_BUFFER_ENTRIES))));
     constant ARCH_REG_TAG_BITS : integer := integer(ceil(log2(real(ARCH_REGFILE_ENTRIES))));
     constant PHYS_REG_TAG_BITS : integer := integer(ceil(log2(real(PHYS_REGFILE_ENTRIES))));
-    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + ARCH_REG_TAG_BITS + PHYS_REG_TAG_BITS + STORE_QUEUE_TAG_BITS + CPU_ADDR_WIDTH_BITS + BRANCHING_DEPTH + 1 + 1;
+    constant ROB_ENTRY_BITS : integer := OPERATION_TYPE_BITS + ARCH_REG_TAG_BITS + PHYS_REG_TAG_BITS + STORE_QUEUE_TAG_BITS + CPU_ADDR_WIDTH_BITS + 1 + 1;
     
     constant TAG_ZERO : std_logic_vector(ROB_TAG_BITS - 1 downto 0) := (others => '0');
     constant ROB_TAG_ZERO : std_logic_vector(integer(ceil(log2(real(REORDER_BUFFER_ENTRIES)))) - 1 downto 0) := (others => '0');
@@ -71,8 +70,6 @@ architecture rtl of reorder_buffer is
     constant STQ_TAG_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS;
     constant PC_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS - 1;
     constant PC_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS - CPU_ADDR_WIDTH_BITS;
-    constant SPECULATED_BRANCHES_BITS_START : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS - CPU_ADDR_WIDTH_BITS - 1;
-    constant SPECULATED_BRANCHES_BITS_END : integer := ROB_ENTRY_BITS - OPERATION_TYPE_BITS - ARCH_REG_TAG_BITS - PHYS_REG_TAG_BITS - STORE_QUEUE_TAG_BITS - CPU_ADDR_WIDTH_BITS - BRANCHING_DEPTH;
     constant BRANCH_RESULT_BIT : integer := 1;          -- 0 = NOT TAKEN | 1 = TAKEN
     -- ================================================================
     

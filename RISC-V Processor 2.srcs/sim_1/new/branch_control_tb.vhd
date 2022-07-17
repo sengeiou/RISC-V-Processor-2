@@ -25,7 +25,7 @@ begin
         wait for T / 2;
     end process;
     
-    uut : entity work.branch_target_storage(rtl)
+    uut : entity work.branch_controller(rtl)
           port map(branch_target_addr => branch_target_addr,
         
                    alloc_branch_tag => alloc_branch_tag,

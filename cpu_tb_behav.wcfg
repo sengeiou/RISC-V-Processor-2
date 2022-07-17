@@ -16,13 +16,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="697200fs"></ZoomStartTime>
-      <ZoomEndTime time="2229410fs"></ZoomEndTime>
-      <Cursor1Time time="1136404fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1783fs"></ZoomEndTime>
+      <Cursor1Time time="1136fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="194"></NameColumnWidth>
-      <ValueColumnWidth column_width="61"></ValueColumnWidth>
+      <NameColumnWidth column_width="193"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -122,6 +122,75 @@
          <obj_property name="ElementShortName">lq_alloc_tag[2:0]</obj_property>
          <obj_property name="ObjectShortName">lq_alloc_tag[2:0]</obj_property>
       </wvobject>
+      <wvobject fp_name="group3207" type="group">
+         <obj_property name="label">BRANCH CONTROLLER</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/branch_mask" type="array">
+            <obj_property name="ElementShortName">branch_mask[5:0]</obj_property>
+            <obj_property name="ObjectShortName">branch_mask[5:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/alloc_branch_tag" type="array">
+            <obj_property name="ElementShortName">alloc_branch_tag[5:0]</obj_property>
+            <obj_property name="ObjectShortName">alloc_branch_tag[5:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/branch_alloc_en" type="logic">
+            <obj_property name="ElementShortName">branch_alloc_en</obj_property>
+            <obj_property name="ObjectShortName">branch_alloc_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/branch_commit_en" type="logic">
+            <obj_property name="ElementShortName">branch_commit_en</obj_property>
+            <obj_property name="ObjectShortName">branch_commit_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/cb" type="array">
+            <obj_property name="ElementShortName">cb[5:0][5:0]</obj_property>
+            <obj_property name="ObjectShortName">cb[5:0][5:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/cb_full" type="logic">
+            <obj_property name="ElementShortName">cb_full</obj_property>
+            <obj_property name="ObjectShortName">cb_full</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/cb_empty" type="logic">
+            <obj_property name="ElementShortName">cb_empty</obj_property>
+            <obj_property name="ObjectShortName">cb_empty</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/entries_allocated" type="array">
+            <obj_property name="ElementShortName">entries_allocated[2:0]</obj_property>
+            <obj_property name="ObjectShortName">entries_allocated[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/head_counter_reg" type="array">
+            <obj_property name="ElementShortName">head_counter_reg[2:0]</obj_property>
+            <obj_property name="ObjectShortName">head_counter_reg[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/tail_counter_reg" type="array">
+            <obj_property name="ElementShortName">tail_counter_reg[2:0]</obj_property>
+            <obj_property name="ObjectShortName">tail_counter_reg[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/head_counter_next" type="array">
+            <obj_property name="ElementShortName">head_counter_next[2:0]</obj_property>
+            <obj_property name="ObjectShortName">head_counter_next[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/tail_counter_next" type="array">
+            <obj_property name="ElementShortName">tail_counter_next[2:0]</obj_property>
+            <obj_property name="ObjectShortName">tail_counter_next[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/BRANCH_TAG_START" type="other">
+            <obj_property name="ElementShortName">BRANCH_TAG_START</obj_property>
+            <obj_property name="ObjectShortName">BRANCH_TAG_START</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/BRANCH_TAG_END" type="other">
+            <obj_property name="ElementShortName">BRANCH_TAG_END</obj_property>
+            <obj_property name="ObjectShortName">BRANCH_TAG_END</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/BRANCH_TARGET_ADDRESS_START" type="other">
+            <obj_property name="ElementShortName">BRANCH_TARGET_ADDRESS_START</obj_property>
+            <obj_property name="ObjectShortName">BRANCH_TARGET_ADDRESS_START</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/BRANCH_TARGET_ADDRESS_END" type="other">
+            <obj_property name="ElementShortName">BRANCH_TARGET_ADDRESS_END</obj_property>
+            <obj_property name="ObjectShortName">BRANCH_TARGET_ADDRESS_END</obj_property>
+         </wvobject>
+      </wvobject>
       <wvobject fp_name="group1160" type="group">
          <obj_property name="label">REGISTER RENAMING</obj_property>
          <obj_property name="DisplayName">label</obj_property>
@@ -202,7 +271,6 @@
       <wvobject fp_name="group35" type="group">
          <obj_property name="label">EXECUTION UNIT 0</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/reg_data_1" type="array">
             <obj_property name="ElementShortName">reg_data_1[31:0]</obj_property>
             <obj_property name="ObjectShortName">reg_data_1[31:0]</obj_property>

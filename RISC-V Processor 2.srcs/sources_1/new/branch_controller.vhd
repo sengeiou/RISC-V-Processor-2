@@ -8,14 +8,11 @@ use WORK.PKG_CPU.ALL;
 
 entity branch_controller is
     port(
-        branch_target_addr : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
-        
         branch_mask : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
-        
         alloc_branch_tag : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         
-        alloc_en : in std_logic;
-        commit_en : in std_logic;
+        branch_alloc_en : in std_logic;
+        branch_commit_en : in std_logic;
         
         reset : in std_logic;
         clk : in std_logic
@@ -54,12 +51,12 @@ begin
                 tail_counter_reg <= (others => '0');
                 head_counter_reg <= (others => '0');
             else                
-                if (alloc_en = '1' and cb_empty = '0') then
+                if (branch_alloc_en = '1' and cb_empty = '0') then
                     tail_counter_reg <= tail_counter_next;
                     entries_allocated <= entries_allocated + 1;
                 end if;
             
-                if (commit_en = '1') then
+                if (branch_commit_en = '1') then
                     head_counter_reg <= head_counter_next;
                     entries_allocated <= entries_allocated - 1;
                 end if;

@@ -122,6 +122,14 @@ architecture Structural of execution_engine is
     signal rob_empty : std_logic;
     -- ============================================
     
+    -- ============= BRANCH CONTROLLER SIGNALS =============
+    signal bc_alloc_branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+    signal bc_outstanding_branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+    
+    signal bc_branch_alloc_en : std_logic;
+    signal bc_branch_commit_en : std_logic;
+    -- =====================================================
+    
     -- ========== LOAD - STORE UNIT SIGNALS ==========
     signal lsu_gen_addr : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
     signal sq_calc_addr_tag : std_logic_vector(integer(ceil(log2(real(STORE_QUEUE_ENTRIES)))) - 1 downto 0);
@@ -304,6 +312,8 @@ begin
 
     next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
     sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_LOAD_STORE else '0';
+    
+    bc_branch_alloc_en <= '1' when next_uop.operation_type = OP_TYPE_INTEGER and next_uop.operation_select(7 downto 5) = "010" and next_uop_ready = '1' else '0';
       
     -- ==================================================================================================
     --                                        REGISTER RENAMING
@@ -377,6 +387,15 @@ begin
                                          
     -- ==================================================================================================
     -- ==================================================================================================
+    branch_controller : entity work.branch_controller(rtl)
+                        port map(branch_mask => bc_outstanding_branch_mask,
+                                 alloc_branch_tag => bc_alloc_branch_mask,
+                                 
+                                 branch_alloc_en => bc_branch_alloc_en,
+                                 branch_commit_en => bc_branch_commit_en,
+                                 
+                                 clk => clk,
+                                 reset => reset);  
       
     register_file : entity work.register_file(rtl)
                     generic map(REG_DATA_WIDTH_BITS => CPU_DATA_WIDTH_BITS,
