@@ -1,7 +1,0 @@
-# compile vhdl design source files
-vhdl xil_defaultlib  \
-"../../../../RISC-V Processor 2.srcs/sources_1/new/reorder_buffer.vhd" \
-"../../../../RISC-V Processor 2.srcs/sim_1/new/reorder_buffer_tb.vhd" \
-
-# Do not sort compile order
-nosort

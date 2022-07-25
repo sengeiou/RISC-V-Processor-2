@@ -124,10 +124,12 @@ architecture Structural of execution_engine is
     
     -- ============= BRANCH CONTROLLER SIGNALS =============
     signal bc_alloc_branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
-    signal bc_outstanding_branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+    signal bc_dependent_branches_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
     
     signal bc_branch_alloc_en : std_logic;
     signal bc_branch_commit_en : std_logic;
+    
+    signal bc_empty : std_logic;
     -- =====================================================
     
     -- ========== LOAD - STORE UNIT SIGNALS ==========
@@ -263,7 +265,8 @@ begin
                     rob_full or 
                     sched_full or
                     (sq_full and next_uop_store) or 
-                    (lq_full and next_uop_load);
+                    (lq_full and next_uop_load) or
+                    bc_empty;
                     
     pipeline_reg_1_rst <= uop_issue_ready;
     pipeline_reg_2_0_rst <= not port_0.valid;
@@ -282,6 +285,8 @@ begin
     pipeline_reg_1_next.sched_in_port_0.immediate <= next_uop.immediate;
     pipeline_reg_1_next.sched_in_port_0.store_queue_tag <= sq_alloc_tag;
     pipeline_reg_1_next.sched_in_port_0.load_queue_tag <= lq_alloc_tag;
+    pipeline_reg_1_next.sched_in_port_0.curr_branch_mask <= bc_alloc_branch_mask;
+    pipeline_reg_1_next.sched_in_port_0.dependent_branches_mask <= bc_dependent_branches_mask;
     pipeline_reg_1_next.dest_reg <= next_uop.arch_dest_reg;
     pipeline_reg_1_next.valid <= next_uop_ready;
     
@@ -298,6 +303,8 @@ begin
     pipeline_reg_3_0_next.pc <= rob_pc_out;
     pipeline_reg_3_0_next.phys_dest_reg <= pipeline_reg_2_0.sched_out_port_0.phys_dest_reg;
     pipeline_reg_3_0_next.operation_select <= pipeline_reg_2_0.sched_out_port_0.operation_sel;
+    pipeline_reg_3_0_next.curr_branch_mask <= pipeline_reg_2_0.sched_out_port_0.curr_branch_mask;
+    pipeline_reg_3_0_next.dependent_branches_mask <= pipeline_reg_2_0.sched_out_port_0.dependent_branches_mask;
     pipeline_reg_3_0_next.valid <= pipeline_reg_2_0.sched_out_port_0.valid;
 
     pipeline_reg_3_1_next.instr_tag <= pipeline_reg_2_1.sched_out_port_1.instr_tag;
@@ -308,6 +315,7 @@ begin
     pipeline_reg_3_1_next.store_queue_tag <= pipeline_reg_2_1.sched_out_port_1.store_queue_tag;
     pipeline_reg_3_1_next.load_queue_tag <= pipeline_reg_2_1.sched_out_port_1.load_queue_tag;
     pipeline_reg_3_1_next.operation_select <= pipeline_reg_2_1.sched_out_port_1.operation_sel;
+    pipeline_reg_3_1_next.dependent_branches_mask <= pipeline_reg_2_1.sched_out_port_1.dependent_branches_mask;
     pipeline_reg_3_1_next.valid <= pipeline_reg_2_1.sched_out_port_1.valid;
 
     next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
@@ -388,11 +396,13 @@ begin
     -- ==================================================================================================
     -- ==================================================================================================
     branch_controller : entity work.branch_controller(rtl)
-                        port map(branch_mask => bc_outstanding_branch_mask,
-                                 alloc_branch_tag => bc_alloc_branch_mask,
+                        port map(outstanding_branches_mask => bc_dependent_branches_mask,
+                                 alloc_branch_mask => bc_alloc_branch_mask,
                                  
                                  branch_alloc_en => bc_branch_alloc_en,
                                  branch_commit_en => bc_branch_commit_en,
+                                 
+                                 empty => bc_empty,
                                  
                                  clk => clk,
                                  reset => reset);  
@@ -482,6 +492,9 @@ begin
                                         instr_tag => pipeline_reg_3_0.instr_tag,
                                         phys_dest_reg => pipeline_reg_3_0.phys_dest_reg,
                                         
+                                        curr_branch_mask => pipeline_reg_3_0.curr_branch_mask,
+                                        dependent_branches_mask => pipeline_reg_3_0.dependent_branches_mask,
+                                        
                                         cdb => cdb_0,
                                         cdb_request => cdb_request_0,
                                         cdb_granted => cdb_granted_0,
@@ -501,6 +514,8 @@ begin
                                 stq_tag => pipeline_reg_3_1.store_queue_tag,
                                 stq_data_tag => pipeline_reg_3_1.data_tag,
                                 ldq_tag => pipeline_reg_3_1.load_queue_tag,
+                                
+                                dependent_branches_mask => pipeline_reg_3_1.dependent_branches_mask,
                                 
                                 valid => pipeline_reg_3_1.valid,
                                 ready => execution_unit_1_ready,

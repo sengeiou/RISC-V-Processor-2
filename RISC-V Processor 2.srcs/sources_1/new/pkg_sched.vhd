@@ -7,7 +7,7 @@ use WORK.PKG_CPU.ALL;
 -- the unified scheduler for the processor
 
 package pkg_sched is
-    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * PHYS_REGFILE_ADDR_BITS + OPERAND_BITS + STORE_QUEUE_TAG_BITS + LOAD_QUEUE_TAG_BITS + INSTR_TAG_BITS + 3;
+    constant ENTRY_BITS : integer := OPERATION_TYPE_BITS + OPERATION_SELECT_BITS + 3 * PHYS_REGFILE_ADDR_BITS + OPERAND_BITS + STORE_QUEUE_TAG_BITS + LOAD_QUEUE_TAG_BITS + INSTR_TAG_BITS + 2 * BRANCHING_DEPTH + 3;
     constant ENTRY_TAG_BITS : integer := integer(ceil(log2(real(SCHEDULER_ENTRIES))));
     
     constant ENTRY_TAG_ZERO : std_logic_vector(ENTRY_TAG_BITS - 1 downto 0) := (others => '0');
@@ -34,6 +34,10 @@ package pkg_sched is
     constant IMMEDIATE_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - 2;
     constant INSTR_TAG_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - 3;
     constant INSTR_TAG_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - INSTR_TAG_BITS - 2;
+    constant CURR_BRANCH_MASK_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - INSTR_TAG_BITS - 3;
+    constant CURR_BRANCH_MASK_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - INSTR_TAG_BITS - BRANCHING_DEPTH - 2;
+    constant DEPEND_BRANCH_MASK_START : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - INSTR_TAG_BITS - BRANCHING_DEPTH - 3;
+    constant DEPEND_BRANCH_MASK_END : integer := ENTRY_BITS - OPERATION_TYPE_BITS - OPERATION_SELECT_BITS - 3 * PHYS_REGFILE_ADDR_BITS - OPERAND_BITS - STORE_QUEUE_TAG_BITS - LOAD_QUEUE_TAG_BITS - INSTR_TAG_BITS - 2 * BRANCHING_DEPTH - 2;
     -- ================================================================================
 
     -- ================================================================================
@@ -47,6 +51,8 @@ package pkg_sched is
         phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0); 
         store_queue_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
         load_queue_tag : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
+        curr_branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+        dependent_branches_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         src_tag_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         src_tag_1_valid : std_logic;
@@ -63,10 +69,14 @@ package pkg_sched is
         phys_src_reg_1 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         phys_src_reg_2 : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);         
         phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+        curr_branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+        dependent_branches_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         valid : std_logic;
     end record; 
     
     constant SCHED_IN_PORT_DEFAULT : sched_in_port_type := ((others => '0'),
+                                                            (others => '0'),
+                                                            (others => '0'),
                                                             (others => '0'),
                                                             (others => '0'),
                                                             (others => '0'),
@@ -87,9 +97,11 @@ package pkg_sched is
                                                               (others => '0'),
                                                               (others => '0'),
                                                               (others => '0'),
+                                                              (others => '0'),
+                                                              (others => '0'),
                                                               '0');
     
-    -- Scheduler entry format [OP. TYPE | OP. SEL | OPERAND_1_TAG | OPERAND_1_TAG_V | OPERAND_2_TAG | OPERAND_2_TAG_V | DEST_PHYS_REG_TAG | STORE QUEUE TAG | LOAD QUEUE TAG | IMMEDIATE | BUSY]
+    -- Scheduler entry format [OP. TYPE | OP. SEL | OPERAND_1_TAG | OPERAND_1_TAG_V | OPERAND_2_TAG | OPERAND_2_TAG_V | DEST_PHYS_REG_TAG | STORE QUEUE TAG | LOAD QUEUE TAG | IMMEDIATE | INSTR. TAG | CURR. BRANCH MASK | DEP. BRANCH TAG | BUSY]
     type reservation_station_entries_type is array(SCHEDULER_ENTRIES - 1 downto 0) of std_logic_vector(ENTRY_BITS - 1 downto 0);
     type sched_optype_bits_type is array(1 downto 0) of std_logic_vector(SCHEDULER_ENTRIES - 1 downto 0);
     type sched_dispatch_ready_bits_type is array(1 downto 0) of std_logic_vector(SCHEDULER_ENTRIES - 1 downto 0);

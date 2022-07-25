@@ -31,6 +31,8 @@ package pkg_ee is
         pc : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
         phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
+        curr_branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+        dependent_branches_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         valid : std_logic;
     end record;
     
@@ -43,6 +45,7 @@ package pkg_ee is
         store_queue_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
         load_queue_tag : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
         operation_select : std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
+        dependent_branches_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         valid : std_logic;
     end record;
     
@@ -63,9 +66,12 @@ package pkg_ee is
                                                                                         (others => '0'),
                                                                                         (others => '0'),
                                                                                         (others => '0'),
+                                                                                        (others => '0'),
+                                                                                        (others => '0'),
                                                                                         '0');
                                                                                         
     constant EE_PIPELINE_REG_3_1_INIT : execution_engine_pipeline_register_3_ldst_type := ((others => '0'),
+                                                                                            (others => '0'),
                                                                                             (others => '0'),
                                                                                             (others => '0'),
                                                                                             (others => '0'),

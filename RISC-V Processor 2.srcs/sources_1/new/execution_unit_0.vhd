@@ -20,6 +20,9 @@ entity execution_unit_0 is
         operation_select : in std_logic_vector(OPERATION_SELECT_BITS - 1 downto 0);
         instr_tag : in std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
         phys_dest_reg : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
+        
+        curr_branch_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+        dependent_branches_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
     
         valid : in std_logic;       -- Signals that the input values are valid
         ready : out std_logic;      -- Whether this EU is ready to start executing a new operation
@@ -64,6 +67,9 @@ begin
     pipeline_reg_0_next.result <= alu_result;
     pipeline_reg_0_next.instr_tag <= instr_tag;
     pipeline_reg_0_next.phys_dest_reg <= phys_dest_reg;
+    pipeline_reg_0_next.curr_branch_mask <= curr_branch_mask;
+    pipeline_reg_0_next.dependent_branches_mask <= dependent_branches_mask;
+    pipeline_reg_0_next.branch_taken <= branch_taken;
     pipeline_reg_0_next.valid <= valid;
     -- =====================================================
     -- =====================================================
@@ -106,6 +112,8 @@ begin
     cdb.data <= pipeline_reg_0.result;
     cdb.instr_tag <= pipeline_reg_0.instr_tag;
     cdb.phys_dest_reg <= pipeline_reg_0.phys_dest_reg;
+    cdb.branch_mask <= pipeline_reg_0.curr_branch_mask;
+    cdb.branch_taken <= pipeline_reg_0.branch_taken;
     cdb.valid <= pipeline_reg_0.valid;
     
     cdb_request <= pipeline_reg_0.valid;

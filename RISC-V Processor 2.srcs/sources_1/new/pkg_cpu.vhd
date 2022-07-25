@@ -110,6 +110,8 @@ package pkg_cpu is
         instr_tag : std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
         phys_dest_reg : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);
         data : std_logic_vector(OPERAND_BITS - 1 downto 0);
+        branch_mask : std_logic_vector(BRANCHING_DEPTH - 1 downto 0); 
+        branch_taken : std_logic;
         valid : std_logic;
     end record;
 end pkg_cpu;

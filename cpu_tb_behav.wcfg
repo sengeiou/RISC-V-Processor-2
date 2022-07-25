@@ -16,12 +16,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1783fs"></ZoomEndTime>
-      <Cursor1Time time="1136fs"></Cursor1Time>
+      <ZoomStartTime time="1,305.405 ns"></ZoomStartTime>
+      <ZoomEndTime time="3,014.088 ns"></ZoomEndTime>
+      <Cursor1Time time="2,104.705 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="193"></NameColumnWidth>
+      <NameColumnWidth column_width="185"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
@@ -125,15 +125,6 @@
       <wvobject fp_name="group3207" type="group">
          <obj_property name="label">BRANCH CONTROLLER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/branch_mask" type="array">
-            <obj_property name="ElementShortName">branch_mask[5:0]</obj_property>
-            <obj_property name="ObjectShortName">branch_mask[5:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/alloc_branch_tag" type="array">
-            <obj_property name="ElementShortName">alloc_branch_tag[5:0]</obj_property>
-            <obj_property name="ObjectShortName">alloc_branch_tag[5:0]</obj_property>
-         </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/branch_alloc_en" type="logic">
             <obj_property name="ElementShortName">branch_alloc_en</obj_property>
             <obj_property name="ObjectShortName">branch_alloc_en</obj_property>
@@ -153,6 +144,10 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/cb_empty" type="logic">
             <obj_property name="ElementShortName">cb_empty</obj_property>
             <obj_property name="ObjectShortName">cb_empty</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/outstanding_branches_mask_i" type="array">
+            <obj_property name="ElementShortName">outstanding_branches_mask_i[5:0]</obj_property>
+            <obj_property name="ObjectShortName">outstanding_branches_mask_i[5:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/entries_allocated" type="array">
             <obj_property name="ElementShortName">entries_allocated[2:0]</obj_property>
@@ -243,8 +238,8 @@
          <obj_property name="label">UNIFIED SCHEDULER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/sched_entries" type="array">
-            <obj_property name="ElementShortName">sched_entries[7:0][77:0]</obj_property>
-            <obj_property name="ObjectShortName">sched_entries[7:0][77:0]</obj_property>
+            <obj_property name="ElementShortName">sched_entries[7:0][89:0]</obj_property>
+            <obj_property name="ObjectShortName">sched_entries[7:0][89:0]</obj_property>
             <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/unified_scheduler/sched_sel_write_1" type="array">
@@ -271,6 +266,7 @@
       <wvobject fp_name="group35" type="group">
          <obj_property name="label">EXECUTION UNIT 0</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/reg_data_1" type="array">
             <obj_property name="ElementShortName">reg_data_1[31:0]</obj_property>
             <obj_property name="ObjectShortName">reg_data_1[31:0]</obj_property>
@@ -290,6 +286,14 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/operation_select" type="array">
             <obj_property name="ElementShortName">operation_select[7:0]</obj_property>
             <obj_property name="ObjectShortName">operation_select[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/curr_branch_mask" type="array">
+            <obj_property name="ElementShortName">curr_branch_mask[5:0]</obj_property>
+            <obj_property name="ObjectShortName">curr_branch_mask[5:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/dependent_branches_mask" type="array">
+            <obj_property name="ElementShortName">dependent_branches_mask[5:0]</obj_property>
+            <obj_property name="ObjectShortName">dependent_branches_mask[5:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/valid" type="logic">
             <obj_property name="ElementShortName">valid</obj_property>

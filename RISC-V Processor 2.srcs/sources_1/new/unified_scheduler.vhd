@@ -151,6 +151,8 @@ begin
                                                                         in_port_0.load_queue_tag & 
                                                                         in_port_0.immediate & 
                                                                         in_port_0.instr_tag & 
+                                                                        in_port_0.curr_branch_mask &
+                                                                        in_port_0.dependent_branches_mask & 
                                                                         '1';
                 end if;
 
@@ -187,6 +189,8 @@ begin
         out_port_0.store_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(STORE_QUEUE_TAG_START downto STORE_QUEUE_TAG_END);
         out_port_0.load_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(LOAD_QUEUE_TAG_START downto LOAD_QUEUE_TAG_END);
         out_port_0.phys_dest_reg <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(DEST_TAG_START downto DEST_TAG_END);
+        out_port_0.curr_branch_mask <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(CURR_BRANCH_MASK_START downto CURR_BRANCH_MASK_END);
+        out_port_0.dependent_branches_mask <= sched_entries(to_integer(unsigned(sched_read_sel(0))))(DEPEND_BRANCH_MASK_START downto DEPEND_BRANCH_MASK_END);
         out_port_0.valid <= dispatch_en(0) and sched_read_sel_valid(0);
         
         out_port_1.instr_tag <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(INSTR_TAG_START downto INSTR_TAG_END);
@@ -198,6 +202,8 @@ begin
         out_port_1.store_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(STORE_QUEUE_TAG_START downto STORE_QUEUE_TAG_END);
         out_port_1.load_queue_tag <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(LOAD_QUEUE_TAG_START downto LOAD_QUEUE_TAG_END);
         out_port_1.phys_dest_reg <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(DEST_TAG_START downto DEST_TAG_END);
+        out_port_1.curr_branch_mask <= (others => '0');
+        out_port_1.dependent_branches_mask <= sched_entries(to_integer(unsigned(sched_read_sel(1))))(DEPEND_BRANCH_MASK_START downto DEPEND_BRANCH_MASK_END);
         out_port_1.valid <= dispatch_en(1) and sched_read_sel_valid(1);
     end process;
 end rtl;

@@ -1,7 +1,0 @@
-vhdl xpm  \
-"E:/Programs/Xilinx_Vivado/Vivado/2020.2/data/ip/xpm/xpm_VCOMP.vhd" \
-
-vhdl xil_defaultlib  \
-"../../../../RISC-V Processor 2.gen/sources_1/ip/axi_led_ila/sim/axi_led_ila.vhd" \
-
-nosort

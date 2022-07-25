@@ -21,6 +21,8 @@ entity execution_unit_1 is
         stq_tag : in std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);                -- Store queue tag into which to write the results
         stq_data_tag : in std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0);                -- Store queue tag into which to write the results
         ldq_tag : in std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);                 -- Load queue into which to write the results
+        
+        dependent_branches_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
     
         valid : in std_logic;       -- Signals that the input values are valid
         ready : out std_logic;      -- Whether this EU is ready to start executing a new operation
@@ -63,6 +65,7 @@ begin
     pipeline_reg_0_next.ldq_tag_valid <= not operation_select(7) and valid;
     pipeline_reg_0_next.stq_tag <= stq_tag;
     pipeline_reg_0_next.stq_tag_valid <= operation_select(7) and valid;
+    pipeline_reg_0_next.dependent_branches_mask <= dependent_branches_mask;
     pipeline_reg_0_next.valid <= valid;
 
     lsu_generated_address <= pipeline_reg_0.generated_address;

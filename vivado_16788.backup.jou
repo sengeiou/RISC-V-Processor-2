@@ -1,0 +1,21 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:48:16 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Mon Jul 25 12:45:32 2022
+# Process ID: 16788
+# Current directory: C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent8652 C:\Vivado Projects\RISC-V Processor\RISC-V-Processor-2\RISC-V Processor 2.xpr
+# Log file: C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/vivado.log
+# Journal file: C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2\vivado.jou
+# Running On: DESKTOP-SVM92C6, OS: Windows, CPU Frequency: 3686 MHz, CPU Physical cores: 10, Host memory: 34212 MB
+#-----------------------------------------------------------
+start_gui
+open_project {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.xpr}
+update_compile_order -fileset sources_1
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+close_sim

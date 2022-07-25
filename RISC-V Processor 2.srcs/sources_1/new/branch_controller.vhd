@@ -8,11 +8,13 @@ use WORK.PKG_CPU.ALL;
 
 entity branch_controller is
     port(
-        branch_mask : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
-        alloc_branch_tag : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+        outstanding_branches_mask : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+        alloc_branch_mask : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         
         branch_alloc_en : in std_logic;
         branch_commit_en : in std_logic;
+        
+        empty : out std_logic;
         
         reset : in std_logic;
         clk : in std_logic
@@ -27,6 +29,9 @@ architecture rtl of branch_controller is
 
     type cb_type is array (BRANCHING_DEPTH - 1 downto 0) of std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
     signal cb : cb_type;
+
+    signal outstanding_branches_mask_i : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+    signal alloc_branch_mask_i : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
 
     signal cb_full : std_logic;
     signal cb_empty : std_logic;
@@ -80,7 +85,22 @@ begin
         end if;
     end process;
     
-    alloc_branch_tag <= cb(to_integer(tail_counter_reg));
+    outstanding_branches_mask_proc : process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (reset = '1') then
+                outstanding_branches_mask_i <= (others => '0');
+            elsif (branch_alloc_en = '1') then
+                outstanding_branches_mask_i <= outstanding_branches_mask_i or alloc_branch_mask_i;
+            end if;
+        end if;
+    end process;
+    
+    alloc_branch_mask_i <= cb(to_integer(tail_counter_reg));
+    alloc_branch_mask <= alloc_branch_mask_i when branch_alloc_en = '1' else (others => '0');
+    
+    outstanding_branches_mask <= outstanding_branches_mask_i;
     
     cb_empty <= '1' when entries_allocated = BRANCHING_DEPTH else '0';
+    empty <= cb_empty;
 end rtl;

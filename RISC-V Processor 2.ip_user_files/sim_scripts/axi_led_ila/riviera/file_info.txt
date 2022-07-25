@@ -1,5 +1,0 @@
-xpm_cdc.sv,systemverilog,xpm,E:/Programs/Xilinx_Vivado/Vivado/2020.2/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv,incdir="../../../../RISC-VProcessor2.gen/sources_1/ip/axi_led_ila/hdl/verilog"
-xpm_memory.sv,systemverilog,xpm,E:/Programs/Xilinx_Vivado/Vivado/2020.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv,incdir="../../../../RISC-VProcessor2.gen/sources_1/ip/axi_led_ila/hdl/verilog"
-xpm_VCOMP.vhd,vhdl,xpm,E:/Programs/Xilinx_Vivado/Vivado/2020.2/data/ip/xpm/xpm_VCOMP.vhd,incdir="../../../../RISC-VProcessor2.gen/sources_1/ip/axi_led_ila/hdl/verilog"
-axi_led_ila.vhd,vhdl,xil_defaultlib,../../../../RISC-V Processor 2.gen/sources_1/ip/axi_led_ila/sim/axi_led_ila.vhd,incdir="../../../../RISC-VProcessor2.gen/sources_1/ip/axi_led_ila/hdl/verilog"
-glbl.v,Verilog,xil_defaultlib,glbl.v
