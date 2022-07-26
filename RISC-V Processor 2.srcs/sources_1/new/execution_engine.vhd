@@ -263,7 +263,7 @@ begin
         end if;
     end process;
     
-    fifo_reset <= '1' when reset = '1' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
+    fifo_reset <= '1' when reset = '1' or cdb.branch_taken = '1' else '0';
     -- Will need to take SH, SB, LH, LB into consideration in the future
     next_uop_store <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_SW) else '0';
     next_uop_load <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_LW) else '0';
@@ -276,11 +276,11 @@ begin
                     not (lq_full and next_uop_load) and
                     not bc_empty;
                     
-    pipeline_reg_1_rst <= '1' when uop_issue_ready = '0' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
-    pipeline_reg_2_0_rst <= '1' when port_0.valid = '0' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
-    pipeline_reg_2_1_rst <= '1' when port_1.valid = '0' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
-    pipeline_reg_3_0_rst <= '0';
-    pipeline_reg_3_1_rst <= '0';
+    pipeline_reg_1_rst <= '1' when uop_issue_ready = '0' or cdb.branch_taken = '1' else '0';
+    pipeline_reg_2_0_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
+    pipeline_reg_2_1_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
+    pipeline_reg_3_0_rst <= '1' when ((pipeline_reg_2_0.sched_out_port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
+    pipeline_reg_3_1_rst <= '1' when ((pipeline_reg_2_1.sched_out_port_1.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
 
     pipeline_reg_1_next.sched_in_port_0.instr_tag <= rob_next_alloc_tag;
     pipeline_reg_1_next.sched_in_port_0.operation_type <= next_uop.operation_type;
@@ -331,7 +331,7 @@ begin
     
     bc_branch_alloc_en <= '1' when next_uop.operation_type = OP_TYPE_INTEGER and next_uop.operation_select(7 downto 5) = "011" and next_uop_ready = '1' else '0';
     
-    branch_taken <= '0' when cdb.branch_mask = BRANCH_MASK_ZERO else cdb.branch_taken; 
+    branch_taken <= cdb.branch_taken; 
     branch_target_pc <= cdb.data;
       
     -- ==================================================================================================
@@ -446,8 +446,7 @@ begin
                      generic map(ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
                                  PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                  OPERATION_TYPE_BITS => OPERATION_TYPE_BITS)
-                     port map(cdb_instr_tag => cdb.instr_tag,
-                              cdb_valid => cdb.valid,
+                     port map(cdb => cdb,
 
                               head_operation_type => rob_head_operation_type,
                               head_phys_dest_reg => rob_head_phys_dest_reg,
@@ -461,6 +460,7 @@ begin
                               phys_dest_reg_1 => renamed_dest_reg,
                               stq_tag_1 => sq_alloc_tag,
                               pc_1_in => next_uop.pc,
+                              branch_mask => bc_alloc_branch_mask,
                               commit_ready_1 => next_uop_commit_ready,
                               
                               write_1_en => next_uop_ready,
@@ -517,7 +517,9 @@ begin
                                         clk => clk);
                                         
     execution_unit_1 : entity work.execution_unit_1(rtl)
-                       port map(store_data_value => pipeline_reg_3_1.store_data_value,
+                       port map(cdb => cdb,
+                       
+                                store_data_value => pipeline_reg_3_1.store_data_value,
                                 base_addr_value => pipeline_reg_3_1.base_addr_value,
                                 immediate => pipeline_reg_3_1.immediate,
                                 

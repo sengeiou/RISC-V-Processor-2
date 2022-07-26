@@ -115,7 +115,23 @@ package pkg_cpu is
         branch_taken : std_logic;
         valid : std_logic;
     end record;
+    
+    function branch_mask_to_int(branch_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0)) return integer;
 end pkg_cpu;
+
+package body pkg_cpu is
+    -- ASSUMES ONE-HOT ENCODING!
+    function branch_mask_to_int(branch_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0)) return integer is
+        variable temp : integer := 0;
+    begin
+        for i in 0 to BRANCHING_DEPTH - 1 loop
+            if (branch_mask(i) = '1') then
+                temp := i;
+            end if;
+        end loop;
+        return temp;
+    end function branch_mask_to_int;
+end package body;
 
 
 

@@ -69,8 +69,8 @@ begin
     pipeline_reg_0_next.phys_dest_reg <= phys_dest_reg;
     pipeline_reg_0_next.curr_branch_mask <= curr_branch_mask;
     pipeline_reg_0_next.dependent_branches_mask <= dependent_branches_mask;
-    pipeline_reg_0_next.branch_taken <= branch_taken;
-    pipeline_reg_0_next.valid <= valid;
+    pipeline_reg_0_next.branch_taken <= branch_taken when curr_branch_mask /= BRANCH_MASK_ZERO else '0';
+    pipeline_reg_0_next.valid <= '0' when valid = '0' or ((dependent_branches_mask and pipeline_reg_0.curr_branch_mask) /= BRANCH_MASK_ZERO and pipeline_reg_0.branch_taken = '1') else '1';
     -- =====================================================
     -- =====================================================
 

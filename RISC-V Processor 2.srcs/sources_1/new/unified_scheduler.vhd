@@ -172,6 +172,11 @@ begin
                         sched_entries(i)(0) = '1' and sched_entries(i)(OPERAND_TAG_2_VALID) = '0') then
                         sched_entries(i)(OPERAND_TAG_2_VALID) <= '1';
                     end if;
+                    
+                    -- Cancel all speculative instructions for which it has been determined that they have been mispredicted
+                    if ((sched_entries(i)(DEPEND_BRANCH_MASK_START downto DEPEND_BRANCH_MASK_END) and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') then
+                        sched_entries(i)(0) <= '0';
+                    end if;
                 end loop;
             end if;
         end if;

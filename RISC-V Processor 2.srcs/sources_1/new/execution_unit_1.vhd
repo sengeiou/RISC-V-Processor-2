@@ -13,6 +13,8 @@ use WORK.PKG_FU.ALL;
 
 entity execution_unit_1 is
     port(
+        cdb : in cdb_type;
+    
         store_data_value : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);        -- Data for store
         base_addr_value : in std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);         -- Base address
         immediate : in std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);               -- Base address offset
@@ -66,7 +68,7 @@ begin
     pipeline_reg_0_next.stq_tag <= stq_tag;
     pipeline_reg_0_next.stq_tag_valid <= operation_select(7) and valid;
     pipeline_reg_0_next.dependent_branches_mask <= dependent_branches_mask;
-    pipeline_reg_0_next.valid <= valid;
+    pipeline_reg_0_next.valid <= '0' when valid = '0' or ((dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '1';
 
     lsu_generated_address <= pipeline_reg_0.generated_address;
     lsu_generated_data <= pipeline_reg_0.generated_data;
