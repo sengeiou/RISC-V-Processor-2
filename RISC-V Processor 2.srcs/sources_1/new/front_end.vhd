@@ -8,6 +8,9 @@ entity front_end is
         uop : out uop_type;
         instruction_ready : out std_logic;
     
+        branch_taken : in std_logic;
+        branch_target_pc : in std_logic_vector(31 downto 0);
+    
         reset : in std_logic;
         clk : in std_logic
     );
@@ -46,6 +49,8 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 program_counter_reg <= (others => '0');
+            elsif (branch_taken = '1') then
+                program_counter_reg <= branch_target_pc;
             else
                 program_counter_reg <= std_logic_vector(unsigned(program_counter_next) + 4);
             end if;

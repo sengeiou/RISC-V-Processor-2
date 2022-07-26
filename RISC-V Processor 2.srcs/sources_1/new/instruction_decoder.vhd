@@ -80,7 +80,7 @@ begin
 --                "0000" when others;
         
             uop.operation_type <= OP_TYPE_INTEGER;
-            uop.operation_select <= "010" & instruction(12) & branch_op_sel;
+            uop.operation_select <= "011" & instruction(12) & branch_op_sel;
             uop.immediate <= "1111111111111111111" & instruction(31) & instruction(7) & instruction(30 downto 25) & instruction(11 downto 8) & "0"; 
             
             uop.arch_dest_reg <= "00000";

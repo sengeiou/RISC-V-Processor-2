@@ -12,3 +12,61 @@
 #-----------------------------------------------------------
 start_gui
 open_project {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/RISC-V Processor 2.xpr}
+update_compile_order -fileset sources_1
+launch_simulation
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+save_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+relaunch_sim
+close_sim
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+close_sim
+launch_simulation
+launch_simulation
+launch_simulation
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+close_sim
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+close_sim
+launch_simulation
+launch_simulation
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+save_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+save_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+close_sim
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+close_sim
+launch_simulation
+launch_simulation
+launch_simulation
+launch_simulation
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/cpu_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/circular_buffer_tb_behav.wcfg}
+open_wave_config {C:/Vivado Projects/RISC-V Processor/RISC-V-Processor-2/branch_control_tb_behav.wcfg}
+source cpu_tb.tcl
+close_sim

@@ -24,10 +24,17 @@ end core;
 architecture structural of core is
     signal uop : uop_type;
     signal instruction_ready : std_logic;
+    
+    signal branch_taken : std_logic;
+    signal branch_target_pc : std_logic_vector(31 downto 0);
 begin
     front_end : entity work.front_end(structural)
                 port map(uop => uop,
                          instruction_ready => instruction_ready,
+                         
+                         branch_taken => branch_taken,
+                         branch_target_pc => branch_target_pc,
+                         
                          clk => clk,
                          reset => reset);
 
@@ -40,6 +47,9 @@ begin
                                 bus_stbw => bus_stbw,
                                 bus_ackr => bus_ackr,
                                 bus_ackw => bus_ackw,
+                                
+                                branch_taken => branch_taken,
+                                branch_target_pc => branch_target_pc,
                                 
                                 decoded_instruction => uop,
                                 instr_ready => instruction_ready,

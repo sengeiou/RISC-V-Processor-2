@@ -64,7 +64,7 @@ begin
         end if;
     end process;
     
-    pipeline_reg_0_next.result <= alu_result;
+    pipeline_reg_0_next.result <= branch_target_addr when operation_select(7 downto 5) = "011" else alu_result;
     pipeline_reg_0_next.instr_tag <= instr_tag;
     pipeline_reg_0_next.phys_dest_reg <= phys_dest_reg;
     pipeline_reg_0_next.curr_branch_mask <= curr_branch_mask;

@@ -37,6 +37,7 @@ package pkg_cpu is
     constant PHYS_REG_TAG_ZERO : std_logic_vector(PHYS_REGFILE_ADDR_BITS - 1 downto 0) := (others => '0');
     constant ADDR_ZERO : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0) := (others => '0');
     constant DATA_ZERO : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0) := (others => '0');
+    constant BRANCH_MASK_ZERO : std_logic_vector(BRANCHING_DEPTH - 1 downto 0) := (others => '0');
     
     -- Debugging Configuration
     constant ENABLE_REGFILE_ILA : boolean := true;

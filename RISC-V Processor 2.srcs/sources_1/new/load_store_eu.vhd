@@ -457,6 +457,8 @@ begin
     cdb.data <= load_data_reg;
     cdb.phys_dest_reg <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
     cdb.instr_tag <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_INSTR_TAG_START downto LQ_INSTR_TAG_END);
+    cdb.branch_mask <= (others => '0');
+    cdb.branch_taken <= '0';
                             
     bus_addr_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_ADDR_START downto SQ_ADDR_END);
     bus_addr_read <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_ADDR_START downto LQ_ADDR_END);

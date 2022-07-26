@@ -16,13 +16,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1,305.405 ns"></ZoomStartTime>
-      <ZoomEndTime time="3,014.088 ns"></ZoomEndTime>
-      <Cursor1Time time="2,104.705 ns"></Cursor1Time>
+      <ZoomStartTime time="1,552.715 ns"></ZoomStartTime>
+      <ZoomEndTime time="2,389.457 ns"></ZoomEndTime>
+      <Cursor1Time time="2,091.540 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="185"></NameColumnWidth>
-      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+      <NameColumnWidth column_width="212"></NameColumnWidth>
+      <ValueColumnWidth column_width="94"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -66,9 +66,30 @@
       <obj_property name="label">EXECUTION_ENGINE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/next_uop" type="array">
+         <obj_property name="ElementShortName">next_uop</obj_property>
+         <obj_property name="ObjectShortName">next_uop</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/instr_ready" type="logic">
+         <obj_property name="ElementShortName">instr_ready</obj_property>
+         <obj_property name="ObjectShortName">instr_ready</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/uop_issue_ready" type="logic">
+         <obj_property name="ElementShortName">uop_issue_ready</obj_property>
+         <obj_property name="ObjectShortName">uop_issue_ready</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_taken" type="logic">
+         <obj_property name="ElementShortName">branch_taken</obj_property>
+         <obj_property name="ObjectShortName">branch_taken</obj_property>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_target_pc" type="array">
+         <obj_property name="ElementShortName">branch_target_pc[31:0]</obj_property>
+         <obj_property name="ObjectShortName">branch_target_pc[31:0]</obj_property>
+      </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/cdb" type="array">
          <obj_property name="ElementShortName">cdb</obj_property>
          <obj_property name="ObjectShortName">cdb</obj_property>
+         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next" type="array">
          <obj_property name="ElementShortName">pipeline_reg_1_next</obj_property>
@@ -322,7 +343,6 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/pipeline_reg_0_next" type="array">
             <obj_property name="ElementShortName">pipeline_reg_0_next</obj_property>
             <obj_property name="ObjectShortName">pipeline_reg_0_next</obj_property>
-            <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/execution_unit_0/alu_comp_result" type="logic">
             <obj_property name="ElementShortName">alu_comp_result</obj_property>
@@ -425,7 +445,6 @@
       <wvobject fp_name="group513" type="group">
          <obj_property name="label">LOAD STORE EU</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_addr_read" type="array">
             <obj_property name="ElementShortName">bus_addr_read[31:0]</obj_property>
             <obj_property name="ObjectShortName">bus_addr_read[31:0]</obj_property>
@@ -612,7 +631,6 @@
       <wvobject fp_name="group870" type="group">
          <obj_property name="label">REORDER BUFFER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer" type="array">
             <obj_property name="ElementShortName">reorder_buffer[23:0][51:0]</obj_property>
             <obj_property name="ObjectShortName">reorder_buffer[23:0][51:0]</obj_property>
@@ -661,16 +679,6 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/decoded_instruction" type="array">
          <obj_property name="ElementShortName">decoded_instruction</obj_property>
          <obj_property name="ObjectShortName">decoded_instruction</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/next_uop" type="array">
-         <obj_property name="ElementShortName">next_uop</obj_property>
-         <obj_property name="ObjectShortName">next_uop</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/instr_ready" type="logic">
-         <obj_property name="ElementShortName">instr_ready</obj_property>
-         <obj_property name="ObjectShortName">instr_ready</obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/rf_rd_data_1" type="array">
          <obj_property name="ElementShortName">rf_rd_data_1[31:0]</obj_property>

@@ -27,6 +27,9 @@ entity execution_engine is
         bus_ackr : in std_logic;
         bus_ackw : in std_logic;
         
+        branch_taken : out std_logic;
+        branch_target_pc : out std_logic_vector(31 downto 0);
+        
         reset : in std_logic;
         clk : in std_logic;
         clk_dbg : in std_logic
@@ -46,6 +49,10 @@ architecture Structural of execution_engine is
           empty : OUT STD_LOGIC
         );
     END COMPONENT;
+    
+    -- ============== FIFO SIGNALS ==============
+    signal fifo_reset : std_logic;
+    -- ==========================================
     
     -- ========== PIPELINE REGISTERS ==========
     -- The second _x (where x is a number) indicates what scheduler output port the pipeline register is attached to. This allows us to control the pipeline
@@ -196,7 +203,7 @@ begin
     instruction_queue : fifo_generator_1
     port map (
       clk => clk,
-      srst => reset,
+      srst => fifo_reset,
         
       din(89 downto 58) => decoded_instruction.pc,
       din(57 downto 55) => decoded_instruction.operation_type,
@@ -256,21 +263,22 @@ begin
         end if;
     end process;
     
+    fifo_reset <= '1' when reset = '1' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
     -- Will need to take SH, SB, LH, LB into consideration in the future
     next_uop_store <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_SW) else '0';
     next_uop_load <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_LW) else '0';
     
-    uop_issue_ready <= not next_uop_ready or
-                    raa_empty or 
-                    rob_full or 
-                    sched_full or
-                    (sq_full and next_uop_store) or 
-                    (lq_full and next_uop_load) or
-                    bc_empty;
+    uop_issue_ready <= next_uop_ready and
+                    not raa_empty and
+                    not rob_full and
+                    not sched_full and
+                    not (sq_full and next_uop_store) and 
+                    not (lq_full and next_uop_load) and
+                    not bc_empty;
                     
-    pipeline_reg_1_rst <= uop_issue_ready;
-    pipeline_reg_2_0_rst <= not port_0.valid;
-    pipeline_reg_2_1_rst <= not port_1.valid;
+    pipeline_reg_1_rst <= '1' when uop_issue_ready = '0' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
+    pipeline_reg_2_0_rst <= '1' when port_0.valid = '0' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
+    pipeline_reg_2_1_rst <= '1' when port_1.valid = '0' or (cdb.branch_taken = '1' and cdb.branch_mask /= BRANCH_MASK_ZERO) else '0';
     pipeline_reg_3_0_rst <= '0';
     pipeline_reg_3_1_rst <= '0';
 
@@ -321,7 +329,10 @@ begin
     next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
     sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_LOAD_STORE else '0';
     
-    bc_branch_alloc_en <= '1' when next_uop.operation_type = OP_TYPE_INTEGER and next_uop.operation_select(7 downto 5) = "010" and next_uop_ready = '1' else '0';
+    bc_branch_alloc_en <= '1' when next_uop.operation_type = OP_TYPE_INTEGER and next_uop.operation_select(7 downto 5) = "011" and next_uop_ready = '1' else '0';
+    
+    branch_taken <= '0' when cdb.branch_mask = BRANCH_MASK_ZERO else cdb.branch_taken; 
+    branch_target_pc <= cdb.data;
       
     -- ==================================================================================================
     --                                        REGISTER RENAMING
