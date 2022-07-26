@@ -16,13 +16,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="2,052.889 ns"></ZoomStartTime>
-      <ZoomEndTime time="2,635.556 ns"></ZoomEndTime>
-      <Cursor1Time time="2,173.836 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="20.000001 us"></ZoomEndTime>
+      <Cursor1Time time="6.506386 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="212"></NameColumnWidth>
-      <ValueColumnWidth column_width="86"></ValueColumnWidth>
+      <ValueColumnWidth column_width="82"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -146,6 +146,7 @@
       <wvobject fp_name="group3207" type="group">
          <obj_property name="label">BRANCH CONTROLLER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/branch_alloc_en" type="logic">
             <obj_property name="ElementShortName">branch_alloc_en</obj_property>
             <obj_property name="ObjectShortName">branch_alloc_en</obj_property>
@@ -216,7 +217,6 @@
             <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat" type="array">
                <obj_property name="ElementShortName">rat[31:0][7:0]</obj_property>
                <obj_property name="ObjectShortName">rat[31:0][7:0]</obj_property>
-               <obj_property name="isExpanded"></obj_property>
             </wvobject>
          </wvobject>
          <wvobject fp_name="group142" type="group">
@@ -237,9 +237,49 @@
             </wvobject>
          </wvobject>
          <wvobject fp_name="group1161" type="group">
-            <obj_property name="label">RSV</obj_property>
+            <obj_property name="label">REGISTER ALIAS ALLOC</obj_property>
             <obj_property name="DisplayName">label</obj_property>
             <obj_property name="isExpanded"></obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/free_reg_alias" type="array">
+               <obj_property name="ElementShortName">free_reg_alias[6:0]</obj_property>
+               <obj_property name="ObjectShortName">free_reg_alias[6:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/alloc_reg_alias" type="array">
+               <obj_property name="ElementShortName">alloc_reg_alias[6:0]</obj_property>
+               <obj_property name="ObjectShortName">alloc_reg_alias[6:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/put_en" type="logic">
+               <obj_property name="ElementShortName">put_en</obj_property>
+               <obj_property name="ObjectShortName">put_en</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/get_en" type="logic">
+               <obj_property name="ElementShortName">get_en</obj_property>
+               <obj_property name="ObjectShortName">get_en</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/empty" type="logic">
+               <obj_property name="ElementShortName">empty</obj_property>
+               <obj_property name="ObjectShortName">empty</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/n_empty" type="logic">
+               <obj_property name="ElementShortName">n_empty</obj_property>
+               <obj_property name="ObjectShortName">n_empty</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/i_alloc_reg_alias" type="array">
+               <obj_property name="ElementShortName">i_alloc_reg_alias[6:0]</obj_property>
+               <obj_property name="ObjectShortName">i_alloc_reg_alias[6:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/register_status_vector" type="array">
+               <obj_property name="ElementShortName">register_status_vector[95:0]</obj_property>
+               <obj_property name="ObjectShortName">register_status_vector[95:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/PHYS_REGFILE_ENTRIES" type="other">
+               <obj_property name="ElementShortName">PHYS_REGFILE_ENTRIES</obj_property>
+               <obj_property name="ObjectShortName">PHYS_REGFILE_ENTRIES</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/ARCH_REGFILE_ENTRIES" type="other">
+               <obj_property name="ElementShortName">ARCH_REGFILE_ENTRIES</obj_property>
+               <obj_property name="ObjectShortName">ARCH_REGFILE_ENTRIES</obj_property>
+            </wvobject>
          </wvobject>
       </wvobject>
       <wvobject fp_name="group33" type="group">
@@ -630,7 +670,6 @@
       <wvobject fp_name="group870" type="group">
          <obj_property name="label">REORDER BUFFER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/rob_tail_mispredict_recovery_memory" type="array">
             <obj_property name="ElementShortName">rob_tail_mispredict_recovery_memory[6:0][4:0]</obj_property>
             <obj_property name="ObjectShortName">rob_tail_mispredict_recovery_memory[6:0][4:0]</obj_property>
@@ -729,7 +768,6 @@
    <wvobject fp_name="group569" type="group">
       <obj_property name="label">LED DEVICE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/cpu_tb/cpu/led_device/led_out" type="array">
          <obj_property name="ElementShortName">led_out[15:0]</obj_property>
          <obj_property name="ObjectShortName">led_out[15:0]</obj_property>
@@ -750,7 +788,6 @@
    <wvobject fp_name="group3592" type="group">
       <obj_property name="label">RAM MEMORY</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/cpu_tb/cpu/your_instance_name/ena" type="logic">
          <obj_property name="ElementShortName">ena</obj_property>
          <obj_property name="ObjectShortName">ena</obj_property>
@@ -783,7 +820,6 @@
    <wvobject fp_name="group2027" type="group">
       <obj_property name="label">BUS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/cpu_tb/cpu/bus_addr_read" type="array">
          <obj_property name="ElementShortName">bus_addr_read[31:0]</obj_property>
          <obj_property name="ObjectShortName">bus_addr_read[31:0]</obj_property>

@@ -161,7 +161,7 @@ begin
                                                                               '0' & 
                                                                               commit_ready_1;
                                                                               
-                    rob_tail_mispredict_recovery_memory(branch_mask_to_int(branch_mask)) <= rob_tail_counter_next;
+                    rob_tail_mispredict_recovery_memory(branch_mask_to_int(branch_mask)) <= rob_tail_counter_reg;
                 end if;
 
                 if (cdb.valid = '1') then

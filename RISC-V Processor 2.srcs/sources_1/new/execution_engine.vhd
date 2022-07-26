@@ -407,7 +407,9 @@ begin
     -- ==================================================================================================
     -- ==================================================================================================
     branch_controller : entity work.branch_controller(rtl)
-                        port map(outstanding_branches_mask => bc_dependent_branches_mask,
+                        port map(cdb => cdb,
+                        
+                                 outstanding_branches_mask => bc_dependent_branches_mask,
                                  alloc_branch_mask => bc_alloc_branch_mask,
                                  
                                  branch_alloc_en => bc_branch_alloc_en,

@@ -8,6 +8,8 @@ use WORK.PKG_CPU.ALL;
 
 entity branch_controller is
     port(
+        cdb : in cdb_type; 
+   
         outstanding_branches_mask : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         alloc_branch_mask : out std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         
@@ -22,64 +24,65 @@ entity branch_controller is
 end branch_controller;
 
 architecture rtl of branch_controller is
-    constant BRANCH_TAG_START : integer := BRANCHING_DEPTH + CPU_ADDR_WIDTH_BITS - 1;
-    constant BRANCH_TAG_END : integer := CPU_ADDR_WIDTH_BITS;
-    constant BRANCH_TARGET_ADDRESS_START : integer := CPU_ADDR_WIDTH_BITS - 1;
-    constant BRANCH_TARGET_ADDRESS_END : integer := 0;
+    constant BRANCH_MASK_START : integer := BRANCHING_DEPTH - 1;
+    constant BRANCH_MASK_END : integer := 0;
 
-    type cb_type is array (BRANCHING_DEPTH - 1 downto 0) of std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
+    type cb_type is array (BRANCHING_DEPTH downto 0) of std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
     signal cb : cb_type;
+    
+    type branch_controller_mispredict_recovery_memory_type is array(BRANCHING_DEPTH downto 0) of unsigned(integer(ceil(log2(real(BRANCHING_DEPTH)))) - 1 downto 0);
+    signal branch_controller_mispredict_recovery_memory : branch_controller_mispredict_recovery_memory_type;
 
     signal outstanding_branches_mask_i : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
     signal alloc_branch_mask_i : std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
 
     signal cb_full : std_logic;
     signal cb_empty : std_logic;
-   
-    signal entries_allocated : unsigned(integer(ceil(log2(real(BRANCHING_DEPTH)))) - 1 downto 0);
-   
+
     signal head_counter_reg : unsigned(integer(ceil(log2(real(BRANCHING_DEPTH)))) - 1 downto 0); 
     signal tail_counter_reg : unsigned(integer(ceil(log2(real(BRANCHING_DEPTH)))) - 1 downto 0);
     
     signal head_counter_next : unsigned(integer(ceil(log2(real(BRANCHING_DEPTH)))) - 1 downto 0); 
     signal tail_counter_next : unsigned(integer(ceil(log2(real(BRANCHING_DEPTH)))) - 1 downto 0); 
+    
+    constant COUNTERS_ONE : unsigned(integer(ceil(log2(real(BRANCHING_DEPTH)))) - 1 downto 0) := to_unsigned(1, integer(ceil(log2(real(BRANCHING_DEPTH)))));
 begin
     buffer_cntr_proc : process(clk)
     begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 for i in 0 to BRANCHING_DEPTH - 1 loop
-                    cb(i) <= std_logic_vector(to_unsigned(2 ** i, BRANCHING_DEPTH));
+                    cb(i)(BRANCH_MASK_START downto BRANCH_MASK_END) <= std_logic_vector(to_unsigned(2 ** i, BRANCHING_DEPTH));
                 end loop;
-            
-                entries_allocated <= (others => '0');
                 tail_counter_reg <= (others => '0');
                 head_counter_reg <= (others => '0');
-            else                
-                if (branch_alloc_en = '1' and cb_empty = '0') then
+            else                            
+                if (branch_alloc_en = '1' and cb_empty = '0' and cdb.branch_taken = '0') then
                     tail_counter_reg <= tail_counter_next;
-                    entries_allocated <= entries_allocated + 1;
+                    
+                    branch_controller_mispredict_recovery_memory(branch_mask_to_int(alloc_branch_mask_i)) <= tail_counter_reg;
                 end if;
             
                 if (branch_commit_en = '1') then
                     head_counter_reg <= head_counter_next;
-                    entries_allocated <= entries_allocated - 1;
                 end if;
             end if;
         end if;
     end process;
     
     
-    counters_next_proc : process(head_counter_reg, tail_counter_reg)
+    counters_next_proc : process(head_counter_reg, tail_counter_reg, cdb)
     begin
-        if (head_counter_reg = BRANCHING_DEPTH - 1) then
-            head_counter_next <= (others => '0');
+        if (head_counter_reg = BRANCHING_DEPTH) then
+            head_counter_next <= COUNTERS_ONE;
         else
             head_counter_next <= head_counter_reg + 1;
         end if;
         
-        if (tail_counter_reg = BRANCHING_DEPTH - 1) then
-            tail_counter_next <= (others => '0');
+        if (cdb.branch_taken = '1') then
+            tail_counter_next <= branch_controller_mispredict_recovery_memory(branch_mask_to_int(cdb.branch_mask));
+        elsif (tail_counter_reg = BRANCHING_DEPTH) then
+            tail_counter_next <= COUNTERS_ONE;
         else
             tail_counter_next <= tail_counter_reg + 1;
         end if;
@@ -101,6 +104,7 @@ begin
     
     outstanding_branches_mask <= outstanding_branches_mask_i;
     
-    cb_empty <= '1' when entries_allocated = BRANCHING_DEPTH else '0';
+    cb_full <= '1' when head_counter_reg = tail_counter_reg else '0';
+    cb_empty <= '1' when tail_counter_next = head_counter_reg else '0';
     empty <= cb_empty;
 end rtl;
