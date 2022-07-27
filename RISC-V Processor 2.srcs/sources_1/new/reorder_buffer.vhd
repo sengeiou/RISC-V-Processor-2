@@ -109,7 +109,7 @@ begin
         if (rising_edge(clk)) then
             if (reset = '1') then
                 rob_tail_counter_reg <= COUNTER_ONE;
-            elsif ((write_1_en = '1' and rob_full = '0') or cdb.branch_taken = '1') then
+            elsif ((write_1_en = '1' and rob_full = '0') or (cdb.branch_taken = '1' and cdb.valid = '1')) then
                 rob_tail_counter_reg <= rob_tail_counter_next;
             end if;
         end if;
@@ -134,7 +134,7 @@ begin
             rob_head_counter_next <= std_logic_vector(unsigned(rob_head_counter_reg) + 1);
         end if;
         
-        if (cdb.branch_taken = '1') then        -- Clear all instructions after branch in ROB
+        if (cdb.branch_taken = '1' and cdb.valid = '1') then        -- Clear all instructions after branch in ROB
             rob_tail_counter_next <= rob_tail_mispredict_recovery_memory(branch_mask_to_int(cdb.branch_mask));
         elsif (unsigned(rob_tail_counter_reg) = REORDER_BUFFER_ENTRIES - 1) then
             rob_tail_counter_next <= COUNTER_ONE;

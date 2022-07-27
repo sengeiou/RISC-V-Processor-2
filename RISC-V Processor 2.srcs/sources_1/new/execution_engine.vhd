@@ -104,9 +104,7 @@ architecture Structural of execution_engine is
     signal rf_rd_data_3 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     signal rf_rd_data_4 : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     -- ===========================================
-    
-    signal next_uop_ready : std_logic; 
-    
+
     -- ========== SCHEDULER CONTROL SIGNALS ==========
     signal sched_full : std_logic;
     -- ===============================================
@@ -198,6 +196,8 @@ architecture Structural of execution_engine is
     
     signal is_cond_branch_commit : std_logic;
     signal is_jump_commit : std_logic;
+    
+    signal mispredict_detected : std_logic;
     -- =======================================
 begin
     instruction_queue : fifo_generator_1
@@ -214,7 +214,7 @@ begin
       din(31 downto 0) => decoded_instruction.immediate,
         
       wr_en => instr_ready,
-      rd_en => next_uop_ready,
+      rd_en => uop_issue_ready,
         
       dout(89 downto 58) => next_uop.pc,
       dout(57 downto 55) => next_uop.operation_type,
@@ -263,24 +263,25 @@ begin
         end if;
     end process;
     
-    fifo_reset <= '1' when reset = '1' or cdb.branch_taken = '1' else '0';
+    mispredict_detected <= cdb.branch_taken and cdb.valid;
+    fifo_reset <= '1' when reset = '1' or mispredict_detected = '1' else '0';
     -- Will need to take SH, SB, LH, LB into consideration in the future
     next_uop_store <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_SW) else '0';
     next_uop_load <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_LW) else '0';
     
-    uop_issue_ready <= next_uop_ready and
-                    not raa_empty and
+    uop_issue_ready <= not raa_empty and
                     not rob_full and
                     not sched_full and
+                    not iq_empty and
                     not (sq_full and next_uop_store) and 
                     not (lq_full and next_uop_load) and
                     not bc_empty;
                     
-    pipeline_reg_1_rst <= '1' when uop_issue_ready = '0' or cdb.branch_taken = '1' else '0';
-    pipeline_reg_2_0_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
-    pipeline_reg_2_1_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
-    pipeline_reg_3_0_rst <= '1' when ((pipeline_reg_2_0.sched_out_port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
-    pipeline_reg_3_1_rst <= '1' when ((pipeline_reg_2_1.sched_out_port_1.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and cdb.branch_taken = '1') else '0';
+    pipeline_reg_1_rst <= '1' when uop_issue_ready = '0' or (mispredict_detected = '1') else '0';
+    pipeline_reg_2_0_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
+    pipeline_reg_2_1_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
+    pipeline_reg_3_0_rst <= '1' when ((pipeline_reg_2_0.sched_out_port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
+    pipeline_reg_3_1_rst <= '1' when ((pipeline_reg_2_1.sched_out_port_1.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
 
     pipeline_reg_1_next.sched_in_port_0.instr_tag <= rob_next_alloc_tag;
     pipeline_reg_1_next.sched_in_port_0.operation_type <= next_uop.operation_type;
@@ -296,7 +297,7 @@ begin
     pipeline_reg_1_next.sched_in_port_0.curr_branch_mask <= bc_alloc_branch_mask;
     pipeline_reg_1_next.sched_in_port_0.dependent_branches_mask <= bc_dependent_branches_mask;
     pipeline_reg_1_next.dest_reg <= next_uop.arch_dest_reg;
-    pipeline_reg_1_next.valid <= next_uop_ready;
+    pipeline_reg_1_next.valid <= uop_issue_ready;
     
     pipeline_reg_2_0_next.sched_out_port_0 <= port_0;
     pipeline_reg_2_0_next.valid <= port_0.valid;
@@ -329,7 +330,7 @@ begin
     next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
     sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_LOAD_STORE else '0';
     
-    bc_branch_alloc_en <= '1' when next_uop.operation_type = OP_TYPE_INTEGER and next_uop.operation_select(7 downto 5) = "011" and next_uop_ready = '1' else '0';
+    bc_branch_alloc_en <= '1' when next_uop.operation_type = OP_TYPE_INTEGER and next_uop.operation_select(7 downto 5) = "011" and uop_issue_ready = '1' else '0';
     
     branch_taken <= cdb.branch_taken; 
     branch_target_pc <= cdb.data;
@@ -337,8 +338,7 @@ begin
     -- ==================================================================================================
     --                                        REGISTER RENAMING
     -- ==================================================================================================
-    next_uop_ready <= not (iq_empty or sched_full or raa_empty);
-    raa_get_en <= '1' when next_uop_ready = '1' and next_uop.arch_dest_reg /= "00000" else '0'; 
+    raa_get_en <= '1' when uop_issue_ready = '1' and next_uop.arch_dest_reg /= "00000" else '0'; 
     raa_put_en <= '1' when rob_commit_ready = '1' and freed_reg_addr /= PHYS_REG_TAG_ZERO else '0';
       
     register_alias_allocator : entity work.register_alias_allocator_2(rtl)
@@ -413,8 +413,7 @@ begin
                                  alloc_branch_mask => bc_alloc_branch_mask,
                                  
                                  branch_alloc_en => bc_branch_alloc_en,
-                                 branch_commit_en => bc_branch_commit_en,
-                                 
+
                                  empty => bc_empty,
                                  
                                  clk => clk,
@@ -465,7 +464,7 @@ begin
                               branch_mask => bc_alloc_branch_mask,
                               commit_ready_1 => next_uop_commit_ready,
                               
-                              write_1_en => next_uop_ready,
+                              write_1_en => uop_issue_ready,
                               commit_1_en => '1',
 
                               rob_entry_addr => pipeline_reg_2_0.sched_out_port_0.instr_tag,
@@ -599,10 +598,10 @@ begin
     is_jump_commit <= '1' when rob_head_operation_type = OP_TYPE_JUMP and rob_commit_ready = '1' else '0';
 
     sq_data_tag <= renamed_src_reg_2;
-    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '1' and next_uop_ready = '1' else '0';      -- 5th bit of operation select indicates a store
+    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '1' and uop_issue_ready = '1' else '0';      -- 5th bit of operation select indicates a store
 
     lq_dest_tag <= renamed_dest_reg;
-    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '0' and next_uop_ready = '1' else '0';
+    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '0' and uop_issue_ready = '1' else '0';
 
 
     cdb <= cdb_1 when cdb_granted_1 = '1' else
