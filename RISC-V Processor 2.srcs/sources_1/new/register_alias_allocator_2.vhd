@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
+use WORK.PKG_CPU.ALL;
 
 entity register_alias_allocator_2 is
     generic(
@@ -9,6 +10,9 @@ entity register_alias_allocator_2 is
         ARCH_REGFILE_ENTRIES : integer range 1 to 1024
     );
     port(
+        cdb : in cdb_type;
+        curr_instr_branch_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0); 
+        
         free_reg_alias : in std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         alloc_reg_alias : out std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
         
@@ -22,6 +26,9 @@ entity register_alias_allocator_2 is
 end register_alias_allocator_2;
 
 architecture rtl of register_alias_allocator_2 is
+    type register_status_vector_mispredict_recovery_memory_type is array (BRANCHING_DEPTH - 1 downto 0) of std_logic_vector(PHYS_REGFILE_ENTRIES - 1 downto 0);
+    signal rsv_mispredict_recovery_memory : register_status_vector_mispredict_recovery_memory_type;
+    
     signal n_empty : std_logic;
 
     signal i_alloc_reg_alias : std_logic_vector(integer(ceil(log2(real(PHYS_REGFILE_ENTRIES)))) - 1 downto 0);
@@ -48,13 +55,28 @@ begin
                     end if;
                 end loop;
             else
-                if (n_empty = '1' and get_en = '1') then
-                    register_status_vector(to_integer(unsigned(i_alloc_reg_alias))) <= '0';
+                if (cdb.branch_taken = '1' and cdb.valid = '1') then
+                    register_status_vector <= rsv_mispredict_recovery_memory(branch_mask_to_int(cdb.branch_mask));
+                else
+                    if (curr_instr_branch_mask /= BRANCH_MASK_ZERO) then
+                        rsv_mispredict_recovery_memory(branch_mask_to_int(curr_instr_branch_mask)) <= register_status_vector;
+                    end if;
+                
+                    if (n_empty = '1' and get_en = '1') then
+                        register_status_vector(to_integer(unsigned(i_alloc_reg_alias))) <= '0';
+                    end if;
+                    
+                    if (put_en = '1') then
+                        -- Register aliases can ONLY be cleared in mispredict recovery memories. This is to prevent the recovered table from having registers marked as allocated
+                        -- because the snapshot was taken before the register was deallocated
+                        for i in 0 to BRANCHING_DEPTH - 1 loop
+                            rsv_mispredict_recovery_memory(i)(to_integer(unsigned(free_reg_alias))) <= '1';
+                        end loop;
+                    
+                        register_status_vector(to_integer(unsigned(free_reg_alias))) <= '1';
+                    end if;
                 end if;
                 
-                if (put_en = '1') then
-                    register_status_vector(to_integer(unsigned(free_reg_alias))) <= '1';
-                end if;
             end if;
         end if;
     end process;

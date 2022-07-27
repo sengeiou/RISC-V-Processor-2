@@ -344,7 +344,10 @@ begin
     register_alias_allocator : entity work.register_alias_allocator_2(rtl)
                                generic map(PHYS_REGFILE_ENTRIES => PHYS_REGFILE_ENTRIES,
                                            ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES)
-                               port map(free_reg_alias => freed_reg_addr,
+                               port map(cdb => cdb,
+                                        curr_instr_branch_mask => bc_alloc_branch_mask,
+                               
+                                        free_reg_alias => freed_reg_addr,
                                         alloc_reg_alias => renamed_dest_reg,
                                         
                                         put_en => raa_put_en,
