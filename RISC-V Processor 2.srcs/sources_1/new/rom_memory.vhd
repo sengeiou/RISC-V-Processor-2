@@ -20,7 +20,7 @@ architecture rtl of rom_memory is
     type ram_type is array (2 ** ADDR_WIDTH_BITS - 1 downto 0) of std_logic_vector (DATA_WIDTH_BITS - 1 downto 0);
 
     impure function init_ram_hex return ram_type is
-        file text_file : text open read_mode is "../../../SRC/bootloader_test/firmware.hex";
+        file text_file : text open read_mode is "C:\Vivado Projects\RISC-V Processor\RISC-V-Processor-2\firmware.hex";
         variable text_line : line;
         variable ram_content : ram_type;
         variable temp : std_logic_vector(31 downto 0);
@@ -55,7 +55,7 @@ begin
     process (addr, en)
     begin
         if (en = '1') then
-            data <= mem(to_integer(unsigned(addr)));
+            data <= mem(to_integer(unsigned(addr(ADDR_WIDTH_BITS - 1 downto 2))));
         else
             data <= (others => '0');
         end if;
