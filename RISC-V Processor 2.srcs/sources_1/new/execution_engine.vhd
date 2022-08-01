@@ -367,9 +367,7 @@ begin
                                              arch_reg_addr_read_2 => next_uop.arch_src_reg_2,
                                              
                                              phys_reg_addr_read_1 => renamed_src_reg_1,
-                                             phys_reg_addr_read_1_v => renamed_src_reg_1_valid,
                                              phys_reg_addr_read_2 => renamed_src_reg_2,
-                                             phys_reg_addr_read_2_v => renamed_src_reg_2_valid,
                                              
                                              arch_reg_addr_write_1 => next_uop.arch_dest_reg,
                                              phys_reg_addr_write_1 => renamed_dest_reg,
@@ -425,6 +423,14 @@ begin
                              rd_4_addr => pipeline_reg_2_1.sched_out_port_1.phys_src_reg_1,     -- Operand for memory address operations
                              wr_addr => cdb.phys_dest_reg,
                              
+                             
+                             alloc_reg_addr => renamed_dest_reg,
+                             alloc_reg_addr_v => raa_get_en,
+                             
+                             reg_1_valid_bit_addr => renamed_src_reg_1,
+                             reg_2_valid_bit_addr => renamed_src_reg_2,
+                             reg_1_valid => renamed_src_reg_1_valid,
+                             reg_2_valid => renamed_src_reg_2_valid,
                              -- DATA
                              rd_1_data => rf_rd_data_1,
                              rd_2_data => rf_rd_data_2,

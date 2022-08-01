@@ -78,7 +78,7 @@ architecture rtl of reorder_buffer is
     signal reorder_buffer : reorder_buffer_type;
     
     -- ENTRY WITH INDEX 0 IS UNUSED BUT SIMPLIFIES WRITING AND READING LOGIC
-    type rob_tail_mispredict_recovery_memory_type is array (BRANCHING_DEPTH downto 0) of std_logic_vector(ROB_TAG_BITS - 1 downto 0);
+    type rob_tail_mispredict_recovery_memory_type is array (BRANCHING_DEPTH - 1 downto 0) of std_logic_vector(ROB_TAG_BITS - 1 downto 0);
     signal rob_tail_mispredict_recovery_memory : rob_tail_mispredict_recovery_memory_type;
     
     -- ===== HEAD & TAIL COUNTERS =====
@@ -160,8 +160,9 @@ begin
                                                                               pc_1_in &
                                                                               '0' & 
                                                                               commit_ready_1;
-                                                                              
-                    rob_tail_mispredict_recovery_memory(branch_mask_to_int(branch_mask)) <= rob_tail_counter_reg;
+                    if (branch_mask /= BRANCH_MASK_ZERO) then                                     
+                        rob_tail_mispredict_recovery_memory(branch_mask_to_int(branch_mask)) <= rob_tail_counter_reg;
+                    end if;
                 end if;
 
                 if (cdb.valid = '1') then
