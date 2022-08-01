@@ -62,9 +62,6 @@ package pkg_cpu is
         immediate : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0);
     end record;
     
-    type rat_type is array (ARCH_REGFILE_ENTRIES - 1 downto 0) of std_logic_vector(PHYS_REGFILE_ADDR_BITS downto 0);
-    constant RAT_TYPE_ZERO : rat_type := (others => (others => '0'));
-    
     -- Operation Type Definitions
     constant OP_TYPE_INTEGER : std_logic_vector(2 downto 0) := "000";
     constant OP_TYPE_LOAD_STORE : std_logic_vector(2 downto 0) := "001";
@@ -115,6 +112,13 @@ package pkg_cpu is
         branch_taken : std_logic;
         valid : std_logic;
     end record;
+    
+    constant CDB_OPEN_CONST : cdb_type := ((others => '0'),
+                                            (others => '0'),
+                                            (others => '0'),
+                                            (others => '0'),
+                                            '0',
+                                            '0');
     
     function branch_mask_to_int(branch_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0)) return integer;
 end pkg_cpu;

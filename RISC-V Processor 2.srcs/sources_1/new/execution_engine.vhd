@@ -94,8 +94,6 @@ architecture Structural of execution_engine is
     signal raa_put_en : std_logic;
     
     signal raa_empty : std_logic;
-    
-    signal rat_passthrough : rat_type;
     -- ===============================================
     
     -- ========== REGISTER FILE SIGNALS ==========
@@ -363,9 +361,8 @@ begin
                                                 ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
                                                 VALID_BIT_INIT_VAL => '1',
                                                 ENABLE_VALID_BITS => true)
-                                    port map(cdb_phys_dest_reg => cdb.phys_dest_reg,
-                                             cdb_valid => cdb.valid,
-                                            
+                                    port map(cdb => cdb,
+                                    
                                              arch_reg_addr_read_1 => next_uop.arch_src_reg_1,
                                              arch_reg_addr_read_2 => next_uop.arch_src_reg_2,
                                              
@@ -374,12 +371,10 @@ begin
                                              phys_reg_addr_read_2 => renamed_src_reg_2,
                                              phys_reg_addr_read_2_v => renamed_src_reg_2_valid,
                                              
-                                             rat_in => rat_passthrough,
-                                             rat_out => open,
-                                             rat_overwrite => '0',
-                                             
                                              arch_reg_addr_write_1 => next_uop.arch_dest_reg,
                                              phys_reg_addr_write_1 => renamed_dest_reg,
+                                             
+                                             next_instr_branch_mask => bc_alloc_branch_mask,
                                              
                                              clk => clk,
                                              reset => reset);  
@@ -389,20 +384,17 @@ begin
                                                 ARCH_REGFILE_ENTRIES => ARCH_REGFILE_ENTRIES,
                                                 VALID_BIT_INIT_VAL => '0',
                                                 ENABLE_VALID_BITS => false)
-                                      port map(cdb_phys_dest_reg => PHYS_REG_TAG_ZERO,
-                                               cdb_valid => '0',
+                                      port map(cdb => CDB_OPEN_CONST,
                                       
                                                arch_reg_addr_read_1 => rob_head_arch_dest_reg,                   -- Architectural address of a register to be marked as free
                                                arch_reg_addr_read_2 => REG_ADDR_ZERO,                       -- Currently unused
                                                
                                                phys_reg_addr_read_1 => freed_reg_addr,                      -- Address of a physical register to be marked as free
                                                  
-                                               rat_in => RAT_TYPE_ZERO,
-                                               rat_out => rat_passthrough,
-                                               rat_overwrite => '0',
-                                                 
                                                arch_reg_addr_write_1 => rob_head_arch_dest_reg,
                                                phys_reg_addr_write_1 => rob_head_phys_dest_reg,
+                                                 
+                                               next_instr_branch_mask => (others => '0'),
                                                  
                                                clk => clk,
                                                reset => reset);  

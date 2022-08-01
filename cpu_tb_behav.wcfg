@@ -17,12 +17,12 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,051.117 ns"></ZoomEndTime>
-      <Cursor1Time time="0.000 ns"></Cursor1Time>
+      <ZoomEndTime time="1,794.688 ns"></ZoomEndTime>
+      <Cursor1Time time="650.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="212"></NameColumnWidth>
-      <ValueColumnWidth column_width="70"></ValueColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -93,6 +93,24 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next" type="array">
          <obj_property name="ElementShortName">pipeline_reg_1_next</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_1_next</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.sched_in_port_0" type="array">
+            <obj_property name="ElementShortName">.sched_in_port_0</obj_property>
+            <obj_property name="ObjectShortName">.sched_in_port_0</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.dest_reg" type="array">
+            <obj_property name="ElementShortName">.dest_reg[4:0]</obj_property>
+            <obj_property name="ObjectShortName">.dest_reg[4:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.valid" type="logic">
+            <obj_property name="ElementShortName">.valid</obj_property>
+            <obj_property name="ObjectShortName">.valid</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/bc_alloc_branch_mask" type="array">
+         <obj_property name="ElementShortName">bc_alloc_branch_mask[5:0]</obj_property>
+         <obj_property name="ObjectShortName">bc_alloc_branch_mask[5:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1" type="array">
          <obj_property name="ElementShortName">pipeline_reg_1</obj_property>
@@ -145,7 +163,6 @@
       <wvobject fp_name="group3207" type="group">
          <obj_property name="label">BRANCH CONTROLLER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_controller/cdb" type="array">
             <obj_property name="ElementShortName">cdb</obj_property>
             <obj_property name="ObjectShortName">cdb</obj_property>
@@ -194,12 +211,48 @@
       <wvobject fp_name="group1160" type="group">
          <obj_property name="label">REGISTER RENAMING</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="group1159" type="group">
             <obj_property name="label">FRONTEND RAT</obj_property>
             <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/next_instr_branch_mask" type="array">
+               <obj_property name="ElementShortName">next_instr_branch_mask[5:0]</obj_property>
+               <obj_property name="ObjectShortName">next_instr_branch_mask[5:0]</obj_property>
+            </wvobject>
             <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat" type="array">
                <obj_property name="ElementShortName">rat[31:0][7:0]</obj_property>
                <obj_property name="ObjectShortName">rat[31:0][7:0]</obj_property>
+            </wvobject>
+            <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory" type="array">
+               <obj_property name="ElementShortName">rat_mispredict_recovery_memory[5:0][31:0][7:0]</obj_property>
+               <obj_property name="ObjectShortName">rat_mispredict_recovery_memory[5:0][31:0][7:0]</obj_property>
+               <obj_property name="isExpanded"></obj_property>
+               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[5]" type="array">
+                  <obj_property name="ElementShortName">[5][31:0][7:0]</obj_property>
+                  <obj_property name="ObjectShortName">[5][31:0][7:0]</obj_property>
+               </wvobject>
+               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[4]" type="array">
+                  <obj_property name="ElementShortName">[4][31:0][7:0]</obj_property>
+                  <obj_property name="ObjectShortName">[4][31:0][7:0]</obj_property>
+               </wvobject>
+               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[3]" type="array">
+                  <obj_property name="ElementShortName">[3][31:0][7:0]</obj_property>
+                  <obj_property name="ObjectShortName">[3][31:0][7:0]</obj_property>
+               </wvobject>
+               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[2]" type="array">
+                  <obj_property name="ElementShortName">[2][31:0][7:0]</obj_property>
+                  <obj_property name="ObjectShortName">[2][31:0][7:0]</obj_property>
+               </wvobject>
+               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[1]" type="array">
+                  <obj_property name="ElementShortName">[1][31:0][7:0]</obj_property>
+                  <obj_property name="ObjectShortName">[1][31:0][7:0]</obj_property>
+               </wvobject>
+               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[0]" type="array">
+                  <obj_property name="ElementShortName">[0][31:0][7:0]</obj_property>
+                  <obj_property name="ObjectShortName">[0][31:0][7:0]</obj_property>
+                  <obj_property name="isExpanded"></obj_property>
+               </wvobject>
             </wvobject>
          </wvobject>
          <wvobject fp_name="group142" type="group">
@@ -222,7 +275,6 @@
          <wvobject fp_name="group1161" type="group">
             <obj_property name="label">REGISTER ALIAS ALLOC</obj_property>
             <obj_property name="DisplayName">label</obj_property>
-            <obj_property name="isExpanded"></obj_property>
             <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/register_alias_allocator/free_reg_alias" type="array">
                <obj_property name="ElementShortName">free_reg_alias[6:0]</obj_property>
                <obj_property name="ObjectShortName">free_reg_alias[6:0]</obj_property>

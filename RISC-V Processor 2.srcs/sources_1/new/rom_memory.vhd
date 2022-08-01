@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
+use STD.TEXTIO.ALL;
 
 entity rom_memory is
     generic(
@@ -16,30 +17,28 @@ entity rom_memory is
 end rom_memory;
 
 architecture rtl of rom_memory is
-    type mem_type is array (2 ** ADDR_WIDTH_BITS - 1 downto 0) of std_logic_vector (DATA_WIDTH_BITS - 1 downto 0);
+    type ram_type is array (2 ** ADDR_WIDTH_BITS - 1 downto 0) of std_logic_vector (DATA_WIDTH_BITS - 1 downto 0);
+
+    impure function init_ram_hex return ram_type is
+        file text_file : text open read_mode is "../../../SRC/bootloader_test/firmware.hex";
+        variable text_line : line;
+        variable ram_content : ram_type;
+        variable temp : std_logic_vector(31 downto 0);
+        begin
+            for i in 0 to 256 - 1 loop
+                readline(text_file, text_line);
+                hread(text_line, temp);
+
+                ram_content(i) := temp;
+				--for j in 0 to 3 loop
+                --    ram_content(i)(8 * (j + 1) - 1 downto 8 * j) := temp(8 * (4 - j) - 1 downto 8 * (3 - j));
+                --end loop;
+            end loop;    
+ 
+        return ram_content;
+    end function;
     
-    signal mem : mem_type := (
-        0 => "00100000000000000000010000110111",        -- LUI x8, 0x20000000
-        4 => "00000000100001000010010000100011",       -- SW x8, x8(8)
-        8 => "00000000000001000010001110000011",       -- LW x7, x8(0)
-        12 => "00000000000101000010010010000011",       -- LW x9, x8(1)
-        16 => "00000000100001000010010100000011",       -- LW x10, x8(8)
-    
-        20 => "00000000000100000000000010010011",        -- ADDI x1, x0, 1 
-        24 => "00000000000100000000000100010011",        -- ADDI x2, x0, 1
-        28 => "00000000000100010000000110110011",        -- ADD x3, x1, x2
-        
-        32 => "00000111111100000110001000010011",       -- ORI x4, x0, 127 
-        36 => "00000011001000000110001010010011",       -- ORI x5, x0, 50
-        40 => "01000000010100100000001100110011",       -- SUB x6, x4, x5
-        44 => "01010101010100000000000000010011",       -- ADDI x0, x0, 0x5AA
-        48 => "11111110100001000000000011100011",       -- BEQ x8, x8, -32
-        --52 => "11111110100001000000000011100011",       -- BEQ x8, x8, -32
-        --56 => "11111110100001000000000011100011",       -- BEQ x8, x8, -32
-        52 => "00000000000100000000000100010011",        -- ADDI x2, x0, 1
-        
-        others => (others => '0')
-    );
+    signal mem : ram_type := init_ram_hex;
 
 --    signal mem : mem_type := (
 --        0 => "11111111111100000000000100010011",         -- ADDI x2, 0xFFF
