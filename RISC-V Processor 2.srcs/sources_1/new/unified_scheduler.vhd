@@ -117,7 +117,8 @@ begin
                 sched_dispatch_ready_bits(0)(i) <= '0';
             end if;
             
-            if (sched_entries(i)(OPERATION_TYPE_START downto OPERATION_TYPE_END) = PORT_1_OPTYPE) then
+            -- CURRENT WORKAROUND FOR LOAD/STORE DIFFERENTIATION IS TO HAVE LOADS AND STORES HAVE DIFFERENT OPERATION TYPES! CHANGE!!!
+            if (sched_entries(i)(OPERATION_TYPE_START downto OPERATION_TYPE_END) = PORT_1_OPTYPE or sched_entries(i)(OPERATION_TYPE_START downto OPERATION_TYPE_END) = "010") then
                 sched_dispatch_ready_bits(1)(i) <= sched_operands_ready_bits(i);
             else
                 sched_dispatch_ready_bits(1)(i) <= '0';

@@ -16,13 +16,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,794.688 ns"></ZoomEndTime>
-      <Cursor1Time time="650.000 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="50.107066 us"></ZoomEndTime>
+      <Cursor1Time time="131.391863 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="212"></NameColumnWidth>
-      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/cpu_tb/clk" type="logic">
@@ -78,6 +78,10 @@
          <obj_property name="ElementShortName">uop_issue_ready</obj_property>
          <obj_property name="ObjectShortName">uop_issue_ready</obj_property>
       </wvobject>
+      <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/next_uop_store" type="logic">
+         <obj_property name="ElementShortName">next_uop_store</obj_property>
+         <obj_property name="ObjectShortName">next_uop_store</obj_property>
+      </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/branch_taken" type="logic">
          <obj_property name="ElementShortName">branch_taken</obj_property>
          <obj_property name="ObjectShortName">branch_taken</obj_property>
@@ -93,20 +97,6 @@
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next" type="array">
          <obj_property name="ElementShortName">pipeline_reg_1_next</obj_property>
          <obj_property name="ObjectShortName">pipeline_reg_1_next</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.sched_in_port_0" type="array">
-            <obj_property name="ElementShortName">.sched_in_port_0</obj_property>
-            <obj_property name="ObjectShortName">.sched_in_port_0</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.dest_reg" type="array">
-            <obj_property name="ElementShortName">.dest_reg[4:0]</obj_property>
-            <obj_property name="ObjectShortName">.dest_reg[4:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/pipeline_reg_1_next.valid" type="logic">
-            <obj_property name="ElementShortName">.valid</obj_property>
-            <obj_property name="ObjectShortName">.valid</obj_property>
-         </wvobject>
       </wvobject>
       <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/bc_alloc_branch_mask" type="array">
          <obj_property name="ElementShortName">bc_alloc_branch_mask[5:0]</obj_property>
@@ -211,7 +201,6 @@
       <wvobject fp_name="group1160" type="group">
          <obj_property name="label">REGISTER RENAMING</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="group1159" type="group">
             <obj_property name="label">FRONTEND RAT</obj_property>
             <obj_property name="DisplayName">label</obj_property>
@@ -221,38 +210,13 @@
                <obj_property name="ObjectShortName">next_instr_branch_mask[5:0]</obj_property>
             </wvobject>
             <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat" type="array">
-               <obj_property name="ElementShortName">rat[31:0][7:0]</obj_property>
-               <obj_property name="ObjectShortName">rat[31:0][7:0]</obj_property>
+               <obj_property name="ElementShortName">rat[31:0][6:0]</obj_property>
+               <obj_property name="ObjectShortName">rat[31:0][6:0]</obj_property>
             </wvobject>
             <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory" type="array">
-               <obj_property name="ElementShortName">rat_mispredict_recovery_memory[5:0][31:0][7:0]</obj_property>
-               <obj_property name="ObjectShortName">rat_mispredict_recovery_memory[5:0][31:0][7:0]</obj_property>
+               <obj_property name="ElementShortName">rat_mispredict_recovery_memory[5:0][31:0][6:0]</obj_property>
+               <obj_property name="ObjectShortName">rat_mispredict_recovery_memory[5:0][31:0][6:0]</obj_property>
                <obj_property name="isExpanded"></obj_property>
-               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[5]" type="array">
-                  <obj_property name="ElementShortName">[5][31:0][7:0]</obj_property>
-                  <obj_property name="ObjectShortName">[5][31:0][7:0]</obj_property>
-               </wvobject>
-               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[4]" type="array">
-                  <obj_property name="ElementShortName">[4][31:0][7:0]</obj_property>
-                  <obj_property name="ObjectShortName">[4][31:0][7:0]</obj_property>
-               </wvobject>
-               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[3]" type="array">
-                  <obj_property name="ElementShortName">[3][31:0][7:0]</obj_property>
-                  <obj_property name="ObjectShortName">[3][31:0][7:0]</obj_property>
-               </wvobject>
-               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[2]" type="array">
-                  <obj_property name="ElementShortName">[2][31:0][7:0]</obj_property>
-                  <obj_property name="ObjectShortName">[2][31:0][7:0]</obj_property>
-               </wvobject>
-               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[1]" type="array">
-                  <obj_property name="ElementShortName">[1][31:0][7:0]</obj_property>
-                  <obj_property name="ObjectShortName">[1][31:0][7:0]</obj_property>
-               </wvobject>
-               <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/frontend_register_alias_table/rat_mispredict_recovery_memory[0]" type="array">
-                  <obj_property name="ElementShortName">[0][31:0][7:0]</obj_property>
-                  <obj_property name="ObjectShortName">[0][31:0][7:0]</obj_property>
-                  <obj_property name="isExpanded"></obj_property>
-               </wvobject>
             </wvobject>
          </wvobject>
          <wvobject fp_name="group142" type="group">
@@ -267,8 +231,8 @@
                <obj_property name="ObjectShortName">phys_reg_addr_read_1[6:0]</obj_property>
             </wvobject>
             <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/retirement_register_alias_table/rat" type="array">
-               <obj_property name="ElementShortName">rat[31:0][7:0]</obj_property>
-               <obj_property name="ObjectShortName">rat[31:0][7:0]</obj_property>
+               <obj_property name="ElementShortName">rat[31:0][6:0]</obj_property>
+               <obj_property name="ObjectShortName">rat[31:0][6:0]</obj_property>
                <obj_property name="isExpanded"></obj_property>
             </wvobject>
          </wvobject>
@@ -519,6 +483,7 @@
       <wvobject fp_name="group513" type="group">
          <obj_property name="label">LOAD STORE EU</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/bus_addr_read" type="array">
             <obj_property name="ElementShortName">bus_addr_read[31:0]</obj_property>
             <obj_property name="ObjectShortName">bus_addr_read[31:0]</obj_property>
@@ -566,12 +531,10 @@
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/store_queue" type="array">
             <obj_property name="ElementShortName">store_queue[7:0][74:0]</obj_property>
             <obj_property name="ObjectShortName">store_queue[7:0][74:0]</obj_property>
-            <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/load_queue" type="array">
             <obj_property name="ElementShortName">load_queue[7:0][55:0]</obj_property>
             <obj_property name="ObjectShortName">load_queue[7:0][55:0]</obj_property>
-            <obj_property name="isExpanded"></obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/store_state_reg" type="other">
             <obj_property name="ElementShortName">store_state_reg</obj_property>
@@ -685,6 +648,10 @@
             <obj_property name="ElementShortName">lq_alloc_tag[2:0]</obj_property>
             <obj_property name="ObjectShortName">lq_alloc_tag[2:0]</obj_property>
          </wvobject>
+         <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/lq_retire_en" type="logic">
+            <obj_property name="ElementShortName">lq_retire_en</obj_property>
+            <obj_property name="ObjectShortName">lq_retire_en</obj_property>
+         </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/load_store_unit/sq_full" type="logic">
             <obj_property name="ElementShortName">sq_full</obj_property>
             <obj_property name="ObjectShortName">sq_full</obj_property>
@@ -705,9 +672,10 @@
       <wvobject fp_name="group870" type="group">
          <obj_property name="label">REORDER BUFFER</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/rob_tail_mispredict_recovery_memory" type="array">
-            <obj_property name="ElementShortName">rob_tail_mispredict_recovery_memory[6:0][4:0]</obj_property>
-            <obj_property name="ObjectShortName">rob_tail_mispredict_recovery_memory[6:0][4:0]</obj_property>
+            <obj_property name="ElementShortName">rob_tail_mispredict_recovery_memory[5:0][4:0]</obj_property>
+            <obj_property name="ObjectShortName">rob_tail_mispredict_recovery_memory[5:0][4:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/cpu_tb/cpu/core_1/execution_engine/reorder_buffer/reorder_buffer" type="array">
             <obj_property name="ElementShortName">reorder_buffer[23:0][51:0]</obj_property>

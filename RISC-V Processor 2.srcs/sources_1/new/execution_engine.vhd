@@ -151,6 +151,7 @@ architecture Structural of execution_engine is
     
     signal sq_enqueue_en : std_logic;
     signal lq_enqueue_en : std_logic;
+    signal lq_retire_en : std_logic;
     
     signal sq_alloc_tag : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0);
     signal lq_alloc_tag : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
@@ -264,8 +265,8 @@ begin
     mispredict_detected <= cdb.branch_taken and cdb.valid;
     fifo_reset <= '1' when reset = '1' or mispredict_detected = '1' else '0';
     -- Will need to take SH, SB, LH, LB into consideration in the future
-    next_uop_store <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_SW) else '0';
-    next_uop_load <= '1' when (next_uop.operation_type = OP_TYPE_LOAD_STORE) and (next_uop.operation_select = LSU_OP_LW) else '0';
+    next_uop_store <= '1' when (next_uop.operation_type = OP_TYPE_STORE) else '0';
+    next_uop_load <= '1' when (next_uop.operation_type = OP_TYPE_LOAD) else '0';
     
     uop_issue_ready <= not raa_empty and
                     not rob_full and
@@ -277,7 +278,7 @@ begin
                     
     pipeline_reg_1_rst <= '1' when uop_issue_ready = '0' or (mispredict_detected = '1') else '0';
     pipeline_reg_2_0_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
-    pipeline_reg_2_1_rst <= '1' when port_0.valid = '0' or ((port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
+    pipeline_reg_2_1_rst <= '1' when port_1.valid = '0' or ((port_1.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
     pipeline_reg_3_0_rst <= '1' when ((pipeline_reg_2_0.sched_out_port_0.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
     pipeline_reg_3_1_rst <= '1' when ((pipeline_reg_2_1.sched_out_port_1.dependent_branches_mask and cdb.branch_mask) /= BRANCH_MASK_ZERO and mispredict_detected = '1') else '0';
 
@@ -325,8 +326,9 @@ begin
     pipeline_reg_3_1_next.dependent_branches_mask <= pipeline_reg_2_1.sched_out_port_1.dependent_branches_mask;
     pipeline_reg_3_1_next.valid <= pipeline_reg_2_1.sched_out_port_1.valid;
 
-    next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE else '0';
-    sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_LOAD_STORE else '0';
+    next_uop_commit_ready <= '1' when next_uop.operation_type = OP_TYPE_STORE else '0';
+    sq_retire_tag_valid <= '1' when rob_head_operation_type = OP_TYPE_STORE and rob_commit_ready = '1' else '0';
+    lq_retire_en <= '1' when rob_head_operation_type = OP_TYPE_LOAD and rob_commit_ready = '1' else '0';
     
     bc_branch_alloc_en <= '1' when next_uop.operation_type = OP_TYPE_INTEGER and next_uop.operation_select(7 downto 5) = "011" and uop_issue_ready = '1' else '0';
     
@@ -578,6 +580,7 @@ begin
                                sq_retire_tag_valid => sq_retire_tag_valid,
                                
                                lq_enqueue_en => lq_enqueue_en,
+                               lq_retire_en => lq_retire_en,
                                
                                cdb => cdb_1,
                                cdb_request => cdb_request_1,
@@ -599,10 +602,10 @@ begin
     is_jump_commit <= '1' when rob_head_operation_type = OP_TYPE_JUMP and rob_commit_ready = '1' else '0';
 
     sq_data_tag <= renamed_src_reg_2;
-    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '1' and uop_issue_ready = '1' else '0';      -- 5th bit of operation select indicates a store
+    sq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_STORE and uop_issue_ready = '1' else '0';      -- 5th bit of operation select indicates a store
 
     lq_dest_tag <= renamed_dest_reg;
-    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD_STORE and next_uop.operation_select(7) = '0' and uop_issue_ready = '1' else '0';
+    lq_enqueue_en <= '1' when next_uop.operation_type = OP_TYPE_LOAD and uop_issue_ready = '1' else '0';
 
 
     cdb <= cdb_1 when cdb_granted_1 = '1' else

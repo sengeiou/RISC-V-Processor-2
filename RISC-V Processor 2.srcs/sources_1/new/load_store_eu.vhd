@@ -48,6 +48,7 @@ entity load_store_eu is
         sq_retire_tag_valid : in std_logic;
         
         lq_enqueue_en : in std_logic;
+        lq_retire_en : in std_logic;
 
         cdb : out cdb_type;
         cdb_request : out std_logic;
@@ -139,7 +140,7 @@ architecture rtl of load_store_eu is
     signal lq_selected_index : std_logic_vector(LOAD_QUEUE_TAG_BITS - 1 downto 0);
     
     signal sq_dequeue_en : std_logic;
-    signal lq_dequeue_en : std_logic;
+    --signal lq_dequeue_en : std_logic;
     
     signal i_sq_full : std_logic;
     signal sq_empty : std_logic;
@@ -168,8 +169,7 @@ architecture rtl of load_store_eu is
                               
     type load_state_type is (LOAD_IDLE,
                              LOAD_BUSY,
-                             LOAD_WRITEBACK,
-                             LOAD_FINALIZE);
+                             LOAD_WRITEBACK);
                              
     signal load_state_reg : load_state_type;
     signal load_state_next : load_state_type;
@@ -246,18 +246,13 @@ begin
                 end if;
             when LOAD_WRITEBACK =>
                 if (cdb_granted = '1') then
-                    load_state_next <= LOAD_FINALIZE;
-                else
                     load_state_next <= LOAD_IDLE;
                 end if;
-            when LOAD_FINALIZE => 
-                load_state_next <= LOAD_IDLE;
         end case;
     end process;
     
     load_state_outputs_proc : process(load_state_reg)
     begin
-        lq_dequeue_en <= '0';
         bus_stbr <= '0';
         load_active_tag_reg_en <= '0';
         cdb_request <= '0';
@@ -272,8 +267,6 @@ begin
             when LOAD_WRITEBACK => 
                 cdb_request <= '1';
                 cdb.valid <= '1';
-            when LOAD_FINALIZE =>
-                lq_dequeue_en <= '1'; 
         end case;
     end process;
     
@@ -403,7 +396,7 @@ begin
                     lq_tail_counter_reg <= lq_tail_counter_next;
                 end if;
                 
-                if (lq_dequeue_en = '1' and lq_empty = '0') then
+                if (lq_retire_en = '1' and lq_empty = '0') then
                     lq_head_counter_reg <= lq_head_counter_next;
                 end if;
                 

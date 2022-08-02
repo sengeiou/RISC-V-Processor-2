@@ -38,6 +38,7 @@ package pkg_cpu is
     constant ADDR_ZERO : std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0) := (others => '0');
     constant DATA_ZERO : std_logic_vector(CPU_DATA_WIDTH_BITS - 1 downto 0) := (others => '0');
     constant BRANCH_MASK_ZERO : std_logic_vector(BRANCHING_DEPTH - 1 downto 0) := (others => '0');
+    constant SQ_TAG_ZERO : std_logic_vector(STORE_QUEUE_TAG_BITS - 1 downto 0) := (others => '0');
     
     -- Debugging Configuration
     constant ENABLE_REGFILE_ILA : boolean := true;
@@ -64,13 +65,14 @@ package pkg_cpu is
     
     -- Operation Type Definitions
     constant OP_TYPE_INTEGER : std_logic_vector(2 downto 0) := "000";
-    constant OP_TYPE_LOAD_STORE : std_logic_vector(2 downto 0) := "001";
+    constant OP_TYPE_STORE : std_logic_vector(2 downto 0) := "001";
+    constant OP_TYPE_LOAD : std_logic_vector(2 downto 0) := "010";
     constant OP_TYPE_COND_BRANCH : std_logic_vector(2 downto 0) := "010";
     constant OP_TYPE_JUMP : std_logic_vector(2 downto 0) := "011";
     
     -- Load-Store Unit Operation Definitions
     constant LSU_OP_LW : std_logic_vector(7 downto 0) := "00000000";
-    constant LSU_OP_SW : std_logic_vector(7 downto 0) := "10000000";    
+    constant LSU_OP_SW : std_logic_vector(7 downto 0) := "10000010";    
     
     -- Integer EU Operation Definitions
     constant ALU_OP_ADD : std_logic_vector(3 downto 0) := "0000";
