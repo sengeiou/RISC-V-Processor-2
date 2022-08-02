@@ -552,7 +552,12 @@ begin
     load_store_unit : entity work.load_store_eu(rtl)
                       generic map(SQ_ENTRIES => STORE_QUEUE_ENTRIES,
                                   LQ_ENTRIES => LOAD_QUEUE_ENTRIES)
-                      port map(
+                      port map(cdb_in => cdb,
+                               cdb_out => cdb_1,
+                               cdb_request => cdb_request_1,
+                               cdb_granted => cdb_granted_1,
+                               
+                               branch_mask => bc_alloc_branch_mask,
                                instr_tag => rob_next_alloc_tag,
                       
                                generated_address => lsu_gen_addr,
@@ -581,10 +586,6 @@ begin
                                
                                lq_enqueue_en => lq_enqueue_en,
                                lq_retire_en => lq_retire_en,
-                               
-                               cdb => cdb_1,
-                               cdb_request => cdb_request_1,
-                               cdb_granted => cdb_granted_1,
                                
                                bus_addr_read => bus_addr_read,
                                bus_addr_write => bus_addr_write,

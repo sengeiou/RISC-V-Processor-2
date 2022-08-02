@@ -16,6 +16,12 @@ entity load_store_eu is
         LQ_ENTRIES : integer  
     );
     port(
+        cdb_in : in cdb_type;
+        cdb_out : out cdb_type;
+        cdb_request : out std_logic;
+        cdb_granted : in std_logic;
+        
+        branch_mask : in std_logic_vector(BRANCHING_DEPTH - 1 downto 0);
         -- Instruction tags
         instr_tag : in std_logic_vector(INSTR_TAG_BITS - 1 downto 0);
     
@@ -49,10 +55,6 @@ entity load_store_eu is
         
         lq_enqueue_en : in std_logic;
         lq_retire_en : in std_logic;
-
-        cdb : out cdb_type;
-        cdb_request : out std_logic;
-        cdb_granted : in std_logic;
         
         -- TEMPORARY BUS STUFF
         bus_addr_read : out std_logic_vector(CPU_ADDR_WIDTH_BITS - 1 downto 0);
@@ -75,7 +77,7 @@ architecture rtl of load_store_eu is
     constant SQ_TAG_BITS : integer := integer(ceil(log2(real(SQ_ENTRIES))));
     constant LQ_TAG_BITS : integer := integer(ceil(log2(real(LQ_ENTRIES))));
     constant SQ_ENTRY_BITS : integer := CPU_ADDR_WIDTH_BITS + PHYS_REGFILE_ADDR_BITS + CPU_DATA_WIDTH_BITS + 4;
-    constant LQ_ENTRY_BITS : integer := CPU_ADDR_WIDTH_BITS + DATA_TAG_BITS + SQ_ENTRIES + INSTR_TAG_BITS + 4;
+    constant LQ_ENTRY_BITS : integer := CPU_ADDR_WIDTH_BITS + DATA_TAG_BITS + SQ_ENTRIES + INSTR_TAG_BITS + 3;
 
     -- SQ ENTRY INDEXES
     constant SQ_ADDR_VALID : integer := SQ_ENTRY_BITS - 1;
@@ -99,7 +101,6 @@ architecture rtl of load_store_eu is
     constant LQ_STQ_MASK_END : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - 1;
     constant LQ_INSTR_TAG_START : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - 2;
     constant LQ_INSTR_TAG_END : integer := LQ_ENTRY_BITS - CPU_ADDR_WIDTH_BITS - DATA_TAG_BITS - SQ_ENTRIES - INSTR_TAG_BITS - 1;
-    constant LQ_READY_BIT : integer := 2;
     constant LQ_EXECUTED_BIT : integer := 1;
     constant LQ_VALID_BIT : integer := 0;
 
@@ -115,18 +116,22 @@ architecture rtl of load_store_eu is
     signal store_queue : sq_type;
     signal load_queue : lq_type;
     
-    -- STORE QUEUE HEAD AND TAIL COUNTER REGISTERS
+    -- STORE QUEUE HEAD AND TAIL COUNTER REGISTERS AND MISPREDICTION RECOVERY MEMORY
     signal sq_head_counter_reg : unsigned(SQ_TAG_BITS - 1 downto 0);
     signal sq_head_counter_next : unsigned(SQ_TAG_BITS - 1 downto 0);
     signal sq_tail_counter_reg : unsigned(SQ_TAG_BITS - 1 downto 0);
     signal sq_tail_counter_next : unsigned(SQ_TAG_BITS - 1 downto 0);
     
-    -- LOAD QUEUE HEAD AND TAIL COUNTER REGISTERS
+    type sq_tail_mispredict_recovery_memory_type is array (BRANCHING_DEPTH - 1 downto 0) of unsigned(SQ_TAG_BITS - 1 downto 0);
+    signal sq_tail_mispredict_recovery_memory : sq_tail_mispredict_recovery_memory_type;
+    -- LOAD QUEUE HEAD AND TAIL COUNTER REGISTERS AND MISPREDICTION RECOVERY MEMORY
     signal lq_head_counter_reg : unsigned(LQ_TAG_BITS - 1 downto 0);
     signal lq_head_counter_next : unsigned(LQ_TAG_BITS - 1 downto 0);
     signal lq_tail_counter_reg : unsigned(LQ_TAG_BITS - 1 downto 0);
     signal lq_tail_counter_next : unsigned(LQ_TAG_BITS - 1 downto 0);
     
+    type lq_tail_mispredict_recovery_memory_type is array (BRANCHING_DEPTH - 1 downto 0) of unsigned(LQ_TAG_BITS - 1 downto 0);
+    signal lq_tail_mispredict_recovery_memory : lq_tail_mispredict_recovery_memory_type;
     -- LOAD QUEUE ENTRY ALLOCATION LOGIC
     signal lq_mask_bits : std_logic_vector(SQ_ENTRIES - 1 downto 0);
     
@@ -247,6 +252,8 @@ begin
             when LOAD_WRITEBACK =>
                 if (cdb_granted = '1') then
                     load_state_next <= LOAD_IDLE;
+                else
+                    load_state_next <= LOAD_WRITEBACK;
                 end if;
         end case;
     end process;
@@ -256,7 +263,7 @@ begin
         bus_stbr <= '0';
         load_active_tag_reg_en <= '0';
         cdb_request <= '0';
-        cdb.valid <= '0';
+        cdb_out.valid <= '0';
         load_data_reg_en <= '0';
         case load_state_reg is
             when LOAD_IDLE => 
@@ -266,7 +273,7 @@ begin
                 load_data_reg_en <= '1';
             when LOAD_WRITEBACK => 
                 cdb_request <= '1';
-                cdb.valid <= '1';
+                cdb_out.valid <= '1';
         end case;
     end process;
     
@@ -302,6 +309,14 @@ begin
                 store_queue <= (others => SQ_INIT);
                 load_queue <= (others => (others => '0'));
             else
+                if (branch_mask /= BRANCH_MASK_ZERO) then
+                        lq_tail_mispredict_recovery_memory(branch_mask_to_int(branch_mask)) <= lq_tail_counter_reg;
+                end if;
+                
+                if (branch_mask /= BRANCH_MASK_ZERO) then
+                    sq_tail_mispredict_recovery_memory(branch_mask_to_int(branch_mask)) <= sq_tail_counter_reg;
+                end if;
+            
                 if (sq_enqueue_en = '1' and i_sq_full = '0') then
                     store_queue(to_integer(sq_tail_counter_reg)) <= '0' &         
                                                                     ADDR_ZERO &   
@@ -318,7 +333,6 @@ begin
                                                                    lq_dest_tag &
                                                                    lq_mask_bits &
                                                                    instr_tag & 
-                                                                   '0' &
                                                                    '0' &
                                                                    '1';
                 end if;
@@ -354,7 +368,7 @@ begin
                     end if;
                     
                     if (sq_finished_tag_valid = '1') then
-                        load_queue(i)(to_integer(unsigned(sq_finished_tag)) + 3 + INSTR_TAG_BITS) <= '0';
+                        load_queue(i)(to_integer(unsigned(sq_finished_tag)) + LQ_STQ_MASK_END) <= '0';
                     end if;
                 end loop;
             end if;
@@ -384,7 +398,7 @@ begin
                 
                 load_data_reg <= (others => '0');
             else
-                if (sq_enqueue_en = '1' and i_sq_full = '0') then
+                if ((sq_enqueue_en = '1' and i_sq_full = '0') or (cdb_in.branch_taken = '1' and cdb_in.valid = '1')) then
                     sq_tail_counter_reg <= sq_tail_counter_next;
                 end if;
                 
@@ -392,7 +406,7 @@ begin
                     sq_head_counter_reg <= sq_head_counter_next;
                 end if;
                 
-                if (lq_enqueue_en = '1' and i_lq_full = '0') then
+                if ((lq_enqueue_en = '1' and i_lq_full = '0') or (cdb_in.branch_taken = '1' and cdb_in.valid = '1')) then
                     lq_tail_counter_reg <= lq_tail_counter_next;
                 end if;
                 
@@ -409,11 +423,16 @@ begin
     
     sq_head_counter_next <= (others => '0') when sq_head_counter_reg = SQ_ENTRIES - 1 else
                             sq_head_counter_reg + 1;
-    sq_tail_counter_next <= (others => '0') when sq_tail_counter_reg = SQ_ENTRIES - 1 else
+                            
+    sq_tail_counter_next <= sq_tail_mispredict_recovery_memory(branch_mask_to_int(cdb_in.branch_mask)) when cdb_in.branch_taken = '1' and cdb_in.valid = '1' else  
+                            (others => '0') when sq_tail_counter_reg = SQ_ENTRIES - 1 else
                             sq_tail_counter_reg + 1;
+                            
     lq_head_counter_next <= (others => '0') when lq_head_counter_reg = LQ_ENTRIES - 1 else
                             lq_head_counter_reg + 1;
-    lq_tail_counter_next <= (others => '0') when lq_tail_counter_reg = LQ_ENTRIES - 1 else
+                            
+    lq_tail_counter_next <= lq_tail_mispredict_recovery_memory(branch_mask_to_int(cdb_in.branch_mask)) when cdb_in.branch_taken = '1' and cdb_in.valid = '1' else 
+                            (others => '0') when lq_tail_counter_reg = LQ_ENTRIES - 1 else
                             lq_tail_counter_reg + 1;
               
     -- ============================ LOAD INSTRUCTION ALLOCATION LOGIC ============================
@@ -421,7 +440,8 @@ begin
     begin
         if (lq_enqueue_en = '1') then
             for i in 0 to SQ_ENTRIES - 1 loop
-                lq_mask_bits(i) <= not store_queue(i)(0);
+                --lq_mask_bits(i) <= not store_queue(i)(0);
+                lq_mask_bits(i) <= '0';
             end loop;
         else
             lq_mask_bits <= (others => '0');
@@ -447,11 +467,11 @@ begin
     sq_alloc_tag <= std_logic_vector(sq_tail_counter_reg);
     lq_alloc_tag <= std_logic_vector(lq_tail_counter_reg);
                  
-    cdb.data <= load_data_reg;
-    cdb.phys_dest_reg <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
-    cdb.instr_tag <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_INSTR_TAG_START downto LQ_INSTR_TAG_END);
-    cdb.branch_mask <= (others => '0');
-    cdb.branch_taken <= '0';
+    cdb_out.data <= load_data_reg;
+    cdb_out.phys_dest_reg <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_DATA_TAG_START downto LQ_DATA_TAG_END);
+    cdb_out.instr_tag <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_INSTR_TAG_START downto LQ_INSTR_TAG_END);
+    cdb_out.branch_mask <= (others => '0');
+    cdb_out.branch_taken <= '0';
                             
     bus_addr_write <= store_queue(to_integer(sq_head_counter_reg))(SQ_ADDR_START downto SQ_ADDR_END);
     bus_addr_read <= load_queue(to_integer(unsigned(load_active_tag_reg)))(LQ_ADDR_START downto LQ_ADDR_END);
